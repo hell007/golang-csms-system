@@ -74,9 +74,9 @@ var (
 func GetUploadFile() string {
 	sysType := runtime.GOOS
 	if sysType == "darwin" {
-		UploadFile = "/Users/wzh/Development/git/go/golang-csms-system/golang-mvc/uploads"
+		UploadFile = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/uploads"
 	} else if sysType == "windows" {
-		UploadFile = "D:/Dev/cygwin/work/golang/golang-csms-system/golang-mvc/uploads"
+		UploadFile = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/uploads"
 	}
 	return UploadFile
 }
@@ -84,9 +84,9 @@ func GetUploadFile() string {
 func GetConfigPath() string {
 	sysType := runtime.GOOS
 	if sysType == "darwin" {
-		ConfigPath = "/Users/wzh/Development/git/go/golang-csms-system/golang-mvc/framework/conf/"
+		ConfigPath = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/framework/conf/"
 	} else if sysType == "windows" {
-		ConfigPath = "D:/Dev/cygwin/work/golang/golang-csms-system/golang-mvc/framework/conf/"
+		ConfigPath = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/framework/conf/"
 	}
 	return ConfigPath
 }
