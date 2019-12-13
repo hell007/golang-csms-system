@@ -1,0 +1,526 @@
+@import "global";
+//@import "icon";
+
+//@include font-face("FZLTXHK");
+
+body {
+  height: 100%;
+  min-height: 655px;
+}
+
+.main-screen {
+  height: 100%;
+  position: relative;
+
+  &__main {
+    background: url(../../assets/images/login/login-bg.jpg) center center;
+    background-size: cover;
+    height: 100%;
+    font-size: 0;
+
+    &::before {
+      content: "";
+      display: inline-block;
+      vertical-align: middle;
+      width: 0;
+      height: 100%;
+    }
+  }
+
+  &__inner {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  &__footer {
+    height: 290px;
+    position: absolute;
+    bototom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+.container {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.top-bar {
+  @include clearfix();
+  text-align: center;
+
+  &__left {
+    float: left;
+  }
+
+  &__right {
+    float: right;
+  }
+
+  &__btn {
+    display: block;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 3px;
+    padding: 7px 20px;
+
+    &-wrap {
+      padding: 13px 0;
+    }
+
+    &:hover {
+      color: #fff;
+      background-color: $color-primary;
+      border-color: $color-primary;
+    }
+  }
+}
+
+.logo {
+  // @include hide-text();
+
+  display: inline-block;
+  line-height: 60px;
+  padding-left: 70px;
+  height: 60px;
+  color: #fff;
+  font-size: 30px;
+  background: url(../../assets/images/logo/logo-white.png) left center no-repeat;
+  background-size: 56px;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: #fff;
+  }
+}
+
+.platform {
+  position: relative;
+
+  &__info {
+    height: 520px;
+    color: #fff;
+    font-size: 0;
+    width: 600px;
+
+    &-main {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 30px;
+      font-family: "FZLTXHK";
+    }
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 0;
+      height: 100%;
+      vertical-align: middle;
+    }
+  }
+
+  &__name {
+    font-size: 48px;
+  }
+}
+
+.login {
+  width: 365px;
+  height: 365px;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background: #fff;
+  padding: 20px 30px;
+  z-index: 1;
+  transition: all .4s;
+
+  &--recovery {
+    width: 400px;
+    height: 450px;
+  }
+
+  &--recovery#{&}--hide {
+    transform: translate(100px, -100px) scale(.7) rotate(10deg);
+  }
+
+  &--hide {
+    z-index: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-270px, -150px) scale(.8) rotate(-10deg);
+  }
+
+  &__type {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  &__item {
+    margin-bottom: 5px;
+    position: relative;
+    height: 63px;
+    overflow: hidden;
+
+    &--verify {
+      padding-right: 110px;
+    }
+
+    &--warning {
+      .login__fieldset {
+        border-color: $color-danger;
+      }
+
+      .login__warning {
+        display: block;
+      }
+    }
+  }
+
+  &__warning {
+    padding-top: 3px;
+    font-size: 12px;
+    color: $color-danger;
+    display: none;
+  }
+
+  &__fieldset {
+    border: 1px solid $color-border-gray;
+    border-radius: 2px;
+    padding: 0;
+
+    legend {
+      display: none;
+    }
+  }
+
+  &__block {
+    display: block;
+    margin-left: 40px;
+    border-left: 1px solid $color-border-gray;
+    margin-bottom: 0;
+  }
+
+  &__input {
+    height: 40px;
+    line-height: 24px;
+    padding: 3px 10px;
+    width: 100%;
+    border: 0;
+  }
+
+  &__icon {
+    float: left;
+    width: 40px;
+    height: 40px;
+    margin-left: -40px;
+    text-align: center;
+    line-height: 40px;
+    color: #8499a3;
+    font-size: 16px;
+  }
+
+  &__btn-verify {
+    position: absolute;
+    top: 0;
+    height: 42px;
+    width: 100px;
+    border: 0;
+    border-radius: 3px;
+    background-color: #ebeef2;
+    right: 0;
+
+    &:hover {
+      background-color: #eff2f7;
+    }
+
+    &:disabled {
+      color: #ccc;
+      background-color: #eff2f7;
+
+      &:hover {
+        background-color: #eff2f7;
+      }
+    }
+  }
+
+  &__action-bar {
+    padding: 10px 0;
+  }
+
+  &__action {
+    width: 100%;
+    height: 45px;
+    border-radius: 3px;
+    font-size: 16px;
+    border: 0;
+    background-color: $color-primary;
+    color: #fff;
+    @include clearfix();
+
+    &:hover {
+      background-color: #4db3ff;
+    }
+  }
+
+  &__tip {
+    text-align: right;
+
+    a {
+      color: #8492a6;
+
+      &:hover {
+        color: #4db3ff;
+      }
+    }
+  }
+}
+
+.statistics {
+  @include clearfix();
+  font-family: "FZLTXHK";
+  padding: 0;
+
+  &__item {
+    float: left;
+    width: (1200px / 4);
+    padding: 50px 10px;
+    text-align: center;
+    position: relative;
+
+    & + & {
+      &::before {
+        content: "";
+        position: absolute;
+        width: 1px;
+        height: 84px;
+        background-color: #d3dce6;
+        left: 0;
+        top: 50%;
+        margin-top: -42px;
+      }
+    }
+  }
+
+  &__amount {
+    font-size: 24px;
+  }
+
+  &__num {
+    font-size: 36px;
+  }
+
+  &__intro {
+    font-size: 18px;
+    color: #8492a6;
+  }
+
+  &__img {
+    display: block;
+    margin: 0 auto 10px;
+  }
+}
+
+.stores-floor {
+  background-color: #e5e9f2;
+}
+
+.stores {
+  padding: 50px 0;
+  overflow: hidden;
+  margin: 0 -15px;
+
+  &__list {
+    @include clearfix();
+    margin: 0 -30px;
+  }
+
+  &__item {
+    width: ((1200px + 60px) / 3 - 30px * 2);
+    margin: 0 30px;
+    float: left;
+    background-color: #fff;
+
+    &:hover {
+      box-shadow: 0 15px 30px rgba(#000, 0.1);
+
+      .stores__name {
+        color: $color-primary;
+      }
+    }
+  }
+
+  &__img {
+    width: 180px;
+    height: 180px;
+    margin: 90px;
+    margin-bottom: 30px;
+  }
+
+  &__main {
+    padding: 15px 20px;
+    text-align: center;
+  }
+
+  &__name {
+    @include ellipsis();
+    font-size: 22px;
+    margin-bottom: 5px;
+  }
+
+  &__intro {
+    @include ellipsis();
+    font-size: 14px;
+    color: #8492a6;
+    margin: 15px 0 50px;
+  }
+}
+
+.platform-fun {
+  @include clearfix();
+  margin: 0 -15px;
+
+  &__item {
+    float: left;
+    width: (1200px / 4);
+    text-align: center;
+    padding: 50px 10px 30px;
+  }
+
+  &__img {
+    height: 50px;
+    width: 50px;
+    display: block;
+    margin: 0 auto 30px;
+  }
+
+  &__name {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+
+  &__intro {
+    color: #8492a6;
+  }
+}
+
+.footer {
+  background-color: #475669;
+  color: #c0ccda;
+
+  &__main {
+    padding: 35px 80px;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  &-menu,
+  &-qrcode {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  &-menu {
+    width: 710px;
+    padding-left: 430px;
+    background: url(../../assets/images/login/footer-bg.png) no-repeat center left;
+
+    &__item {
+      margin-bottom: 20px;
+      font-size: 12px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &--phone {
+        font-size: 22px;
+        color: #fff;
+      }
+
+      &-title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+        padding-right: 40px;
+      }
+
+      &-link {
+        &:hover {
+          color: #4db3ff;
+        }
+      }
+    }
+  }
+}
+
+.footer-qrcode {
+  text-align: center;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 1px;
+    height: 150px;
+    background: #606f83;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+  }
+
+  &__img {
+    width: 100px;
+    height: 100px;
+
+    &-wrap {
+      width: 170px;
+      height: 150px;
+      margin: 0 auto 10px;
+      background: url(../../assets/images/login/footer-qrcode-bg.png);
+      padding-top: 35px;
+    }
+  }
+}
+
+.away {
+  margin-bottom: 20px;
+  padding: 0 2px;
+  @include clearfix();
+
+  &__item {
+    padding: 6px 15px;
+    width: 50%;
+    float: left;
+    border-bottom: 2px solid $color-border-gray;
+
+  }
+
+  .is-active {
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+
+}
+
+.msg {
+  padding: 15px;
+  text-align: center;
+  background: #f00;
+  background: rgba(255, 0, 0, .9);
+  color: #fff;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 3;
+}

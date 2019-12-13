@@ -1,0 +1,307 @@
+@import "global";
+//@import "../vendors/nprogress/0.2.0/nprogress.css";
+
+[v-cloak] {
+  display: none !important;
+}
+
+@import "common/element";
+@import "common/page";
+@import "common/frame";
+
+$space-horizontal: 22px;
+$space-vertical: 22px;
+
+.xa-separator {
+  border-top-color: $color-border-gray;
+}
+
+
+.xa-dialog {
+  .el-dialog {
+    width: 700px;
+  }
+
+  &--tiny {
+    .el-dialog {
+      width: 360px; // 30%
+    }
+  }
+
+  &--sm {
+    .el-dialog {
+      width: 600px; // 50%
+    }
+  }
+
+  &--lg {
+    .el-dialog {
+      width: 1080px; // 90%
+    }
+  }
+}
+
+.xa-dialog-body {
+  @include scrollable();
+  flex-grow: 1; // on ios 10, `flex: 1` will shrink
+}
+
+.xa-dialog-footer {
+  margin-top: -10px;
+  padding-top: 10px;
+
+  &--bordered {
+    padding-top: 15px;
+    border-top: 1px solid $color-border-gray;
+  }
+}
+
+.xa-sidebar {
+  .el-menu {
+    border-right: 0;
+  }
+
+  &__link {
+    display: block;
+  }
+
+  &__title {
+    display: none;
+
+    @at-root {
+      .el-tooltip__popper & {
+        display: inline;
+      }
+    }
+  }
+
+  &__scrollbar,
+  &__wrap {
+    height: 100%;
+  }
+
+  &__wrap {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  @at-root {
+    .xa-frame--collapsed {
+      .xa-sidebar__scrollbar,
+      .xa-sidebar__wrap {
+        overflow: visible;
+      }
+    }
+  }
+}
+
+.xa-sidebar-toggle {
+  width: 60px;
+  height: 60px;
+  color: $color-silver-lighter;
+  font-size: 18px;
+}
+
+.xa-header-nav {
+  float: right;
+}
+
+.xa-content {
+  padding: $space-vertical $space-horizontal;
+}
+
+.xa-box {
+  background: #fff;
+}
+
+.xa-clearfix {
+  @include clearfix();
+}
+
+.xa-pull-left {
+  float: left;
+}
+
+.xa-pull-right {
+  float: right;
+}
+
+.xa-block {
+  margin-bottom: $space-vertical;
+  display: block;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  // modifier
+  &--secondary {
+    background: #f2f2f2;
+  }
+
+  &--rounded {
+    border-radius: 4px;
+  }
+
+  &--align-center {
+    text-align: center;
+  }
+
+  &--align-right {
+    text-align: right;
+  }
+}
+
+.xa-button {
+  @each $type, $colors in $color-types {
+    &.el-button--#{$type} {
+      color: nth($colors, 1);
+      border-color: nth($colors, 1);
+      background-color: #fff;
+
+      &:focus,
+      &:hover {
+        color: nth($colors, 2);
+        border-color: nth($colors, 2);
+      }
+
+      &.is-active,
+      &:active {
+        color: nth($colors, 3);
+        border-color: nth($colors, 3);
+      }
+    }
+  }
+}
+
+@each $type, $colors in $color-types {
+  .text-#{$type} {
+    color: nth($colors, 1);
+  }
+}
+
+.xa-text-center {
+  text-align: center;
+}
+
+.xa-text-left {
+  text-align: left;
+}
+
+.xa-text-right {
+  text-align: right;
+}
+
+.xa-position-right {
+  position: absolute;
+  padding-right: 10px;
+  right: 0;
+  top: 0;
+}
+
+.xa-inline-block {
+  display: inline-block;
+  padding-right: 15px;
+}
+
+.xa-text-secondary {
+  color: #999;
+  font-size: 12px;
+}
+
+.xa-text-gray {
+  color: #999;
+}
+
+.xa-text-reset {
+  font-size: 14px;
+  color: #666;
+}
+
+.xa-text-black {
+  color: #666;
+}
+
+thead .xa-text-danger {
+  color: #909399;
+}
+
+.xa-text-danger {
+  color: $color-danger;
+}
+
+.xa-text-success {
+  color: $color-success;
+}
+
+.xa-text-primary {
+  color: #409EFF;
+}
+
+.xa-text-title {
+  font-size: 20px;
+}
+
+.xa-text-head {
+  font-size: 28px;
+}
+
+.xa-text-subtitle {
+  font-size: 16px;
+}
+
+.xa-tab-label {
+  position: relative;
+
+  &__count {
+    background: #f00;
+    position: absolute;
+    right: 0;
+    top: 2px;
+    border-radius: 50%;
+    line-height: 14px;
+    font-size: 12px;
+    min-width: 14px;
+    color: #fff;
+    text-align: center;
+    transform: translateX(50%) scale(0.9);
+    font-family: Arial;
+  }
+}
+
+.xa-no-entry {
+  padding: 50px 10px;
+  color: $color-silver;
+  text-align: center;
+}
+
+.xa-input {
+
+  @for $len from 1 through 10 {
+    $size: $len * 1em;
+    &--prefix-#{$len} .el-input__inner {
+      padding-left: $size + .5em;
+      padding-left: calc(#{$size} + 10px);
+    }
+  }
+
+}
+
+.xa-product {
+  &__title {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  &__intro {
+    overflow: hidden;
+    line-height: 1.6;
+    padding-top: 5px;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+  }
+}
+
+

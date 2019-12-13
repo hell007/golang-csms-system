@@ -1,0 +1,6 @@
+Now listening on: http://0.0.0.0:7000
+Application started. Press CTRL+C to shut down.
+[ERRO] 2019/12/13 14:25 RefreshToken解析token出错, token contains an invalid number of segments
+[ERRO] 2019/12/13 14:25 RefreshToken解析token出错, token contains an invalid number of segments
+[ERRO] 2019/12/13 14:25 UserController GetList 参数：[请求的分页参数解析错误.]
+[ERRO] 2019/12/13 14:25 UserController GetList 参数：[请求的分页参数解析错误.]

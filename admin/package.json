@@ -1,0 +1,66 @@
+{
+  "name": "csms-system",
+  "version": "1.0.0",
+  "description": "vue admin",
+  "author": "1048523306@qq.com",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "start": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "keywords": [
+    "vue3",
+    "vue-cli-3",
+    "vue-function-based"
+  ],
+  "dependencies": {
+    "axios": "^0.19.0",
+    "core-js": "^2.6.9",
+    "crypto-js": "^3.1.9-1",
+    "echarts": "^4.4.0",
+    "element-ui": "^2.5.4",
+    "joi": "^14.3.1",
+    "kindeditor": "^4.1.10",
+    "mockjs": "1.0.1-beta3",
+    "moment": "^2.24.0",
+    "normalize.css": "7.0.0",
+    "nprogress": "^0.2.0",
+    "register-service-worker": "^1.6.2",
+    "sass-resources-loader": "^2.0.1",
+    "simplemde": "^1.11.2",
+    "storejs": "^1.0.25",
+    "v-charts": "^1.19.0",
+    "vue": "^2.6.10",
+    "vue-function-api": "^2.0.5",
+    "vue-i18n": "7.3.2",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.8.0",
+    "@vue/cli-plugin-pwa": "^3.8.0",
+    "@vue/cli-service": "^3.8.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/"
+  },
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "homepage": "https://github.com/#readme"
+}

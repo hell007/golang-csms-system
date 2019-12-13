@@ -1,0 +1,137 @@
+// env
+$env-device: desktop; //[multi-device, mobile, desktop]
+$env-legacy-ie: 9;
+$env-use-rem: false; // true , false
+$env-brand-color: null;
+
+
+// variables
+$box-sizing: border-box; // set to null to disable box-sizing
+
+$design-width: 720; // psd width
+
+$base-font-size: 87.5%; // 14px;
+$base-color: #3e3e3e;
+$base-background-color: #fff;
+
+$link-color: inherit;
+$link-decoration: none;
+$link-hover-color: inherit;
+$link-hover-decoration: none;
+$focus-outline: false; //outline on focus
+
+// only if not $mobile-only
+// and only padding if $use-border-box
+$container-min-width: 1000;
+$container-max-width: 1200;
+$container-padding: 15px;
+
+$reboot-mods: (
+  "::selection": true,
+  ul: true,
+  ol: true,
+  dl: true, // also dt dd
+  p: true,
+  table: true, // also caption
+  label: true,
+  hr: true,
+  // output: true,
+  // fieldset: true, // also legend
+  // figure: true,
+  // iframe: true,
+  // blockquote: true,
+  // nav: true,
+  // meter: true,
+  // progress: true,
+  // address: true,
+  // abbr: true,
+  // mark: true,
+  // code: true, // also pre & samp
+  // kbd: true,
+  // dialog: true,
+);
+
+$z-index: (
+  nav,
+  header,
+  footer,
+  dialog,
+  loading,
+);
+
+// http://element.eleme.io/#/zh-CN/component/typography
+$base-font-family-en: (
+  "Helvetica Neue",
+  "Helvetica",
+  Arial,
+);
+
+$base-font-family-cn: (
+  "PingFang SC",
+  "Hiragino Sans GB",
+  "Microsoft YaHei",
+);
+
+$header-size: 50px;
+$bar-size: 65px;
+$color-white: #fff;
+$color-primary: #21c2b8;
+$color-border-gray: #b8bfc5;
+$color-border-gray-info: #dfdfdf;
+$color-border-light-gray: #dfdfdf;
+$color-gray: #b1b2b2;
+$color-light-gray: #dfdfdf;
+$input-border-color: $color-border-gray;
+$color-red: #ff6468;
+$color-secondary: $color-red;
+$input-placeholder-color: #cccccc;
+$color-appointment-got: #7e8d9a;
+$verify-instructions-bg: #edf0f6; 
+
+// https://github.com/ElementUI/theme-default/blob/master/src/common/var.css
+$color-primary: #20a0ff;
+
+$color-success: #13ce66;
+$color-warning: #f7ba2a;
+$color-danger: #ff4949;
+$color-info: #50bfff;
+
+$color-secondary: #2e90fe;
+$color-white: #fff;
+
+$color-black: #1f2d3d;
+$color-black-light: #324057;
+$color-black-lighter: #475669;
+
+$color-blue-light: #5da9ff;
+$color-blue-lighter: #5da9ff;
+$color-black: #000;
+
+$color-silver: #8492a6;
+$color-silver-light: #99a9bf;
+$color-silver-lighter: #c0ccda;
+
+$color-gray: #d3dce6;
+$color-gray-light: #e5e9f2;
+$color-gray-lighter: #eff2f7;
+
+$color-333: #333;
+$color-666: #333;
+$color-999: #999;
+
+// $color-white: #eff2f7;
+// $color-white-dark: #f9fafc;
+
+$color-border-gray: #d1dbe5;
+
+$color-input-border: #dcdfe6;
+
+$color-types: (
+  primary: ($color-primary, #4db3ff, #1d90e6),
+  info: ($color-info, #73ccff, #48ace6),
+  success: ($color-success, #42d885, #11b95c),
+  warning: ($color-warning, #f9c855, #dea726),
+  danger: ($color-danger, #ff6d6d, #e64242),
+);
+
+@import "utils/utils";

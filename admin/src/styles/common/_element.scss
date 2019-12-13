@@ -1,0 +1,93 @@
+
+// .el-dialog {
+//   &--tiny {
+//     width: 360px; // 30%
+//   }
+
+//   &--small {
+//     width: 600px; // 50%
+//   }
+
+//   &--large {
+//     width: 1080px; // 90%
+//   }
+// }
+
+// // .el-upload__input {
+// //   @include hide-file();
+
+// //   display: block;
+// // }
+
+// // https://github.com/ElemeFE/element/pull/7047
+// .el-time-spinner__wrapper {
+//   box-sizing: content-box;
+//   max-height: 192px;
+
+//   .el-scrollbar__wrap:not(.el-scrollbar__wrap--hidden-default) {
+//     padding-bottom: 17px;
+//     margin-bottom: -17px !important;
+//   }
+// }
+
+// .el-time-panel__content::after,
+// .el-time-panel__content::before {
+//   margin-top: -16px;
+// }
+
+.el-card,
+.el-table,
+.el-dialog__body {
+  color: inherit;
+}
+
+.el-textarea__inner {
+  resize: none;
+}
+
+// .el-input-group--prepend,
+// .el-input-group--append {
+//   ~ .el-button {
+//     vertical-align: top;
+//   }
+// }
+
+// .el-tabs__content {
+//   overflow: visible;
+// }
+
+.el-pagination {
+  font-weight: normal;
+}
+
+.el-table__empty-block {
+  min-height: 200px;
+}
+
+.el-breadcrumb__inner {
+
+  .el-breadcrumb__item:last-child & {
+    color: #8492a6;
+  }
+
+  a {
+    font-weight: normal;
+  }
+}
+
+.el-input {
+  &__prefix,
+  &__suffix {
+    pointer-events: none;
+  }
+}
+
+.el-dialog {
+  &__header {
+    border-bottom: 1px solid $color-border-gray;
+  }
+
+  &__headerbtn {
+    min-width: 24px;
+  }
+}
