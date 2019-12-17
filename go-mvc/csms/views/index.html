@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<base href="http://127.0.0.1:9000/" />
 <head>
     <meta charset="UTF-8">
     <title>test</title>
@@ -12,7 +13,7 @@ $(function(){
     let id = "1"
     $.ajax({
         type:"GET",
-        url:"http://127.0.0.1:9000/sys/test/log?id=" + id,
+        url:"http://127.0.0.1:9000/sys/test/test?id=" + id,
         dataType:"json",
         success:function(data){
             console.log('success===>', data)

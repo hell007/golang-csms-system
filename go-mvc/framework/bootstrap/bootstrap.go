@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	StaticAssets = "./assets/"
-	Favicon      = "favicon.ico"
-	Uploads = "../uploads/"
+	//StaticAssets = "./assets/"
+	//Favicon      = "favicon.ico"
+	//Uploads = "../uploads/"
 )
 
 // 使用Go内建的嵌入机制(匿名嵌入)，允许类型之前共享代码和数据
@@ -173,9 +173,9 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	b.SetupErrorHandlers()
 
 	// static files
-	b.Favicon(StaticAssets + Favicon)
-	//b.StaticWeb(StaticAssets[1:len(StaticAssets)-1], StaticAssets)
-	//b.StaticWeb(Uploads[1:len(Uploads)-1], Uploads)
+	//b.Favicon(StaticAssets + Favicon)
+	//b.HandleDir("/assets", StaticAssets)
+	//b.HandleDir("/uploads", Uploads)
 
 	// middleware, after static files
 	// b.Use(recover.New())

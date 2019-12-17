@@ -1,19 +1,40 @@
 package idgen
 
 import (
-	//"github.com/satori/go.uuid"
-	//"strings"
+	"fmt"
+	"github.com/kataras/golog"
+	"github.com/satori/go.uuid"
+	"strings"
 	"time"
 
 	redisClient "go-mvc/framework/utils/redis"
 )
 
-const ordersnNo = "jie-order-sn"
-var  ordersnTime = 365 * 24 * 60 * 60 * time.Second
+const (
+	orderSnKey = "jie-order-sn"
+	orderSnStart = "100000000000000" // 15位
+	orderSnTime = 365 * 24 * 60 * 60 * time.Second // 1年
+)
+
+// uuid 测试
+func Generate() {
+	u1 := uuid.NewV1()
+	u2 := uuid.NewV2(0x00)
+	u3 := uuid.NewV3(u1,"uid")
+	u4 := uuid.NewV4()
+	u5 := uuid.NewV5(u1, "u1")
+
+	fmt.Println("u1==", u1)
+	fmt.Println("u2==", u2)
+	fmt.Println("u3==", u3)
+	fmt.Println("u4==", u4)
+	fmt.Println("u5==", u5)
+}
 
 // 生成uuid 32位
 func GenerateUuid() string {
-	return "10000000"//strings.ReplaceAll(uuid.Must(uuid.NewV1()).String(), "-", "")
+	var err error
+	return strings.ReplaceAll(uuid.Must(uuid.NewV1(), err).String(), "-", "")
 }
 
 // 生成订单号
@@ -24,13 +45,28 @@ func GenerateOrdersn() int64{
 	// 开始值自定义
 
 	// 15位
-	ordersnStart := "100000000000000"
-	_, err  := redisClient.Get(ordersnNo).Result()
+	var (
+		err error
+		ordersn int64
+	)
+
+	//redisClient.Del(orderSnKey)
+
+	//stringTime  := time.Now().Format("01-02")
+	//fmt.Println(stringTime)
+
+	_, err  = redisClient.Get(orderSnKey).Result()
 	if err != nil {
-		redisClient.Set(ordersnNo, ordersnStart, ordersnTime).Err()
+		redisClient.Set(orderSnKey, orderSnStart, orderSnTime).Err()
+		golog.Infof("GenerateOrdersn Get %s", err)
 	}
 
-	ordersn,_ := redisClient.Incr(ordersnNo).Result()
-	redisClient.Set(ordersnNo, ordersn, ordersnTime).Err()
+	ordersn, err = redisClient.Incr(orderSnKey).Result()
+	if err != nil {
+		ordersn = 0
+		golog.Infof("GenerateOrdersn Incr %s", err)
+	}
+
+	redisClient.Set(orderSnKey, ordersn, orderSnTime).Err()
 	return ordersn
 }

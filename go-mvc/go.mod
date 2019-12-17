@@ -7,6 +7,8 @@ require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.60.287
 	github.com/casbin/casbin/v2 v2.1.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/edwingeng/slog v0.0.0-20191011125256-3ac46ac3623d
+	github.com/edwingeng/wuid v0.0.0-20191129013112-1bf3d98c028d
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
@@ -27,6 +29,7 @@ require (
 	github.com/nats-io/nats-server/v2 v2.1.2 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/oliamb/cutter v0.2.2
+	github.com/satori/go.uuid v1.2.0
 	github.com/sergi/go-diff v1.0.0 // indirect
 	github.com/tealeg/xlsx v1.0.5
 	github.com/valyala/fasthttp v1.6.0 // indirect

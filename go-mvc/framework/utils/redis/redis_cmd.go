@@ -41,8 +41,6 @@ func Incr(key string) *redis.IntCmd{
 	}
 }
 
-
-
 //订阅
 func Subscribe(channels ...string) *redis.PubSub {
 	if MRedis.Cluster.State {
