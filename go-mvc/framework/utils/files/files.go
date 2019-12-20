@@ -51,8 +51,8 @@ func FileExists(path string) bool {
 	return true
 }
 
-// FileRemove 文件删除
-func FileRemove(path string) {
+// RemoveFile 文件删除
+func RemoveFile(path string) {
 	ok := FileExists(path)
 	if ok {
 		_ = os.Remove(path)

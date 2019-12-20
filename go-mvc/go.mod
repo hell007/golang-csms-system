@@ -7,8 +7,7 @@ require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.60.287
 	github.com/casbin/casbin/v2 v2.1.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/edwingeng/slog v0.0.0-20191011125256-3ac46ac3623d
-	github.com/edwingeng/wuid v0.0.0-20191129013112-1bf3d98c028d
+	github.com/edwingeng/wuid v0.0.0-20191129013112-1bf3d98c028d // indirect
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
@@ -38,6 +37,7 @@ require (
 	github.com/yudai/gojsondiff v1.0.0 // indirect
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
+	gopkg.in/yaml.v2 v2.2.5
 	xorm.io/core v0.7.2-0.20190928055935-90aeac8d08eb
 )
 

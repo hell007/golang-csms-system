@@ -4,9 +4,46 @@ FireMethodNotAllowed: false
 DisableBodyConsumptionOnUnmarshal: false
 TimeFormat: Mon, 01 Jan 2006 15:04:05 GMT
 Charset: UTF-8
+# Mysql
+Mysql.Dialect: mysql
+Mysql.Prefix: jie_
+Mysql.LogLevel: debug
+Mysql.MaxIdleConns: 10 # 连接池的空闲数大小
+Mysql.MaxOpenConns: 10 # 最大打开连接数
+Mysql.ShowSql: true
+Mysql.Master.User: root
+Mysql.Master.Password: admin
+Mysql.Master.Host: 127.0.0.1
+Mysql.Master.Port: 3306
+Mysql.Master.Database: csms-system
+Mysql.Slave.User:
+Mysql.Slave.Password:
+Mysql.Slave.Host: 127.0.0.1
+Mysql.Slave.Port: 3306
+Mysql.Slave.Database: casbin
+
+#Redis
+Redis.Prefix: JIE_REDIES_KEY_
+Redis.Exprire: 1800  # 1 * 30 * 60 * time.Second //单位秒：设置1小时
+Redis.Single.Addr: localhost:6379
+Redis.Single.Password:
+Redis.Single.Db: 0
+Redis.Single.PoolSize: 5
+Redis.Cluster.Addrs: [localhost:2181;localhost:2182]
+Redis.Cluster.Password:
+Redis.Cluster.State: false
+#Jwt
+JWT.Secret: SECRET_ #加盐
+JWT.Salt: ARRSWdczx13213EDDSWQ!!@W
+JWT.Timeout: 3600 #单位秒：设置1小时
+#Auth
+Auth.Ignores: [/;
+/sys/user/login;
+/sys/user/loginout;
+/sys/rule/menus;
+/sys/test/upload;
+/api/test/index]
 #自定义配置
-Other:
-  IgnoreURLs: [/, /user/login, /user/registe, /login_pwd]
-  JWTTimeout: 900 #second
-  LogLevel: debug
-  Secret: xxx-Secret
+Upload.Style: [100x100;360x360;800x800]
+Upload.PicPath: [/goods/;/article/;/ads/]
+Upload.Editor: [/images/goods/;/images/article/]

@@ -10,8 +10,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kataras/iris/v12/context"
 
+	"go-mvc/framework/db"
+	"go-mvc/framework/conf"
 	"go-mvc/framework/middleware/jwt"
-	"go-mvc/framework/utils/db"
 	"go-mvc/framework/utils/response"
 )
 
@@ -74,9 +75,8 @@ func singleAdapter() *Adapter {
 		return adt
 	}
 
-	master := db.Db.GetConf().Master
-	url := db.GetConnURL(&master)
-	adt = NewAdapter(master.Dialect, url, true)
+	url := db.GetConnURL()
+	adt = NewAdapter(conf.GlobalConfig.MysqlDialect, url, true)
 	return adt
 }
 

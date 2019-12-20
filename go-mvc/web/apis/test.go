@@ -7,7 +7,7 @@ import (
 
 	"go-mvc/framework/conf"
 	"go-mvc/framework/utils/idgen"
-	redisClient "go-mvc/framework/utils/redis"
+	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/utils/response"
 )
 

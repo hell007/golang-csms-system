@@ -1,7 +1,7 @@
 package system
 
 import (
-	"go-mvc/framework/utils/db"
+	"go-mvc/framework/db"
 )
 
 // RoleMenu  角色-菜单关联表

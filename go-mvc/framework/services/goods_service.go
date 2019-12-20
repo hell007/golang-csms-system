@@ -2,8 +2,8 @@ package services
 
 import (
 	"go-mvc/framework/dao"
+	"go-mvc/framework/db"
 	models "go-mvc/framework/models/goods"
-	"go-mvc/framework/utils/db"
 	"go-mvc/framework/utils/page"
 )
 

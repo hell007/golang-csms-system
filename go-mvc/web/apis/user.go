@@ -15,7 +15,7 @@ import (
 	"go-mvc/framework/utils/captcha"
 	"go-mvc/framework/utils/encrypt"
 	"go-mvc/framework/utils/ips"
-	redisClient "go-mvc/framework/utils/redis"
+	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/utils/response"
 )
 

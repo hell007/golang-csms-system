@@ -2,6 +2,7 @@ package casbin
 
 import (
 	"errors"
+	"go-mvc/framework/conf"
 	"runtime"
 	"xorm.io/core"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/lib/pq"
 
 	models "go-mvc/framework/models/system"
-	"go-mvc/framework/utils/db"
 )
 
 // Adapter represents the Xorm adapter for policy storage.
@@ -115,8 +115,7 @@ func (a *Adapter) close() {
 }
 
 func (a *Adapter) createTable() {
-	master := db.Db.GetConf().Master
-	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, master.Prefix)
+	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, conf.GlobalConfig.MysqlPrefix)
 	a.engine.SetTableMapper(tbMapper)
 	err := a.engine.Sync2(new(models.CasbinRule))
 	if err != nil {

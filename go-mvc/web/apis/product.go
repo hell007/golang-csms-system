@@ -13,7 +13,7 @@ import (
 	"go-mvc/framework/services"
 	"go-mvc/framework/utils/encrypt"
 	"go-mvc/framework/utils/idgen"
-	redisClient "go-mvc/framework/utils/redis"
+	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/utils/response"
 )
 

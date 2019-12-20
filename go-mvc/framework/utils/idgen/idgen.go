@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	redisClient "go-mvc/framework/utils/redis"
+	redisClient "go-mvc/framework/cache/redis"
 )
 
 const (

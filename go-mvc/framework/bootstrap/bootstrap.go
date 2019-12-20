@@ -1,28 +1,22 @@
 package bootstrap
 
 import (
+	"time"
+
 	"github.com/gorilla/securecookie"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/logger"
 	"github.com/kataras/iris/v12/middleware/recover"
 	"github.com/kataras/iris/v12/sessions"
-	//"github.com/kataras/iris/v12/websocket"
-	"strings"
-	"time"
 
-	"go-mvc/framework/conf"
 	"go-mvc/framework/utils/response"
 )
 
-const (
-	//StaticAssets = "./assets/"
-	//Favicon      = "favicon.ico"
-	//Uploads = "../uploads/"
-)
-
-// 使用Go内建的嵌入机制(匿名嵌入)，允许类型之前共享代码和数据
-// Bootstrapper继承和共享 iris.Application
-// 参考文章： https://hackthology.com/golangzhong-de-mian-xiang-dui-xiang-ji-cheng.html
+/**
+使用Go内建的嵌入机制(匿名嵌入)，允许类型之前共享代码和数据
+Bootstrapper继承和共享 iris.Application
+参考文章： https://hackthology.com/golangzhong-de-mian-xiang-dui-xiang-ji-cheng.html
+ */
 type Bootstrapper struct {
 	*iris.Application
 	AppName      string
@@ -34,14 +28,18 @@ type Bootstrapper struct {
 
 type Configurator func(*Bootstrapper)
 
-// Configure: accepts configurations and runs them inside the Bootstraper's context.
+/**
+Configure: accepts configurations and runs them inside the Bootstraper's context.
+ */
 func (b *Bootstrapper) Configure(cs ...Configurator) {
 	for _, c := range cs {
 		c(b)
 	}
 }
 
-// New: return a new Bootstrapper.
+/**
+New: return a new Bootstrapper.
+ */
 func New(appName, appOwner string, cfgs ...Configurator) *Bootstrapper {
 	b := &Bootstrapper{
 		AppName:      appName,
@@ -57,37 +55,20 @@ func New(appName, appOwner string, cfgs ...Configurator) *Bootstrapper {
 	return b
 }
 
-// SetupViews: setting templates for html.
+/**
+SetupViews: setting templates for html.
+ */
 func (b *Bootstrapper) SetupViews(templateDir string) {
 	htmlEngine := iris.HTML(templateDir, ".html") //.Layout("layout.html")
 	// 每次重新加载模板 （线上关闭它）
 	htmlEngine.Reload(true)
-
-	// 给模板内置各种定制的方法
-	htmlEngine.AddFunc("FromUnixtimeShort", func(t int) string {
-		dt := time.Unix(int64(t), int64(0))
-		return dt.Format(conf.SysTimeformShort)
-	})
-	htmlEngine.AddFunc("FromUnixtime", func(t int) string {
-		dt := time.Unix(int64(t), int64(0))
-		return dt.Format(conf.SysTimeform)
-	})
-
-	// 判断当前路径
-	htmlEngine.AddFunc("AddActive", func(path string, s string, active string) string {
-		if  strings.TrimSpace(path) != strings.TrimSpace(s) {
-			active = ""
-			return active
-		}
-		return active
-	})
-
 	b.RegisterView(htmlEngine)
 }
 
-// SetupSessions: initializes the sessions, optionally.
+/**
+SetupSessions: initializes the sessions, optionally.
+ */
 func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cookieBlockKey []byte) {
-
 	b.Sessions = sessions.New(sessions.Config{
 		Cookie:   "SECRET_SESS_COOKIE_" + b.AppName,
 		Expires:  expires,
@@ -95,7 +76,9 @@ func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cooki
 	})
 }
 
-// SetupWebsockets: prepares the websocket server.
+/**
+SetupWebsockets: prepares the websocket server.
+ */
 //func (b *Bootstrapper) SetupWebsockets(endpoint string, onConnection websocket.ConnectionFunc) {
 //
 //	ws := websocket.New(websocket.Config{})
@@ -107,9 +90,10 @@ func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cooki
 //	})
 //}
 
-// SetupErrorHandlers: prepares the http error handlers
+/**
+SetupErrorHandlers: prepares the http error handlers
+ */
 func (b *Bootstrapper) SetupErrorHandlers() {
-
 	customLogger := logger.New(logger.Config{
 		//状态显示状态代码
 		Status: true,
@@ -134,7 +118,7 @@ func (b *Bootstrapper) SetupErrorHandlers() {
 		customLogger,
 	)
 
-	// ---------------------- 定义错误处理 ------------------------
+	// 定义错误处理
 	b.OnErrorCode(iris.StatusNotFound, customLogger, func(ctx iris.Context) {
 		response.Error(ctx, iris.StatusNotFound, response.NotFound, nil)
 	})
@@ -160,31 +144,23 @@ func (b *Bootstrapper) SetupErrorHandlers() {
 	})*/
 }
 
-// Bootstrap: prepares our application.
-// Returns itself.
+/**
+Bootstrap: prepares our application.
+Returns itself.
+ */
 func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	b.SetupViews("./views")
-
 	b.SetupSessions(24*time.Hour,
 		[]byte("the-big-and-secret-fash-key-here"),
 		[]byte("lot-secret-of-characters-big-too"),
 	)
-
 	b.SetupErrorHandlers()
-
-	// static files
-	//b.Favicon(StaticAssets + Favicon)
-	//b.HandleDir("/assets", StaticAssets)
-	//b.HandleDir("/uploads", Uploads)
-
-	// middleware, after static files
-	// b.Use(recover.New())
-	// b.Use(logger.New())
-
 	return b
 }
 
-//Listen: starts the http server with the specified "addr".
+/**
+Listen: starts the http server with the specified "addr".
+ */
 func (b *Bootstrapper) Listen(addr string, cfgs ...iris.Configurator) {
 	b.Run(iris.Addr(addr), cfgs...)
 }

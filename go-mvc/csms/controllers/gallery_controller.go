@@ -94,9 +94,9 @@ func (c *GalleryController) PostDelete() {
 
 	// 删除图片
 	goodsPath :=  conf.GetUploadFile() + conf.UploadGoods
-	files.FileRemove(goodsPath + gallery.Small)
-	files.FileRemove(goodsPath + gallery.Medium)
-	files.FileRemove(goodsPath + gallery.Source)
+	files.RemoveFile(goodsPath + gallery.Small)
+	files.RemoveFile(goodsPath + gallery.Medium)
+	files.RemoveFile(goodsPath + gallery.Source)
 
 	response.Ok(c.Ctx, response.OptionSuccess, nil)
 	return

@@ -1,0 +1,87 @@
+package conf
+
+import (
+	"fmt"
+	"github.com/kataras/golog"
+	"go-mvc/framework/utils/files"
+	"gopkg.in/yaml.v2"
+	"runtime"
+)
+
+type Config struct {
+	// 设置
+	Charset string `yaml:"Charset"`
+
+	// mysql
+	MysqlDialect string `yaml:"Mysql.Dialect"`
+	MysqlPrefix string `yaml:"Mysql.Prefix"`
+	MysqlLogLevel string `yaml:"Mysql.LogLevel"`
+	MysqlMaxIdleConns int `yaml:"Mysql.MaxIdleConns"`
+	MysqlMaxOpenConns int `yaml:"Mysql.MaxOpenConns"`
+	MysqlShowSql bool `yaml:"Mysql.ShowSql"`
+	MysqlMasterUser string `yaml:"Mysql.Master.User"`
+	MysqlMasterPassword string `yaml:"Mysql.Master.Password"`
+	MysqlMasterHost string `yaml:"Mysql.Master.Host"`
+	MysqlMasterPort int `yaml:"Mysql.Master.Port"`
+	MysqlMasterDatabase string `yaml:"Mysql.Master.Database"`
+	MysqlSlaveUser string `yaml:"Mysql.Slave.User"`
+	MysqlSlavePassword string `yaml:"Mysql.Slave.Password"`
+	MysqlSlaveHost string `yaml:"Mysql.Slave.Host"`
+	MysqlSlavePort int `yaml:"Mysql.Slave.Port"`
+	MysqlSlaveDatabase string `yaml:"Mysql.Slave.Database"`
+
+	// redis
+	RedisPrefix  string `yaml:"Redis.Prefix"`
+	RedisExprire int    `yaml:"Redis.Exprire"`
+	RedisSingleAddr  string `yaml:"Redis.Single.Addr"`
+	RedisSinglePassword string `yaml:"Redis.Single.Password"`
+	RedisSingleDb int `yaml:"Redis.Single.Db"`
+	RedisSinglePoolSize int `yaml:"Redis.Single.PoolSize"`
+	RedisClusterAddrs []string `yaml:"Redis.Cluster.Addrs "`
+	RedisClusterPassword string `yaml:"Redis.Cluster.Password"`
+	RedisClusterState bool `yaml:"Redis.Cluster.State"`
+
+	// jwt
+	JWTSecret  string   `yaml:"JWT.Secret"`
+	JWTSalt    string   `yaml:"JWT.Salt"`
+	JWTTimeout string   `yaml:"JWT.Timeout"`
+
+	// Auth
+	AuthIgnores []string `yaml:"Auth.Ignores"`
+
+	// Upload
+	UploadStyle []string   `yaml:"Upload.Style"`
+	UploadPicPath []string `yaml:"Upload.PicPath"`
+	UploadEditor []string  `yaml:"Upload.Editor"`
+}
+
+var GlobalConfig Config
+
+func (cfg *Config) getConf() *Config {
+	yamlFile, err := files.LoadFile(getConfigPath() + "app.yaml")
+	if err != nil {
+		golog.Errorf("LoadFile cfg config error!! %s", err)
+	}
+
+	if err = yaml.Unmarshal(yamlFile, cfg); err != nil {
+		golog.Errorf("Unmarshal cfg config error!! %s", err)
+	}
+
+	return cfg
+}
+
+func getConfigPath() string {
+	sysType := runtime.GOOS
+	if sysType == "darwin" {
+		ConfigPath = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/framework/conf/"
+	} else if sysType == "windows" {
+		ConfigPath = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/framework/conf/"
+	}
+	return ConfigPath
+}
+
+func Init() {
+	GlobalConfig.getConf()
+	fmt.Println("RedisPrefix===", GlobalConfig.RedisPrefix)
+	fmt.Println("AuthIgnores===", GlobalConfig.AuthIgnores)
+}

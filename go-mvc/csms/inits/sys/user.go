@@ -7,9 +7,9 @@ import (
 	"github.com/kataras/golog"
 
 	"go-mvc/framework/conf"
+	"go-mvc/framework/db"
 	"go-mvc/framework/middleware/casbin"
 	"go-mvc/framework/models/system"
-	"go-mvc/framework/utils/db"
 	"go-mvc/framework/utils/encrypt"
 )
 

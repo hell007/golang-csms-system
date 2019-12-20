@@ -1,8 +1,8 @@
 package goods
 
 import (
-	"time"
 	morder "go-mvc/framework/models/order"
+	"go-mvc/framework/utils/times"
 )
 
 type Goods struct {
@@ -22,9 +22,10 @@ type Goods struct {
 	Color       string    `json:"color,omitempty" xorm:"not null comment('颜色') VARCHAR(20)"`
 	Views       int       `json:"views,omitempty" xorm:"not null default 188 comment('浏览数') INT(10)"`
 	Concerns    int       `json:"concerns,omitempty" xorm:"not null default 100 comment('关注数') INT(10)"`
-	CreateTime  time.Time `json:"createTime,omitempty" xorm:"not null comment('创建时间') DATETIME"`
-	UpdateTime  time.Time `json:"updateTime,omitempty" xorm:"comment('更新时间') DATETIME"`
+	CreateTime  *times.JsonTime `json:"createTime,omitempty" xorm:"not null comment('创建时间') DATETIME"`
+	UpdateTime  *times.JsonTime `json:"updateTime,omitempty" xorm:"comment('更新时间') DATETIME"`
 }
+
 
 type GoodsDetail struct {
 	Goods                 `xorm:"extends"`

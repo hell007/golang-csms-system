@@ -11,7 +11,7 @@ import (
 	"go-mvc/framework/services"
 	"go-mvc/framework/utils/encrypt"
 	"go-mvc/framework/utils/page"
-	redisClient "go-mvc/framework/utils/redis"
+	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/utils/response"
 )
 
