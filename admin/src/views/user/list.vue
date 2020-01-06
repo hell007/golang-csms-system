@@ -222,7 +222,9 @@
 import waves from '@/directive/waves/index' // 水波纹指令
 import Pagination from '../components/pagination'
 import {
-  mapActions
+  mapState,
+  mapActions,
+  mapGetters
 } from 'vuex'
 
 export default {
@@ -235,7 +237,7 @@ export default {
   },
   data() {
     return {
-      list: null,
+      list: [],
       total: null,
       loading: true,
       tip: false,
@@ -259,7 +261,15 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    ...mapState([
+      'admin'
+    ]),
+    ...mapGetters([
+      'test',
+      'admins'
+    ])
+  },
   methods: {
     ...mapActions(['getUserList', 'deleteUser', 'closeUser', 'batchDeleteUser']),
     //获取list数据，传入筛选对象

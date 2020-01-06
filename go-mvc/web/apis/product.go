@@ -67,8 +67,8 @@ func (c *Product) PostDo() {
 	}
 
 	// 解密
-	keys = encrypt.AESDecrypt(form.Token, conf.JWTSalt)
-	jsonU, err = redisClient.Get(conf.RedisPrefix + keys).Result()
+	keys = encrypt.AESDecrypt(form.Token, conf.GlobalConfig.JWTSalt)
+	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
 		c.Ctx.Application().Logger().Error("Product PostDo user不存在")
 		response.Failur(c.Ctx, response.OptionFailur, nil)

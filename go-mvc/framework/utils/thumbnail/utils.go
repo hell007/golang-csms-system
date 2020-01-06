@@ -43,13 +43,13 @@ func ParseName(fileName string, flag int) string {
 
 	switch flag {
 	case 1:
-		fileNamePre = conf.UploadSall
+		fileNamePre = conf.GlobalConfig.UploadStyle[0]
 	case 2:
-		fileNamePre = conf.UploadMedium
+		fileNamePre = conf.GlobalConfig.UploadStyle[1]
 	case 3:
-		fileNamePre = conf.UploadSource
+		fileNamePre = conf.GlobalConfig.UploadStyle[2]
 	default://0
-		fileNamePre = conf.UploadNormal
+		fileNamePre = ""
 	}
 	return RenameFile() + fileNamePre + "." + args[1]
 }

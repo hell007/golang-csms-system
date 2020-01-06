@@ -117,7 +117,7 @@
         </el-table-column>
         <el-table-column
           fixed
-          prop="name"
+          prop="username"
           label="姓名"
           width="100"
           align="center">
@@ -169,12 +169,18 @@
           label="创建时间"
           width="180"
           align="center">
+          <template slot-scope="scope">
+            {{scope.row.createTime | parseTime}}
+          </template>
         </el-table-column>
         <el-table-column
           prop="loginTime"
           label="登录时间"
           width="180"
           align="center">
+          <template slot-scope="scope">
+            {{scope.row.loginTime | parseTime}}
+          </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -263,8 +269,8 @@ export default {
   data() {
     return {
       p:'permission:list', //测试无意义
-      list: null,
-      total: null,
+      list: [],
+      total: 0,
       loading: true,
       tip: false,
       listQuery: {
@@ -297,15 +303,16 @@ export default {
       self.loading = true
       self.getUserList(self.listQuery).then(response => {
         logger('info', response)
-        const status = response.data.success
+        const status = response.data.state
         const res = response.data.data
+        const message = response.data.msg
         if (status) {
           self.list = res.rows
           self.total = res.count
         } else {
           self.$notify({
             title: '失败',
-            message: response.data.message,
+            message: message,
             type: 'error'
           })
         } 
@@ -332,7 +339,7 @@ export default {
     handleEdit(id) {
       //路由跳转
       // 字符串
-      this.$router.push('/unit/form?id='+id);
+      this.$router.push('/unit1/form?id='+id);
       // 对象
       //this.$router.push({ path: '/user/form'})
       // 命名的路由
@@ -343,19 +350,20 @@ export default {
       const self = this
       self.deleteUser(row).then(response => {
         logger('info',response)
-        const status = response.data.success
+        const status = response.data.state
         const res = response.data.data
+        const message = response.data.msg
         if (status) {
           self.$notify({
             title: '成功',
-            message: response.data.message,
+            message: message,
             type: 'success',
             duration: 2000
           })
         } else {
           this.$notify({
             title: '失败',
-            message: response.data.message,
+            message: message,
             type: 'error'
           })
         }
@@ -372,19 +380,20 @@ export default {
       if (self.mulSelection.length === 0) return
 
       self.batchDeleteUser(self.mulSelection).then(response => {
-        const status = response.data.success
+        const status = response.data.state
         const res = response.data.data
+        const message = response.data.msg
         if (status) {
           self.$notify({
             title: '成功',
-            message: response.data.message,
+            message: message,
             type: 'success',
             duration: 2000
           })
         } else {
           this.$notify({
             title: '失败',
-            message: response.data.message,
+            message: message,
             type: 'error'
           })
         }
@@ -395,12 +404,13 @@ export default {
       if (self.mulSelection.length === 0) return
 
       self.closeUser(self.mulSelection).then(response => {
-        const status = response.data.success
+        const status = response.data.state
         const res = response.data.data
+        const message = response.data.msg
         if (status) {
           self.$notify({
             title: '成功',
-            message: response.data.message,
+            message: message,
             type: 'success',
             duration: 2000
           })
@@ -408,7 +418,7 @@ export default {
         } else {
           this.$notify({
             title: '失败',
-            message: response.data.message,
+            message: message,
             type: 'error'
           })
         }

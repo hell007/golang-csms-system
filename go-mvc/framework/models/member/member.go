@@ -23,6 +23,6 @@ type LoginUser struct {
 }
 
 type MemberDetail struct {
-	Member *Member  `json:"member"`
-	List  []Address `json:"list"`
+	Member *Member   `json:"member"`
+	List   []Address `json:"list"`
 }

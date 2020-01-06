@@ -15,7 +15,7 @@ type Test struct {
 	Ctx iris.Context
 }
 
-var keys = conf.JWTSecret + time.Now().Format("20060102-15:04:05") //24
+var keys = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat) //24
 
 func (c *Test) GetV1() {
 	err := redisClient.Set("test", "测试", 1 * time.Second).Err()

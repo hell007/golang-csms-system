@@ -5,7 +5,6 @@ import (
 	"github.com/go-yaml/yaml"
 	"github.com/kataras/golog"
 
-	"go-mvc/framework/conf"
 	"go-mvc/framework/utils/files"
 )
 
@@ -20,7 +19,7 @@ type LogInfo struct {
 }
 
 func (log *MyLog) getConf() *MyLog {
-	yamlFile, err := files.LoadFile(conf.GetConfigPath() + "conf.yaml")
+	yamlFile, err := files.LoadFile("./conf.yaml")
 	if err != nil {
 		golog.Errorf("LoadFile logs config error!! %s", err)
 	}

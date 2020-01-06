@@ -11,8 +11,8 @@ type Zone struct {
 }
 
 type City struct {
-	Id      int    `json:"id,omitempty"`
-	Value   string `json:"value,omitempty"`
-	Text    string `json:"text,omitempty"`
-	Pid     string `json:"pid,omitempty"`
+	Id    int    `json:"id,omitempty"`
+	Value string `json:"value,omitempty"`
+	Text  string `json:"text,omitempty"`
+	Pid   string `json:"pid,omitempty"`
 }

@@ -12,16 +12,8 @@ import {
 const role = {
 
   state: {
-    rolelist: [],
-    role: {}
   },
   mutations: {
-    SET_ROLELIST: (state, rolelist) => {
-      state.rolelist = rolelist
-    },
-    SET_ROLE: (state, role) => {
-      state.role = role
-    }
   },
   actions: {
     getRoleList({
@@ -31,8 +23,6 @@ const role = {
         (async() => {
           try {
             let response = await fetchGet('/sys/role/list?', listQuery);
-            const res = response.data.data
-            commit('SET_ROLELIST', res.rows)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -49,8 +39,6 @@ const role = {
             let response = await fetchGet('/sys/role/item?', {
               id: id
             });
-            const role = response.data.data
-            commit('SET_ROLE', role)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -67,8 +55,6 @@ const role = {
         (async() => {
           try {
             let response = await fetchPost('/sys/role/save', form);
-            const role = response.data.data
-            commit('SET_ROLE', role)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -93,13 +79,6 @@ const role = {
             let response = await fetchGet('/sys/role/delete?', {
               id: ids
             });
-
-            let list = state.rolelist
-            for (let i = 0, len = rows.length; i < len; i++) {
-              const index = list.indexOf(rows[i])
-              list.splice(index, 1)
-            }
-            commit('SET_ROLELIST', list)
             resolve(response)
           } catch (ex) {
             reject(ex)

@@ -7,14 +7,14 @@
 package main
 
 import (
+	"go-mvc/framework/conf"
 	"time"
 
+	_ "go-mvc/csms/inits"
+	"go-mvc/csms/routes"
 	"go-mvc/framework/bootstrap"
 	"go-mvc/framework/middleware/identity"
 	"go-mvc/framework/utils/files"
-	"go-mvc/framework/utils/logs"
-	_ "go-mvc/csms/inits"
-	"go-mvc/csms/routes"
 )
 
 const (
@@ -40,12 +40,11 @@ func main() {
 	app.HandleDir("/uploads", Uploads)
 
 	// 日志设置
-	logFile := time.Now().Format("2006-01-02") + ".txt"
-	log := logs.Logger.GetConf().Logs
-	f, _ := files.CreateFile(log.Output + logFile)
+	logFile := time.Now().Format(conf.GlobalConfig.TimeformatShort) + ".log"
+	f, _ := files.CreateFile(conf.GlobalConfig.LogsOutput + logFile)
 	defer f.Close()
 	app.Logger().AddOutput(f)
-	app.Logger().SetLevel(log.Level)
+	app.Logger().SetLevel(conf.GlobalConfig.LogsLevel)
 
 	//监听端口
 	app.Listen(":9000")

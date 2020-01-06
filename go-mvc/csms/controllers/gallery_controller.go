@@ -32,7 +32,7 @@ func (c *GalleryController) PostUpload() {
 
 	// 源图
 	fileName := thumbnail.ParseName(info.Filename,3)
-	filePath, err1 := files.MakeFilePath(conf.GetUploadFile() + conf.UploadGoods, fileName)
+	filePath, err1 := files.MakeFilePath(conf.GetUploadFile() + conf.GlobalConfig.UploadPicPath[0], fileName)
 	if err1 != nil {
 		c.Ctx.Application().Logger().Errorf("Gallery PostUpload 目录：[%s]", err1)
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
@@ -93,7 +93,7 @@ func (c *GalleryController) PostDelete() {
 	}
 
 	// 删除图片
-	goodsPath :=  conf.GetUploadFile() + conf.UploadGoods
+	goodsPath :=  conf.GetUploadFile() + conf.GlobalConfig.UploadPicPath[0]
 	files.RemoveFile(goodsPath + gallery.Small)
 	files.RemoveFile(goodsPath + gallery.Medium)
 	files.RemoveFile(goodsPath + gallery.Source)

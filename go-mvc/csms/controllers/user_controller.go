@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	//"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -58,7 +57,7 @@ func (c *UserController) PostLogin() {
 	}
 
 	// 验证密码
-	ckPassword = encrypt.CheckPWD(user.Password, ut.Password, conf.JWTSalt)
+	ckPassword = encrypt.CheckPWD(user.Password, ut.Password, conf.GlobalConfig.JWTSalt)
 	if !ckPassword {
 		response.Failur(c.Ctx, response.PasswordFailur, nil)
 		return

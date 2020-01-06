@@ -36,13 +36,13 @@ type Order struct {
 
 // 订单详情
 type OrderDetail struct {
-	Order *Order             `json:"order"`
-	Member *models.Member	 `json:"member"`
-	List  []OrderGoodsDetail `json:"list"`
+	Order  *Order             `json:"order"`
+	Member *models.Member     `json:"member"`
+	List   []OrderGoodsDetail `json:"list"`
 }
 
 // 订单列表
 type Orders struct {
-	Order                    `xorm:"extends"`
+	Order `xorm:"extends"`
 	List  []OrderGoodsDetail `json:"list"`
 }

@@ -42,8 +42,8 @@ func (c *Order) GetV1() {
 
 	// 解密
 	token = c.Ctx.URLParam("token")
-	keys = encrypt.AESDecrypt(token, conf.JWTSalt)
-	jsonU, err = redisClient.Get(conf.RedisPrefix + keys).Result()
+	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
+	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
 		c.Ctx.Application().Logger().Errorf("Order GetV1 解密：[%s]", err)
 		response.Failur(c.Ctx, response.OptionFailur, nil)

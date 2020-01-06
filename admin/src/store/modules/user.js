@@ -24,9 +24,7 @@ const user = {
   state: {
     admin: {},
     access: [],
-    roles: [],
-    user: {},
-    userlist: []
+    roles: []
   },
 
   //Mutations的中文意思是“变化”，利用它可以更改状态，本质就是用来处理数据的函数，其接收唯一参数值state
@@ -43,12 +41,6 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
-    },
-    SET_USER: (state, user) => {
-      state.user = user
-    },
-    SET_USERLIST: (state, userlist) => {
-      state.userlist = userlist
     }
   },
 
@@ -161,9 +153,6 @@ const user = {
         (async() => {
           try {
             let response = await fetchGet('/sys/user/list?', listQuery);
-            const res = response.data.data
-            commit('SET_USERLIST', res.rows)
-
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -181,9 +170,6 @@ const user = {
             let response = await fetchGet('/sys/user/item?', {
               id: id
             });
-            const user = response.data.data
-            commit('SET_USER', user)
-
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -200,9 +186,6 @@ const user = {
         (async() => {
           try {
             let response = await fetchPost('/sys/user/save', form);
-            const user = response.data.data
-            commit('SET_USER', user)
-
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -227,14 +210,6 @@ const user = {
             let response = await fetchGet('/sys/user/delete?', {
               id: ids
             });
-
-            let list = state.userlist
-            for (let i = 0, len = rows.length; i < len; i++) {
-              const index = list.indexOf(rows[i])
-              list.splice(index, 1)
-            }
-            commit('SET_USERLIST', list)
-
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -254,11 +229,6 @@ const user = {
             rows.map(function(row) {
               ids.push(row.id)
             })
-
-            let response = await fetchGet('/sys/user/close?', {
-              id: ids
-            });
-
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -275,7 +245,7 @@ const user = {
   //即: ...mapGetters(['user']) = this.$store.getters.user
 
   getters: {
-    test: state => state.access,
+    test: state => state.access
   }
 
 }

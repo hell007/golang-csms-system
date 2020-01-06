@@ -15,6 +15,6 @@ type Address struct {
 }
 
 type AddressDetail struct {
-	Address *Address  `json:"address"`
-	Token       string `json:"token" `
+	Address *Address `json:"address"`
+	Token   string   `json:"token" `
 }

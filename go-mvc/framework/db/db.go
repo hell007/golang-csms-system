@@ -42,7 +42,7 @@ func newEngine() *xorm.Engine{
 		golog.Fatalf("db.Engine, %s", err)
 		return nil
 	}
-	defer engine.Close()
+	//defer engine.Close()
 
 	// Debug模式，打印全部的SQL语句，帮助对比，看ORM与SQL执行的对照关系
 	engine.ShowSQL(conf.GlobalConfig.MysqlShowSql)
@@ -61,8 +61,6 @@ func MasterEngine() *xorm.Engine {
 	once.Do(func() {
 		masterEngine = newEngine()
 	})
-
-	fmt.Print("=====>", masterEngine)
 	return masterEngine
 }
 

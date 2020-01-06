@@ -12,16 +12,8 @@ import {
 const order = {
 
   state: {
-    orderlist: [],
-    order: {}
   },
   mutations: {
-    SET_ORDERLIST: (state, orderlist) => {
-      state.orderlist = orderlist
-    },
-    SET_ORDER: (state, order) => {
-      state.order = order
-    }
   },
   actions: {
     getOrderList({
@@ -31,8 +23,6 @@ const order = {
         (async() => {
           try {
             let response = await fetchGet('/order/list?', listQuery);
-            const res = response.data.data
-            commit('SET_ORDERLIST', res.rows)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -49,8 +39,6 @@ const order = {
             let response = await fetchGet('/order/item?', {
               ordersn: id
             });
-            const item = response.data.data
-            commit('SET_ORDER', item)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -67,8 +55,6 @@ const order = {
         (async() => {
           try {
             let response = await fetchPost('/order/save', form);
-            const item = response.data.data
-            commit('SET_ORDER', item)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -93,13 +79,6 @@ const order = {
             let response = await fetchGet('/order/delete?', {
               id: ids
             });
-
-            let list = state.orderlist
-            for (let i = 0, len = rows.length; i < len; i++) {
-              const index = list.indexOf(rows[i])
-              list.splice(index, 1)
-            }
-            commit('SET_ORDERLIST', list)
             resolve(response)
           } catch (ex) {
             reject(ex)

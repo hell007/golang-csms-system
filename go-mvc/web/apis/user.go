@@ -26,9 +26,10 @@ type User struct {
 const (
 	captchaKey string = "CAPTCHA"
 )
-var key = conf.JWTSecret + time.Now().Format("20060102-15:04:05") //24
+var key = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat) //24
 var captchatime = 5 * 60 * time.Second //5分钟
 var locktime =  2 * 60 * 60 * time.Second //2小时
+var exprire = time.Duration(conf.GlobalConfig.RedisExprire) * time.Second //1小时
 
 // 会员注册
 func (c *User) PostRegister() {
@@ -63,7 +64,7 @@ func (c *User) PostRegister() {
 
 	// 数据处理
 	keys = key //保证key相同
-	member.Salt = encrypt.AESEncrypt(keys, conf.JWTSalt)
+	member.Salt = encrypt.AESEncrypt(keys, conf.GlobalConfig.JWTSalt)
 	member.Password = encrypt.AESEncrypt(member.Password, keys)
 	member.CreateTime = time.Now()
 	member.Status = 2 //未认证
@@ -86,7 +87,7 @@ func (c *User) GetCaptcha() {
 	code, img  := cp.OutPut()
 
 	// 保存code 60s
-	err := redisClient.Set(conf.RedisPrefix + captchaKey, code, captchatime).Err()
+	err := redisClient.Set(conf.GlobalConfig.RedisPrefix + captchaKey, code, captchatime).Err()
 	if err != nil {
 		c.Ctx.Application().Logger().Errorf("User GetCaptcha 验证码：[%s]", err)
 	}
@@ -113,7 +114,7 @@ func (c *User) PostLogin() {
 	}
 
 	// 验证码比对
-	code, err = redisClient.Get(conf.RedisPrefix + captchaKey).Result()
+	code, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + captchaKey).Result()
 	if code != strings.ToUpper(user.Code)  || err != nil {
 		c.Ctx.Application().Logger().Errorf("User Login 验证码对比：[%s]", err)
 		response.Failur(c.Ctx, response.CaptchaFailur, nil)
@@ -136,7 +137,7 @@ func (c *User) PostLogin() {
 	}
 
 	// 存在，验证密码
-	salt := encrypt.AESDecrypt(member.Salt, conf.JWTSalt)
+	salt := encrypt.AESDecrypt(member.Salt, conf.GlobalConfig.JWTSalt)
 	ckPassword = encrypt.CheckPWD(user.Password, member.Password, salt)
 	if !ckPassword {
 		c.Ctx.Application().Logger().Error("用户存在，登录的密码不正确")
@@ -154,7 +155,7 @@ func (c *User) PostLogin() {
 	// 合法会员，登录时间,盐值,密码更新
 	keys = key
 	member.LoginTime = time.Now()
-	member.Salt = encrypt.AESEncrypt(keys, conf.JWTSalt)
+	member.Salt = encrypt.AESEncrypt(keys, conf.GlobalConfig.JWTSalt)
 	member.Password = encrypt.AESEncrypt(user.Password, keys)
 	columns = append(columns, "login_time", "salt", "password")
 	_, err = services.NewMemberService().Update(member, columns)
@@ -167,9 +168,9 @@ func (c *User) PostLogin() {
 	user.Name = member.Name
 	user.Gender = member.Gender
 	user.Password = ""
-	user.Token = encrypt.AESEncrypt(user.Mobile, conf.JWTSalt)
+	user.Token = encrypt.AESEncrypt(user.Mobile, conf.GlobalConfig.JWTSalt)
 	jsonU, _ := json.Marshal(user)
-	err = redisClient.Set(conf.RedisPrefix + user.Mobile, jsonU, conf.RedisExprire).Err()
+	err = redisClient.Set(conf.GlobalConfig.RedisPrefix + user.Mobile, jsonU, exprire).Err()
 	if err != nil {
 		c.Ctx.Application().Logger().Errorf("User PostLogin 保存会员信息：[%s]", err)
 	}
@@ -196,8 +197,8 @@ func (c *User) GetLogout() {
 	}
 
 	// 解密
-	keys = encrypt.AESDecrypt(token, conf.JWTSalt)
-	jsonU, err = redisClient.Get(conf.RedisPrefix + keys).Result()
+	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
+	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
 		c.Ctx.Application().Logger().Errorf("User Logout 解密：[%s]", err)
 		response.Failur(c.Ctx, response.OptionFailur, nil)
@@ -205,7 +206,7 @@ func (c *User) GetLogout() {
 	}
 
 	// redis 去除
-	err = redisClient.Del(conf.RedisPrefix + user.Mobile).Err()
+	err = redisClient.Del(conf.GlobalConfig.RedisPrefix + user.Mobile).Err()
 	if err != nil {
 		c.Ctx.Application().Logger().Errorf("User Logout 去除：[%s]", err)
 		response.Failur(c.Ctx, response.OptionFailur, nil)
@@ -233,8 +234,8 @@ func (c *User) GetV1() {
 	}
 
 	// 解密
-	keys = encrypt.AESDecrypt(token, conf.JWTSalt)
-	jsonU, err = redisClient.Get(conf.RedisPrefix + keys).Result()
+	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
+	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
 		c.Ctx.Application().Logger().Errorf("User V1 解密：[%s]", err)
 		response.Failur(c.Ctx, response.OptionFailur, nil)
@@ -261,7 +262,7 @@ func (c *User) PostFind() {
 
 	// 恶意处理
 	ip = ips.ClientIP(c.Ctx.Request())
-	t, _ = redisClient.Get(conf.RedisPrefix + ip).Result()
+	t, _ = redisClient.Get(conf.GlobalConfig.RedisPrefix + ip).Result()
 	if t != "" {
 		times, _ = strconv.Atoi(t)
 	}
@@ -280,7 +281,7 @@ func (c *User) PostFind() {
 	}
 
 	// 验证码比对 短信验证码最好
-	code, err = redisClient.Get(conf.RedisPrefix + captchaKey).Result()
+	code, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + captchaKey).Result()
 	if code != strings.ToUpper(user.Code)  || err != nil {
 		c.Ctx.Application().Logger().Errorf("User Find 验证码对比：[%s]", err)
 		response.Failur(c.Ctx, response.CaptchaFailur, nil)
@@ -298,7 +299,7 @@ func (c *User) PostFind() {
 	// 不存在，或者手机号不正确
 	if !has {
 		times++
-		redisClient.Set(conf.RedisPrefix + ip, times, locktime)
+		redisClient.Set(conf.GlobalConfig.RedisPrefix + ip, times, locktime)
 		c.Ctx.Application().Logger().Error("用户不存在，或者登录的手机号不正确")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
@@ -307,7 +308,7 @@ func (c *User) PostFind() {
 	// 存在，姓名比对
 	if user.Name != member.Name {
 		times++
-		redisClient.Set(conf.RedisPrefix + ip, times, locktime) //两小时
+		redisClient.Set(conf.GlobalConfig.RedisPrefix + ip, times, locktime) //两小时
 		c.Ctx.Application().Logger().Error("用户不存在，姓名不正确")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
@@ -322,7 +323,7 @@ func (c *User) PostFind() {
 
 	// 合法，可以更改
 	keys = key
-	member.Salt = encrypt.AESEncrypt(keys, conf.JWTSalt)
+	member.Salt = encrypt.AESEncrypt(keys, conf.GlobalConfig.JWTSalt)
 	member.Password = encrypt.AESEncrypt(user.Password, keys)
 	columns = append(columns, "password", "salt")
 	_, err = services.NewMemberService().Update(member, columns)
@@ -345,9 +346,9 @@ func (c *User) GetCity() {
 		maps      = make(map[string]interface{}, 0)
 	)
 	// redis
-	jsonP, err = redisClient.Get(conf.RedisPrefix + "province").Result()
-	jsonC, err = redisClient.Get(conf.RedisPrefix + "city").Result()
-	jsonA, err = redisClient.Get(conf.RedisPrefix + "area").Result()
+	jsonP, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + "province").Result()
+	jsonC, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + "city").Result()
+	jsonA, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + "area").Result()
 	err = json.Unmarshal([]byte(jsonP), &province)
 	err = json.Unmarshal([]byte(jsonC), &city)
 	err = json.Unmarshal([]byte(jsonA), &area)
@@ -364,11 +365,11 @@ func (c *User) GetCity() {
 		}
 
 		jsonP, _ := json.Marshal(province)
-		err = redisClient.Set(conf.RedisPrefix+"province", jsonP, conf.RedisExprire).Err()
+		err = redisClient.Set(conf.GlobalConfig.RedisPrefix+"province", jsonP, exprire).Err()
 		jsonC, _ := json.Marshal(city)
-		err = redisClient.Set(conf.RedisPrefix+"city", jsonC, conf.RedisExprire).Err()
+		err = redisClient.Set(conf.GlobalConfig.RedisPrefix+"city", jsonC, exprire).Err()
 		jsonA, _ := json.Marshal(area)
-		err = redisClient.Set(conf.RedisPrefix+"area", jsonA, conf.RedisExprire).Err()
+		err = redisClient.Set(conf.GlobalConfig.RedisPrefix+"area", jsonA, exprire).Err()
 		if err != nil {
 			c.Ctx.Application().Logger().Errorf("User GetCity redis：[%s]", err)
 		}
@@ -406,8 +407,8 @@ func (c *User) GetAddress() {
 	}
 
 	// 解密
-	key = encrypt.AESDecrypt(token, conf.JWTSalt)
-	jsonU, err = redisClient.Get(conf.RedisPrefix + key).Result()
+	key = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
+	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + key).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
 		c.Ctx.Application().Logger().Errorf("User Address 解密：[%s]", err)
 		response.Failur(c.Ctx, response.OptionFailur, nil)
@@ -438,8 +439,8 @@ func (c *User) PostSaveaddr() {
 	}
 
 	// 解密
-	key = encrypt.AESDecrypt(ad.Token, conf.JWTSalt)
-	jsonU, err = redisClient.Get(conf.RedisPrefix + key).Result()
+	key = encrypt.AESDecrypt(ad.Token, conf.GlobalConfig.JWTSalt)
+	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + key).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
 		c.Ctx.Application().Logger().Errorf("User PostSaveaddr 解密：[%s]", err)
 		response.Failur(c.Ctx, response.OptionFailur, nil)

@@ -4,6 +4,7 @@
 @import "~normalize.css/normalize.css";
 @import "base/reboot";
 
+ul,
 label {
   margin-bottom: 0;
 }
@@ -13,6 +14,8 @@ textarea {
   &:read-only {
     background: none;
   }
+
+  outline:none;
 }
 
 input,
@@ -87,8 +90,4 @@ hr {
 
 textarea {
   resize: none;
-}
-
-.el-textarea__inner:not([rows]) {
-  height: 96px;
 }

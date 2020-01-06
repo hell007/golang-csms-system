@@ -19,54 +19,64 @@
           class="xa-icon"
           :class="{'xa-icon-menu-collapse': !menu.collapsed, 'xa-icon-menu-expand': menu.collapsed}"></i>
       </el-button>
-
+      
       <ul class="xa-header-nav">
-        <li class="xa-header-nav__item xa-header-nav__message">
-          <a href="###">
-            <el-badge is-dot v-if="message.new">
-              <i class="xa-icon xa-icon-message-o"></i>
-            </el-badge>
-            <i v-else class="xa-icon xa-icon-message-o"></i>
-          </a>
-        </li>
-        <li class="xa-header-nav__item xa-header-nav__qrcode">
-          <el-dropdown>
-            <span class="el-dropdown-link">
-              <i class="xa-icon xa-icon-qrcode"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown" class="xa-qrcode-drop">
-              <el-dropdown-item>
-                <img class="xa-qrcode-drop__img" :src="qrcode" />
-                扫描公众号二维码访问web前台
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </li>
         <li class="xa-header-nav__item xa-header-nav__user">
-          <el-dropdown @command="userCommand">
+          <el-dropdown>
             <span class="el-dropdown-link">
               <img
                 class="xa-header-nav__user-avatar"
-                src="../../assets/images/avatar.jpg" />
-              <span>{{ user.username }}</span>
-              <i class="el-icon-caret-bottom el-icon--right"></i>
+                src="../../assets/images/avatar.jpg"
+              />
+              <span class="xa-header-nav__user-role">{{user.username}}</span>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>修改密码</el-dropdown-item>
-              <el-dropdown-item divided command="signout">退出</el-dropdown-item>
+              <div class="xa-header-nav__box">
+                <div class="xa-clearfix dropdown-hd">
+                  <span class="xa-pull-left">账户信息</span>
+                  <span class="xa-pull-right xa-text-primary">账户设置</span>
+                </div>
+                <ul class="xa-clearfix dropdown-bd">
+                  <li>角色：{{user.rolename}}</li>
+                  <li>本次登录：{{user.loginTime}}</li>
+                  <li>登录地区：广东省深圳市 (IP：183.14.135.1)</li>
+                </ul>
+              </div>
             </el-dropdown-menu>
           </el-dropdown>
         </li>
-        <li class="xa-header-nav__item xa-header-nav__switch-platform">
-          <el-dropdown trigger="click">
-            <el-button class="xa-header-nav__switch-platform-btn" plain>
-              切换平台
-              <i class="el-icon-menu"></i>
-            </el-button>
+        <li class="xa-header-nav__item xa-header-nav__icon">
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              <i class="xa-icon xa-icon-menu"></i>
+            </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>web</el-dropdown-item>
+              <div class="xa-header-nav__box">
+                <div class="xa-clearfix dropdown-hd">
+                  <span class="xa-pull-left">常用菜单</span>
+                  <span class="xa-pull-right xa-text-primary">菜单管理</span>
+                </div>
+                <div class="xa-clearfix dropdown-bd">
+                  <a href="#" class="dropdown-link">商品列表</a>
+                  <a href="#" class="dropdown-link">添加商品</a>
+                  <a href="#" class="dropdown-link">订单管理</a>
+                  <a href="#" class="dropdown-link">商品列表</a>
+                  <a href="#" class="dropdown-link">添加商品</a>
+                  <a href="#" class="dropdown-link">订单管理</a>
+                </div>
+              </div>
             </el-dropdown-menu>
           </el-dropdown>
+        </li>
+        <li class="xa-header-nav__item xa-header-nav__icon">
+          <el-badge :value="2" v-if="message.new">
+            <i class="xa-icon xa-icon-message-o"></i>
+          </el-badge>
+          <i v-else class="xa-icon xa-icon-message-o"></i>
+        </li>
+        <li class="xa-header-nav__item xa-header-nav__icon" 
+          @click="handleSignout">
+          <i class="xa-icon xa-icon-close"></i>
         </li>
       </ul>
     </div>
@@ -84,7 +94,7 @@
           text-color="#bfcbd9"
           active-text-color="#20a0ff">
 
-          <template v-for="menu, index in permission_routers">
+          <template v-for="menu, index in menus">
             <el-submenu
               v-if="!menu.hidden && menu.noDropdown"
               :index="`menu-${index}`">
@@ -99,7 +109,7 @@
                   class="xa-sidebar__link"
                   :to="`${subMenu.path}`" >
                   <i :class="subMenu.icon"></i>
-                  {{subMenu.name}}
+                  {{subMenu.name }}
                 </router-link>
               </el-menu-item>
             </el-submenu>
@@ -151,10 +161,7 @@ import {
   mapActions,
   mapGetters
 } from 'vuex'
-
-import { Levelbar } from './components' //./index.js
-
-import  qrcode from '@/assets/images/qrcode.png'
+import { Levelbar } from './components'
 
 export default {
   name: 'layout',
@@ -171,18 +178,11 @@ export default {
       message: {
         new: true
       },
-      platformDialogOpen: false,
-      qrcode: qrcode
+      platformDialogOpen: false
     }
   },
   methods: {
     ...mapActions(['LoginOut']),
-    userCommand(command) {
-      const self = this
-      if (command === 'signout') {
-        self.handleSignout()
-      }
-    },
     handleSignout() {
       const self = this 
       self.LoginOut().then(response => {
@@ -214,6 +214,8 @@ export default {
     }
   },
   created: function() {
+    this.menus = this.permission_routers
+    //console.log('menus===',this.menus)
     //console.log('mapGetters===', this.user)
     //console.log('mapGetters', this.permission_routers)
   }

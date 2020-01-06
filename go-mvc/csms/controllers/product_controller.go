@@ -2,12 +2,6 @@ package controllers
 
 import (
 	"github.com/kataras/iris/v12"
-	"io"
-	"os"
-	"strconv"
-	"strings"
-	"time"
-
 	"go-mvc/framework/conf"
 	"go-mvc/framework/models/common"
 	models "go-mvc/framework/models/goods"
@@ -16,6 +10,10 @@ import (
 	"go-mvc/framework/utils/page"
 	"go-mvc/framework/utils/response"
 	"go-mvc/framework/utils/thumbnail"
+	"io"
+	"os"
+	"strconv"
+	"strings"
 )
 
 type ProductController struct {
@@ -50,8 +48,8 @@ func (c *ProductController) GetList() {
 	isOnSale, _ = c.Ctx.URLParamInt("isOnSale")
 	isFirst, _ = c.Ctx.URLParamInt("isFirst")
 	isHot, _ = c.Ctx.URLParamInt("isHot")
-	list, total, err = c.Service.List(name, category, isOnSale, isFirst, isHot, p)
 
+	list, total, err = c.Service.List(name, category, isOnSale, isFirst, isHot, p)
 	if err != nil {
 		c.Ctx.Application().Logger().Errorf("Product GetList 查询：[%s]", err)
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
@@ -128,10 +126,10 @@ func (c *ProductController) PostSave() {
 	}
 
 	if goods.Id > 0 {
-		goods.UpdateTime = time.Now()
+		//goods.UpdateTime = time.Now()
 		effect, err = c.Service.Update(goods, nil)
 	} else {
-		goods.CreateTime = time.Now()
+		//goods.CreateTime = time.Now()
 		effect, err = c.Service.Create(goods)
 	}
 
@@ -162,7 +160,7 @@ func (c *ProductController) PostUpload() {
 
 	// 源图
 	fileName := thumbnail.ParseName(info.Filename, 0)
-	filePath, err1 := files.MakeFilePath(conf.GetUploadFile() + conf.UploadGoodsEditor, fileName)
+	filePath, err1 := files.MakeFilePath(conf.GetUploadFile() + conf.GlobalConfig.UploadEditor[0], fileName)
 	if err1 != nil {
 		c.Ctx.Application().Logger().Errorf("Product PostUpload 目录：[%s]", err1)
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
@@ -183,7 +181,7 @@ func (c *ProductController) PostUpload() {
 
 
 	res.Error = 0
-	res.Url = conf.UploadBase + conf.UploadGoodsEditor + fileName
+	res.Url = conf.GlobalConfig.UploadUrl + conf.GlobalConfig.UploadEditor[0] + fileName
 	_, _ = c.Ctx.JSON(res)
 	return
 }

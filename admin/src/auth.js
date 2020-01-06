@@ -22,6 +22,10 @@ router.beforeEach((to, from, next) => {
   // 开启Progress
   NProgress.start()
 
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+
   // 判断是否有token
   if (hasToken()) {
 

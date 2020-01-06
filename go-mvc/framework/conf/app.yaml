@@ -3,7 +3,7 @@ EnablePathEscape: false
 FireMethodNotAllowed: false
 DisableBodyConsumptionOnUnmarshal: false
 TimeFormat: Mon, 01 Jan 2006 15:04:05 GMT
-Charset: UTF-8
+Charset: utf8
 # Mysql
 Mysql.Dialect: mysql
 Mysql.Prefix: jie_
@@ -21,7 +21,6 @@ Mysql.Slave.Password:
 Mysql.Slave.Host: 127.0.0.1
 Mysql.Slave.Port: 3306
 Mysql.Slave.Database: casbin
-
 #Redis
 Redis.Prefix: JIE_REDIES_KEY_
 Redis.Exprire: 1800  # 1 * 30 * 60 * time.Second //单位秒：设置1小时
@@ -32,6 +31,10 @@ Redis.Single.PoolSize: 5
 Redis.Cluster.Addrs: [localhost:2181;localhost:2182]
 Redis.Cluster.Password:
 Redis.Cluster.State: false
+#Logs
+Logs.Level: error
+Logs.Prefix:
+Logs.Output: logs/
 #Jwt
 JWT.Secret: SECRET_ #加盐
 JWT.Salt: ARRSWdczx13213EDDSWQ!!@W
@@ -44,6 +47,10 @@ Auth.Ignores: [/;
 /sys/test/upload;
 /api/test/index]
 #自定义配置
+Upload.Url: http://127.0.0.1:9000/uploads
 Upload.Style: [100x100;360x360;800x800]
 Upload.PicPath: [/goods/;/article/;/ads/]
 Upload.Editor: [/images/goods/;/images/article/]
+#time
+Timeformat: 2006-01-02 15:04:05"
+TimeformatShort: 2006-01-02"

@@ -1,12 +1,14 @@
+# mysql
 master:
   dialect: mysql
   user: root
-  password:
+  password: admin
   host: 127.0.0.1
   port: 3306
-  database: casbin
+  database: csms-system
   charset: utf8
   showSql: true
+  prefix: jie_
   logLevel: debug
   maxIdleConns: 10 # 连接池的空闲数大小
 #  maxOpenConns: 10 # 最大打开连接数
@@ -19,6 +21,27 @@ slave:
   database: casbin
   charset: utf8
   showSql: true
+  prefix: jie_
   logLevel: debug
   maxIdleConns: 10 # 连接池的空闲数大小
 #  maxOpenConns: 10 # 最大打开连接数
+# mysql end
+
+# redis
+single:
+  addr: localhost:6379
+  password:
+  db: 0
+  poolSize: 5
+cluster:
+  addrs: [localhost:2181;localhost:2182]
+  password:
+  state: false
+# redis end
+
+# logs
+logs:
+  level: error
+  prefix:
+  output: logs/
+# logs end

@@ -58,7 +58,7 @@ func (d *GoodsDao) List(name string, category int, isOnSale int, isFirst int, is
 		}
 	}
 
-	count, err :=s.FindAndCount(&list)
+	count, err := s.FindAndCount(&list)
 
 	return list, count, err
 }

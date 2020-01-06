@@ -195,18 +195,19 @@ export default {
           self.processing = true
           self.saveUser(this.form).then(response => {
             const status = response.data.state
-            const res = response.data.data
+            //const res = response.data.data
+            const message = response.data.msg
             if (status) {
               self.$notify({
                 title: '成功',
-                message: response.data.message,
+                message: message,
                 type: 'success',
                 duration: 2000
               })
             } else {
               self.$notify({
                 title: '失败',
-                message: response.data.message,
+                message: message,
                 type: 'error'
               })
             } 

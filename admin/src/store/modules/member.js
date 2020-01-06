@@ -19,16 +19,8 @@ function getToken() {
 
 const member = {
   state: {
-    member: {},
-    memberlist: []
   },
   mutations: {
-    SET_MEMBER: (state, member) => {
-      state.member = member
-    },
-    SET_MEMBERLIST: (state, memberlist) => {
-      state.memberlist = memberlist
-    }
   },
   actions: {
     getMemberList({
@@ -38,9 +30,6 @@ const member = {
         (async() => {
           try {
             let response = await fetchGet('/member/list?', listQuery);
-            const res = response.data.data
-            commit('SET_MEMBERLIST', res.rows)
-
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -57,9 +46,6 @@ const member = {
             let response = await fetchGet('/member/item?', {
               id: id
             });
-            const item = response.data.data
-            commit('SET_MEMBER', item)
-
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -75,9 +61,6 @@ const member = {
         (async() => {
           try {
             let response = await fetchPost('/member/save', form);
-            const item = response.data.data
-            commit('SET_MEMBER', item)
-
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -101,14 +84,6 @@ const member = {
             let response = await fetchGet('/member/delete?', {
               id: ids
             });
-
-            let list = state.memberlist
-            for (let i = 0, len = rows.length; i < len; i++) {
-              const index = list.indexOf(rows[i])
-              list.splice(index, 1)
-            }
-            commit('SET_MEMBERLIST', list)
-
             resolve(response)
           } catch (ex) {
             reject(ex)

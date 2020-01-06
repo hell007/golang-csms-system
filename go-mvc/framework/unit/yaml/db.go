@@ -45,7 +45,7 @@ type DbInfo struct {
 
 // 读取配置文件
 func (d *MySql) GetConf() *MySql {
-	yamlFile, err := files.LoadFile(conf.GetConfigPath() + "conf.yaml")
+	yamlFile, err := files.LoadFile("./conf.yaml")
 	if err != nil {
 		golog.Errorf("LoadFile db config error!! %s", err)
 	}

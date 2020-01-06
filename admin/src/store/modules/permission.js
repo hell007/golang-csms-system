@@ -1,6 +1,6 @@
 import {
-  asyncRouterMap,
-  constantRouterMap,
+  asyncRouter,
+  constantRouter,
   myimport
 } from '@/router'
 
@@ -14,7 +14,7 @@ import {
 } from '@/utils'
 
 import Layout from '@/views/layout/Layout'
-import View from '@/views/layout/components/View'
+import View from '@/views/layout/View'
 
 
 /**
@@ -32,11 +32,11 @@ function hasPermission(roles, route) {
 
 /**
  * 递归过滤异步路由表，返回符合用户角色权限的路由表
- * @param asyncRouterMap
+ * @param asyncRouter
  * @param roles
  */
-function filterAsyncRouter(asyncRouterMap, roles) {
-  const accessedRouters = asyncRouterMap.filter(route => {
+function filterAsyncRouter(asyncRouter, roles) {
+  const accessedRouters = asyncRouter.filter(route => {
     if (hasPermission(roles, route)) {
       if (route.children && route.children.length) {
         route.children = filterAsyncRouter(route.children, roles)
@@ -51,25 +51,13 @@ function filterAsyncRouter(asyncRouterMap, roles) {
 
 const permission = {
   state: {
-    routers: constantRouterMap,
-    addRouters: [],
-    permissionlist: [],
-    permissions: [],
-    permission: {}
+    routers: constantRouter,
+    addRouters: []
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
       state.addRouters = routers
-      state.routers = constantRouterMap.concat(routers)
-    },
-    SET_PERMISSIONLIST: (state, permissionlist) => {
-      state.permissionlist = permissionlist
-    },
-    SET_PERMISSIONS: (state, permissions) => {
-      state.permissions = permissions
-    },
-    SET_PERMISSION: (state, permission) => {
-      state.permission = permission
+      state.routers = constantRouter.concat(routers)
     }
   },
   actions: {
@@ -84,7 +72,7 @@ const permission = {
 
       return new Promise(resolve => {
         // if (roles.indexOf('superadmin') >= 0) {
-        //   accessedRouters = asyncRouterMap
+        //   accessedRouters = asyncRouter
         // } else {
 
           // 三级 level = 123
@@ -121,7 +109,8 @@ const permission = {
             asyncRouter.push(p)
           }
 
-          accessedRouters = filterAsyncRouter(asyncRouterMap.concat(asyncRouter), roles)
+          accessedRouters = filterAsyncRouter(asyncRouter, roles)
+
         //}
         commit('SET_ROUTERS', accessedRouters)
         resolve(accessedRouters)
@@ -135,8 +124,6 @@ const permission = {
         (async() => {
           try {
             let response = await fetchGet('/sys/permission/list');
-            const res = response.data.data
-            commit('SET_PERMISSIONLIST', res.rows)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -152,8 +139,6 @@ const permission = {
         (async() => {
           try {
             let response = await fetchGet('/sys/permission/list?', {level:2});
-            const res = response.data.data
-            commit('SET_PERMISSIONS', res.rows)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -171,8 +156,6 @@ const permission = {
             let response = await fetchGet('/sys/permission/item?', {
               id: id
             });
-            const permission = response.data.data
-            commit('SET_PERMISSION', permission)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -189,8 +172,6 @@ const permission = {
         (async() => {
           try {
             let response = await fetchPost('/sys/permission/save', form);
-            const permission = response.data.data
-            commit('SET_PERMISSION', permission)
             resolve(response)
           } catch (ex) {
             reject(ex)
@@ -215,13 +196,6 @@ const permission = {
             let response = await fetchGet('/sys/permission/delete?', {
               id: ids
             });
-
-            let list = state.permissionlist
-            for (let i = 0, len = rows.length; i < len; i++) {
-              const index = list.indexOf(rows[i])
-              list.splice(index, 1)
-            }
-            commit('SET_PERMISSIONLIST', list)
             resolve(response)
           } catch (ex) {
             reject(ex)

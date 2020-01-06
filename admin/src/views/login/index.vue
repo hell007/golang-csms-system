@@ -241,7 +241,7 @@ export default {
       form: {
         phone: '',
         code: '',
-        username: '曹操',
+        username: 'root',
         password: '123456',
       },
       //验证规则

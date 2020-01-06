@@ -1,12 +1,10 @@
 @import "global";
-//@import "../vendors/nprogress/0.2.0/nprogress.css";
 
 [v-cloak] {
   display: none !important;
 }
 
 @import "common/element";
-@import "common/page";
 @import "common/frame";
 
 $space-horizontal: 22px;
@@ -285,23 +283,6 @@ thead .xa-text-danger {
     }
   }
 
-}
-
-.xa-product {
-  &__title {
-    font-size: 20px;
-    margin-bottom: 6px;
-  }
-
-  &__intro {
-    overflow: hidden;
-    line-height: 1.6;
-    padding-top: 5px;
-  }
-
-  &__subtitle {
-    font-size: 16px;
-  }
 }
 
 

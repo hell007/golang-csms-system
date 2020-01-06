@@ -23,13 +23,13 @@
           </el-upload>
           <div class="p-form__tip">建议上传PNG格式透明背景图片，图片大小80px * 80px</div>
         </el-form-item>
-        <el-form-item label="姓名" prop="name">
+        <el-form-item label="姓名" prop="username">
           <el-input class="p-form__input" 
             placeholder="请输入" 
-            v-model="form.name"
-            :maxlength="formRules.name[1].max" >
+            v-model="form.username"
+            :maxlength="formRules.username[1].max" >
             <span class="p-input-count" slot="suffix">
-            {{form.name.length}} / {{formRules.name[1].max}}
+            {{form.username.length}} / {{formRules.username[1].max}}
             </span>
           </el-input>
         </el-form-item>
@@ -179,7 +179,7 @@ export default {
   data() {
     return {
       uploadApi: 'http://127.0.0.1:9000/api/test/upload',
-      areas:'../../assets/project/scripts/area.json',
+      areas:'../assets/project/scripts/area.json',
       processing: false,
       noop: noop,
       form: {

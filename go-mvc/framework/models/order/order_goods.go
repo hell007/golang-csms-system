@@ -10,10 +10,10 @@ type OrderGoods struct {
 }
 
 type OrderGoodsDetail struct {
-	OrderGoods      `xorm:"extends"`
-	GoodsSn          string  `json:"goodsSn,omitempty"`
-	GoodsName        string  `json:"goodsName,omitempty"`
-	Color            string  `json:"color,omitempty"`
-	Unit			 string  `json:"unit,omitempty"`
-	Small            string  `json:"small,omitempty"`
+	OrderGoods `xorm:"extends"`
+	GoodsSn    string `json:"goodsSn,omitempty"`
+	GoodsName  string `json:"goodsName,omitempty"`
+	Color      string `json:"color,omitempty"`
+	Unit       string `json:"unit,omitempty"`
+	Small      string `json:"small,omitempty"`
 }

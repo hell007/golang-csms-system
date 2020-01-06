@@ -1,19 +1,6 @@
 @import "global";
 @import "./assets/iconfont/iconfont.css";
 
-ul {
-  margin-bottom: 0;
-}
-
-.xa-frame {
-  min-width: 1200px;
-  background: #fff;
-}
-
-.el-table__header th {
-  background: #f5f7fa;
-}
-
 .xa-icon {
   font-size: inherit;
   speak: none;
@@ -125,6 +112,21 @@ ul {
 
   &__input {
     width: 450px;
+
+    &-small {
+      width: 200px;
+    }
+  }
+
+  &__select-small {
+    width: 120px;
+  }
+
+  &__checkbox {
+    width: 450px;
+    padding: 15px 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
   }
 
   &__rich {
