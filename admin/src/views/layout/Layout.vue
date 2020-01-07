@@ -70,13 +70,13 @@
         </li>
         <li class="xa-header-nav__item xa-header-nav__icon">
           <el-badge :value="2" v-if="message.new">
-            <i class="xa-icon xa-icon-message-o"></i>
+            <i class="xa-icon xa-icon-message"></i>
           </el-badge>
-          <i v-else class="xa-icon xa-icon-message-o"></i>
+          <i v-else class="xa-icon xa-icon-message"></i>
         </li>
         <li class="xa-header-nav__item xa-header-nav__icon" 
           @click="handleSignout">
-          <i class="xa-icon xa-icon-close"></i>
+          <i class="xa-icon xa-icon-exit"></i>
         </li>
       </ul>
     </div>

@@ -142,11 +142,6 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="email"
-          label="邮箱"
-          align="center">
-        </el-table-column>
-        <el-table-column
           prop="ip"
           label="IP"
           width="120"
@@ -155,7 +150,7 @@
         <el-table-column
           prop="createTime"
           label="创建时间"
-          width="180"
+          min-width="180"
           align="center">
           <template slot-scope="scope">
             {{scope.row.createTime | parseTime}}
@@ -164,7 +159,7 @@
         <el-table-column
           prop="loginTime"
           label="登录时间"
-          width="180"
+          min-width="180"
           align="center">
           <template slot-scope="scope">
             {{scope.row.loginTime | parseTime}}
@@ -172,7 +167,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="65"
+          width="90"
           align="center"
           header-align="center">
           <template slot-scope="scope" v-if="scope.row.roleId != 1">

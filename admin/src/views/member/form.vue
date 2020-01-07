@@ -13,9 +13,6 @@
         </el-form-item>
         <el-form-item label="手机号">
           <span>{{form.mobile}}</span>
-        </el-form-item>        
-        <el-form-item label="邮箱">
-          <span>{{form.email}}</span>
         </el-form-item>
         <el-form-item label="状态">
           <span v-for="item in options.status">

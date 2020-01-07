@@ -111,15 +111,15 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="roleId"
+          prop="roleName"
           label="角色"
-          width="100"
+          width="120"
           align="center">
         </el-table-column>
         <el-table-column
           prop="mobile"
           label="手机号"
-          width="140"
+          width="120"
           align="center">
         </el-table-column>
         <el-table-column
@@ -238,7 +238,7 @@ export default {
   data() {
     return {
       list: [],
-      total: null,
+      total: 0,
       loading: true,
       tip: false,
       listQuery: {
@@ -282,7 +282,7 @@ export default {
         const message = response.data.msg
         if (status) {
           self.list = res.rows
-          self.total = res.count
+          self.total = res.total
         } else {
           self.$notify({
             title: '失败',
