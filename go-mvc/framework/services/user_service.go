@@ -10,7 +10,7 @@ import (
 type UserService interface {
 	Exist(user *models.User) (bool, error)
 	GetAll() []models.User
-	List(name string, status int, p *page.Pagination) ([]models.User, int64, error)
+	List(name string, status int, p *page.Pagination) ([]models.UserDetail, int64, error)
 	GetUsersByRids(rids []int, page *page.Pagination) ([]models.User, int64, error)
 	Get(id int) (*models.User, bool, error)
 	GetUserByName(name string, user *models.UserToken) (bool, error)
@@ -38,7 +38,7 @@ func (s *userService) GetAll() []models.User {
 	return s.dao.GetAll()
 }
 
-func (s *userService) List(name string, status int, p *page.Pagination) ([]models.User, int64, error) {
+func (s *userService) List(name string, status int, p *page.Pagination) ([]models.UserDetail, int64, error) {
 	return s.dao.List(name, status, p)
 }
 

@@ -39,17 +39,19 @@ func (d *UserDao) GetAll() []models.User {
 }
 
 // List
-func (d *UserDao) List(name string, status int, p *page.Pagination) ([]models.User, int64, error) {
-	list := make([]models.User, 0)
+func (d *UserDao) List(name string, status int, p *page.Pagination) ([]models.UserDetail, int64, error) {
+	list := make([]models.UserDetail, 0)
 
-	s := d.engine.Omit("password")
+	s := d.engine.Table("jie_user").Alias("U").
+		Select("U.id, U.username, U.mobile, U.status, U.email, U.ip, U.create_time, U.login_time, R.role_name").
+		Join("LEFT", "jie_role R", "U.role_id = R.id")
 
 	if name != "" {
-		s.Where("username like ?", "%"+name+"%")
+		s.Where("U.username like ?", "%"+name+"%")
 	}
 
 	if status > 0 {
-		s.And("status = ?", status)
+		s.And("U.status = ?", status)
 	}
 
 	s.Limit(p.Limit, p.Start)

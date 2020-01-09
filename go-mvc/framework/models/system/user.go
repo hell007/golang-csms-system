@@ -17,3 +17,8 @@ type User struct {
 	CreateTime time.Time `json:"createTime" xorm:"not null comment('创建时间') DATETIME"`
 	LoginTime  time.Time `json:"loginTime" xorm:"comment('登录时间') DATETIME"`
 }
+
+type UserDetail struct {
+	User             `xorm:"extends"`
+	RoleName string  `json:"roleName"`
+}

@@ -115,5 +115,5 @@ func GetUploadFile() string {
 func init() {
 	GlobalConfig.getConf()
 	fmt.Println("RedisPrefix===", GlobalConfig.RedisPrefix)
-	fmt.Println("AuthIgnores===", GlobalConfig.AuthIgnores)
+	fmt.Println("UploadStyle===", GlobalConfig.UploadStyle[0])
 }

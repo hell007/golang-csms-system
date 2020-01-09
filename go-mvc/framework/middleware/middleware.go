@@ -64,11 +64,10 @@ return
 	false:需要进一步验证
 */
 func checkURL(reqPath string) bool {
-	for _, v := range conf.AuthIgnores {
+	for _, v := range conf.GlobalConfig.AuthIgnores {
 		if reqPath == v {
 			return true
 		}
 	}
-
 	return false
 }
