@@ -30,6 +30,7 @@ require (
 	github.com/oliamb/cutter v0.2.2
 	github.com/satori/go.uuid v1.2.0
 	github.com/sergi/go-diff v1.0.0 // indirect
+	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/tealeg/xlsx v1.0.5
 	github.com/valyala/fasthttp v1.6.0 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
