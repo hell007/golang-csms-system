@@ -130,12 +130,10 @@
 </template>
 
 <script>
-import {
-  mapActions
-} from 'vuex'
+import {fetchGet, fetchPost} from '@/api'
 
 export default {
-  name: 'memberform',
+  name: 'member-form',
   components: {},
   data() {
     return {
@@ -179,10 +177,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getMember', 'saveMember']),
     getItem() {
       const self = this
-      self.getMember(self.form.id).then(response => {
+      fetchGet('/member/item', {
+        id: self.form.id
+      }).then(response => {
         const status = response.data.state
         const res = response.data.data
         if (status) {
@@ -196,6 +195,12 @@ export default {
           })
         } 
         self.loading = false
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
       })
     },
     handleSubmit() {
@@ -210,7 +215,7 @@ export default {
             type: 'warning'
           })
           .then(function(action) { 
-            self.saveMember(form).then(response => {
+            fetchPost('/member/save', self.form).then(response => {
               const status = response.data.state
               const res = response.data.data
               const message = response.data.msg
@@ -229,10 +234,14 @@ export default {
                 })
               } 
               self.dialog.processing = false
+            }).catch(ex => {
+              self.$notify({
+                title: '请求错误',
+                message: ex,
+                type: 'error'
+              })
             })
           })
-          .catch(function(action) {})
-
         } else {
           self.$alert('请正确输入！', '提示', {
             confirmButtonText: '确定'

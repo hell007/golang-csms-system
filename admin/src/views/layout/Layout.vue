@@ -69,7 +69,7 @@
           </el-dropdown>
         </li>
         <li class="xa-header-nav__item xa-header-nav__icon">
-          <el-badge :value="2" v-if="message.new">
+          <el-badge :value="22" v-if="message.new">
             <i class="xa-icon xa-icon-message"></i>
           </el-badge>
           <i v-else class="xa-icon xa-icon-message"></i>
@@ -217,7 +217,7 @@ export default {
     this.menus = this.permission_routers
     //console.log('menus===',this.menus)
     //console.log('mapGetters===', this.user)
-    //console.log('mapGetters', this.permission_routers)
+    console.log('mapGetters', this.permission_routers)
   }
 }
 </script>

@@ -91,11 +91,8 @@
 
 <script>
 import waves from '@/directive/waves/index'
-import { mapActions } from 'vuex'
-import {
-  noop,
-  getTree
-} from '@/utils'
+import {fetchGet, fetchPost} from '@/api'
+import {getTree} from '@/utils'
 
 export default {
   name: 'category',
@@ -119,14 +116,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getCategoryList', 'deleteCategory', 'closeCategory']),
-    logArgs(item) {
-      console.log(item)
-    },
     getList() {
       const self = this
       self.loading = true
-      self.getCategoryList().then(response => {
+
+      fetchGet('/goods/category/list').then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -140,6 +134,41 @@ export default {
           })
         } 
         self.loading = false
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
+      })
+    },
+    delete(ids) {
+      fetchGet('/goods/category/delete', {
+        id: ids
+      }).then(response => {
+        const status = response.data.state
+        const message = response.data.msg
+        if (status) {
+          self.$notify({
+            title: '成功',
+            message: message,
+            type: 'success',
+            duration: 2000
+          })
+          self.getList()
+        } else {
+          this.$notify({
+            title: '失败',
+            message: message,
+            type: 'error'
+          })
+        }
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
       })
     },
     handleToggleTree: function(expanded) {
@@ -154,8 +183,8 @@ export default {
     //删除
     handleDelete(row) {
       const self = this
-      let rows = []
-      rows.push(row.id)
+      let ids = []
+      ids.push(row.id)
       
       self.$confirm(`确定要删除分类【${row.categoryName}】?`, '提示', {
         confirmButtonText: '确定',
@@ -163,27 +192,8 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        self.deleteCategory(rows).then(response => {
-          const status = response.data.state
-          const message = response.data.msg
-          if (status) {
-            self.$notify({
-              title: '成功',
-              message: message,
-              type: 'success',
-              duration: 2000
-            })
-            self.getList()
-          } else {
-            this.$notify({
-              title: '失败',
-              message: message,
-              type: 'error'
-            })
-          }
-        })
+        self.delete(ids)
       })
-      .catch(function(action) {})
     },
     //批量删除
     handleBatchDelete() {
@@ -196,28 +206,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-      .then(function(action) {  
-        self.deleteCategory(self.checked).then(response => {
-          const status = response.data.state
-          const message = response.data.msg
-          if (status) {
-            self.$notify({
-              title: '成功',
-              message: message,
-              type: 'success',
-              duration: 2000
-            })
-            self.getList()
-          } else {
-            this.$notify({
-              title: '失败',
-              message: message,
-              type: 'error'
-            })
-          }
+      .then(function(action) { 
+        let ids = []
+        self.checked.map(function(row) {
+          ids.push(row)
         })
+        self.delete(ids)
       })
-      .catch(function(action) {})
     },
     handleStatus() {
       const self = this 
@@ -229,8 +224,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-      .then(function(action) {    
-        self.closeCategory(self.checked).then(response => {
+      .then(function(action) {   
+        let ids = []
+        self.checked.map(function(row) {
+          ids.push(row)
+        })
+
+        fetchGet('/goods/category/close', {id: ids}).then(response => {
           const status = response.data.state
           const message = response.data.msg
           if (status) {
@@ -248,9 +248,14 @@ export default {
               type: 'error'
             })
           }
+        }).catch(ex => {
+          self.$notify({
+            title: '请求错误',
+            message: ex,
+            type: 'error'
+          })
         })
       })
-      .catch(function(action) {})
     }
   },
   created() {

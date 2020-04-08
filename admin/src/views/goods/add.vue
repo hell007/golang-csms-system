@@ -119,9 +119,9 @@
           </el-form-item>
           <el-form-item label="图文详情" prop="contents">
             <div class="p-form__rich">
-              <Kindeditor
+              <kindeditor
                 :options="options.editor"
-                v-model="goods.contents"></Kindeditor>
+                v-model="goods.contents" />
             </div>
           </el-form-item>
           <el-form-item>
@@ -138,24 +138,14 @@
 </template>
 
 <script>
-import {
-  mapActions
-} from 'vuex'
-
-import {
-  URIS
-} from '@/api/config'
-
-import {
-  validateMobile
-} from '@/utils/validate' //验证规则
-
-import Kindeditor from '@/components/Kindeditor' //富文本编辑器
+import {fetchGet, fetchPost} from '@/api'
+import {URIS} from '@/config'
+import kindeditor from '@/components/kindeditor' //富文本编辑器
 
 export default {
-  name: 'goodsform',
+  name: 'goods-add',
   components: {
-    Kindeditor
+    kindeditor
   },
   data() {
     return {
@@ -259,16 +249,21 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getCategoryList', 'saveGoods']),
     getCategorys() {
       const self = this
-      self.getCategoryList({pid:0}).then(response => {
+      fetchGet('/goods/category/list', {pid:0}).then(response => {  
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
         if (status) {
           self.options.categorys = [{id:0, categoryName:'全部'}, ...res]
         }
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
       })
     },
     // 基本信息
@@ -277,7 +272,8 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-          self.saveGoods(self.goods).then(response => {
+
+          fetchPost('/goods/product/save', self.goods).then(response => {
             const status = response.data.state
             const res = response.data.data
             const msg = response.data.message

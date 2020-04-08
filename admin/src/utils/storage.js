@@ -1,7 +1,7 @@
 import store from 'storejs'
 import {
 	CSMSKEY
-} from '@/api/config'
+} from '@/config'
 
 export function set(key, val) {
 	let expire = Date.now() + CSMSKEY.Expire * 1000

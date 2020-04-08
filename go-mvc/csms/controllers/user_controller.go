@@ -128,7 +128,7 @@ func (c *UserController) GetList() {
 		status   int
 		p        *page.Pagination
 		res      *page.Result
-		list     []models.User
+		list     []models.UserDetail
 		total    int64
 	)
 

@@ -136,11 +136,12 @@
         </el-form-item>
         <!-- 富文本编辑器使用 -->
         <el-form-item label="文章内容" prop="content" >
-          <Kindeditor 
+          <kindeditor>
             v-model="form.content" 
             :width=800 
             :height=300 
-            ref="editor"></Kindeditor>
+            ref="editor" >
+          </kindeditor>  
         </el-form-item>
       </div>
       <hr class="xa-separator" />
@@ -168,13 +169,13 @@ import {
   validateMobile
 } from '@/utils/validate' //验证规则
 
-import Kindeditor from '@/components/Kindeditor' //富文本编辑器
+import kindeditor from '@/components/kindeditor' //富文本编辑器
 import axios from 'axios'
 
 export default {
   name: 'unitform',
   components: {
-    Kindeditor
+    kindeditor
   },
   data() {
     return {

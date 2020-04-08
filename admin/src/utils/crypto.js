@@ -1,7 +1,7 @@
 import CryptoJS from 'crypto-js'
 import {
 	CRYPTO
-} from '@/api/config'
+} from '@/config'
 
 export function encryptString(val) {
 	let str = CryptoJS.AES.encrypt(val, CRYPTO.Secret).toString()

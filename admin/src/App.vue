@@ -8,7 +8,7 @@ export default{
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style lang="scss">
 @import './styles/xa-base.scss';
 @import './styles/xa-main.scss';
 @import './styles/xa.scss';

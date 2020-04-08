@@ -76,16 +76,12 @@
 </template>
 
 <script>
-import {
-  mapActions
-} from 'vuex'
 
-import {
-  validateMobile
-} from '@/utils/validate' //验证规则
+import {fetchGet, fetchPost} from '@/api'
+import {validateMobile} from '@/utils/validate'
 
 export default {
-  name: 'userform',
+  name: 'user-form',
   components: {},
   data() {
     return {
@@ -151,7 +147,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getRoleList', 'getUser', 'saveUser']),
     //角色
     getRoles() {
       const self = this
@@ -160,18 +155,28 @@ export default {
         pageSize: 10,
         status: 1
       }
-      self.getRoleList(listQuery).then(response => {
+
+      fetchGet('/sys/role/list', listQuery).then(response => {
         const status = response.data.state
         const res = response.data.data.rows
         if (status) {
           self.options.roles = res
         }
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
       })
     },
     //根据id获取数据
     getItem() {
       const self = this
-      self.getUser(self.form.id).then(response => {
+
+      fetchGet('/sys/user/item', {
+        id: self.form.id
+      }).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -185,6 +190,12 @@ export default {
           })
         } 
         self.loading = false
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
       })
     },
     //表单提交
@@ -193,7 +204,8 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-          self.saveUser(this.form).then(response => {
+
+          fetchPost('/sys/user/save', self.form).then(response => {
             const status = response.data.state
             //const res = response.data.data
             const message = response.data.msg
@@ -212,6 +224,12 @@ export default {
               })
             } 
             self.processing = false
+          }).catch(ex => {
+            self.$notify({
+              title: '请求错误',
+              message: ex,
+              type: 'error'
+            })
           })
         } else {
           self.$alert('请正确输入！', '提示', {

@@ -78,9 +78,8 @@ router.beforeEach((to, from, next) => {
     if (whiteList.indexOf(to.path) !== -1) {
       next()
     } else {
-      //console.log('permission==', '重定向到登录页')
-      next('/login') // 否则全部重定向到登录页
-      NProgress.done() // 在hash模式下 改变手动改变hash 重定向回来 不会触发afterEach 暂时hack方案 ps：history模式下无问题，可删除该行！
+      next('/login')
+      NProgress.done()
     }
 
   }

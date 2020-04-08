@@ -23,7 +23,7 @@
         </div>
 
         <!-- 登录密码 -->
-        <div v-bind:class="login">
+        <div :class="login">
           <div class="login__type">登录</div>
           <el-form label-width="0px"
             ref="postForm"
@@ -290,6 +290,7 @@ export default {
     handleLogin() {
       const self = this
       this.$refs.postForm.validate(valid => {
+        console.log('valid=',valid)
         if (valid) {
           //dispatch 调用store里面的action,相当于 ...mapActions(['L...'])
           //this.$store.dispatch('LoginByName', this.form).then((res) => {

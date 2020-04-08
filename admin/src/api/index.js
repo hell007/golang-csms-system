@@ -9,7 +9,7 @@ import { obj2Param } from '@/utils'
  */
 export function fetchGet(url, query) {
   return axios({
-    url: url + obj2Param(query), //mock在这里拦截,返回数据
+    url: url + '?' + obj2Param(query), //mock在这里拦截,返回数据
     method: 'get'
   })
 }

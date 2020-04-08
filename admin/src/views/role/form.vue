@@ -62,16 +62,10 @@
 </template>
 
 <script>
-import {
-  mapActions
-} from 'vuex'
-
-import {
-  validateMobile
-} from '@/utils/validate' //验证规则
+import {fetchGet, fetchPost} from '@/api'
 
 export default {
-  name: 'roleForm',
+  name: 'role-form',
   components: {},
   data() {
     return {
@@ -128,11 +122,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getRole', 'saveRole']),
     //根据id获取数据
     getItem() {
       const self = this
-      self.getRole(self.form.id).then(response => {
+      fetchGet('/sys/role/item', {id: self.form.id}).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -146,6 +139,12 @@ export default {
           })
         } 
         self.loading = false
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
       })
     },
     //表单提交
@@ -154,7 +153,8 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-          self.saveRole(this.form).then(response => {
+
+          fetchPost('/sys/role/save', self.form).then(response => {
             const status = response.data.state
             const res = response.data.data
             const message = response.data.msg
@@ -173,6 +173,12 @@ export default {
               })
             } 
             self.processing = false
+          }).catch(ex => {
+            self.$notify({
+              title: '请求错误',
+              message: ex,
+              type: 'error'
+            })
           })
         } else {
           self.$alert('请正确输入！', '提示', {

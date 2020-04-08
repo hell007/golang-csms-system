@@ -217,11 +217,9 @@
 </template>
 
 <script>
-import waves from '@/directive/waves/index' // 水波纹指令
+import waves from '@/directive/waves/index'
 import Pagination from '../components/pagination'
-import {
-  mapActions
-} from 'vuex'
+import {fetchGet, fetchPost} from '@/api'
 
 export default {
   name: 'order',
@@ -259,12 +257,11 @@ export default {
   },
   computed: {},
   methods: {
-    ...mapActions(['getOrderList', 'deleteOrder', 'closeOrder']),
     //获取list数据，传入筛选对象
     getList() {
       const self = this
       self.loading = true
-      self.getOrderList(self.listQuery).then(response => {
+      fetchGet('/order/list', self.listQuery).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -279,6 +276,38 @@ export default {
           })
         } 
         self.loading = false
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
+      })
+    },
+    delete(ids) {
+      fetchGet('/order/delete', {id: ids}).then(response => {
+        const status = response.data.state
+        const message = response.data.msg
+        if (status) {
+          self.$notify({
+            title: '成功',
+            message: message,
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: '失败',
+            message: message,
+            type: 'error'
+          })
+        }
+      }).catch(ex => {
+        self.$notify({
+          title: '请求错误',
+          message: ex,
+          type: 'error'
+        })
       })
     },
     //查询
@@ -301,8 +330,8 @@ export default {
     //删除
     handleDelete(row) {
       const self = this
-      let rows = []
-      rows.push(row)
+      let ids = []
+      ids.push(row.id)
 
       self.$confirm(`确定要删除订单【${row.ordersn}】 ?`, '提示', {
         confirmButtonText: '确定',
@@ -310,26 +339,8 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        self.deleteOrder(rows).then(response => {
-          const status = response.data.state
-          const message = response.data.msg
-          if (status) {
-            self.$notify({
-              title: '成功',
-              message: message,
-              type: 'success',
-              duration: 2000
-            })
-          } else {
-            this.$notify({
-              title: '失败',
-              message: message,
-              type: 'error'
-            })
-          }
-        })
+        self.delete(ids)
       })
-      .catch(function(action) {})
     },
     //获取选中的row
     handleSelectionChange(rows) {
@@ -347,26 +358,12 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        self.deleteOrder(self.mulSelection).then(response => {
-          const status = response.data.state
-          const message = response.data.msg
-          if (status) {
-            self.$notify({
-              title: '成功',
-              message: message,
-              type: 'success',
-              duration: 2000
-            })
-          } else {
-            this.$notify({
-              title: '失败',
-              message: message,
-              type: 'error'
-            })
-          }
+        let ids = []
+        self.mulSelection.map(function(row) {
+          ids.push(row.id)
         })
+        self.delete(ids)
       })
-      .catch(function(action) {})  
     },
     handleStatus() {
       const self = this 
@@ -378,7 +375,11 @@ export default {
         type: 'warning'
       })
       .then(function(action) {  
-        self.closeOrder(self.mulSelection).then(response => {
+        let ids = []
+        self.mulSelection.map(function(row) {
+          ids.push(row.id)
+        })
+        fetchGet('/order/close', {id: ids}).then(response => {
           const status = response.data.state
           const message = response.data.msg
           if (status) {
@@ -396,9 +397,14 @@ export default {
               type: 'error'
             })
           }
+        }).catch(ex => {
+          self.$notify({
+            title: '请求错误',
+            message: ex,
+            type: 'error'
+          })
         })
       })
-      .catch(function(action) {}) 
     }
   },
   created() {
