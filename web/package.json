@@ -1,7 +1,7 @@
 {
   "name": "csms-system",
   "version": "1.0.0",
-  "description": "vue admin",
+  "description": "vue vant front",
   "author": "1048523306@qq.com",
   "private": true,
   "scripts": {
@@ -18,16 +18,11 @@
   "dependencies": {
     "axios": "^0.19.0",
     "better-scroll": "^1.15.2",
+    "clipboard": "^2.0.4",
     "core-js": "^2.6.9",
     "crypto-js": "^3.1.9-1",
-    "joi": "^14.3.1",
     "jquery": "^3.4.1",
-    "mockjs": "1.0.1-beta3",
     "moment": "^2.24.0",
-    "normalize.css": "7.0.0",
-    "nprogress": "^0.2.0",
-    "register-service-worker": "^1.6.2",
-    "sass-resources-loader": "^2.0.1",
     "simplemde": "^1.11.2",
     "storejs": "^1.0.25",
     "swiper": "^5.0.4",
@@ -39,12 +34,19 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.8.0",
-    "@vue/cli-plugin-pwa": "^3.8.0",
-    "@vue/cli-service": "^3.8.0",
+    "@vue/cli-plugin-babel": "^4.2.3",
+    "@vue/cli-plugin-pwa": "^4.2.3",
+    "@vue/cli-service": "^4.2.3",
+    "compression-webpack-plugin": "^3.1.0",
+    "mockjs": "1.0.1-beta3",
     "node-sass": "^4.12.0",
-    "sass-loader": "^7.1.0",
-    "vue-template-compiler": "^2.6.10"
+    "normalize.css": "7.0.0",
+    "register-service-worker": "^1.6.2",
+    "sass-loader": "^8.0.2",
+    "sass-resources-loader": "^2.0.1",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "vue-template-compiler": "^2.6.10",
+    "zrender": "^4.3.0"
   },
   "engines": {
     "node": ">= 6.0.0",
