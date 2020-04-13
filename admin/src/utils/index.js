@@ -565,6 +565,11 @@ export function uniquelizeArray(a) {
   return r;
 }
 
+// 去重
+export function unique(arr = []) {
+  return arr.reduce((t, v) => t.includes(v) ? t : [...t, v], []);
+}
+
 // 交集
 export function intersectArray(a, b) {
   return a.concat(b.filter(function(v) {
@@ -579,9 +584,32 @@ export function unionArray(a, b) {
   })
 }
 
-//差集
+// 差集
 export function minusArray(a, b) {
   return a.filter(function(v) {
     return b.indexOf(v) === -1
   })
+}
+
+// 差集
+export function difference(arr = [], oarr = []) {
+  return arr.reduce((t, v) => (!oarr.includes(v) && t.push(v), t), []);
+}
+
+// 数组最大值
+export function max(arr = []) {
+  return arr.reduce((t, v) => t > v ? t : v);
+}
+
+// 数组最小值
+export function min(arr = []) {
+  return arr.reduce((t, v) => t < v ? t : v);
+}
+
+// 数字千分化
+export function thousandNum(num = 0) {
+  const str = (+num).toString().split(".");
+  const int = nums => nums.split("").reverse().reduceRight((t, v, i) => t + (i % 3 ? v : `${v},`), "").replace(/^,|,$/g, "");
+  const dec = nums => nums.split("").reduce((t, v, i) => t + ((i + 1) % 3 ? v : `${v},`), "").replace(/^,|,$/g, "");
+  return str.length > 1 ? `${int(str[0])}.${dec(str[1])}` : int(str[0]);
 }
