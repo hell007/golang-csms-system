@@ -1,7 +1,7 @@
 module.exports = {
   plugins: {
     autoprefixer: {},
-    'postcss-px-to-viewport': ({
+    'postcss-px-to-viewport': {
 			unitToConvert: "px", // 默认值`px`，需要转换的单位
 			unitPrecision: 3, // 指定`px`转换为视窗单位值的小数位数
 			viewportWidth: 375, // 视窗的宽度，设计稿的宽度
@@ -13,7 +13,7 @@ module.exports = {
 			exclude: ['src/style/base','src/style/uitls'], // 忽略某些文件夹下的文件或特定文件
 			landscape: false, // 是否添加根据landscapeWidth生成的媒体查询条件
 			landscapeUnit: "vw", // 横屏时使用的单位
-  	 landscapeWidth: 1134 // 横屏时使用的视窗宽度
-		})
+  	 	landscapeWidth: 1134 // 横屏时使用的视窗宽度
+		}
   }
 }
