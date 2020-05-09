@@ -28,7 +28,7 @@ const cdn = {
 }
 
 module.exports = {
-  publicPath: './',
+  publicPath: '/',
   outputDir: 'dist',
   //assetsDir: '/assets',
   indexPath: 'index.html',
