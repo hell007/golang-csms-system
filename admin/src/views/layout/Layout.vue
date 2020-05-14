@@ -217,7 +217,7 @@ export default {
     this.menus = this.permission_routers
     //console.log('menus===',this.menus)
     //console.log('mapGetters===', this.user)
-    console.log('mapGetters', this.permission_routers)
+    //console.log('mapGetters', this.permission_routers)
   }
 }
 </script>

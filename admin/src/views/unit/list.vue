@@ -74,14 +74,12 @@
           删除
         </el-button>
       </div>
-      <div class="xa-pull-right">
+      <div class="xa-pull-right">       
         <el-button 
           size="small" 
           type="primary" 
           icon="el-icon-plus">
-          <router-link to="/unit/form">
-            新增
-          </router-link>
+          <router-link to="/unit1/form">新增</router-link>
         </el-button>
         <el-button 
           size="small"
