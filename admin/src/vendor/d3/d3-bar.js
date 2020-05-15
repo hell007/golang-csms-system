@@ -147,7 +147,7 @@ export function setBar(opt) {
     })
     .attr('y', height) // 控制动画由下而上
     .attr('width', x.bandwidth())
-    .attr('height', 0) // 控制动画由下而上
+    .attr('height', 0)
     .transition()
     .duration(200)
     .ease(d3.easeBounceInOut)

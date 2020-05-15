@@ -1,4 +1,4 @@
-import { setHistogram } from './d3-histogram'
+import { setBar } from './d3-bar'
 import { setArea } from './d3-area'
 import { setPie } from './d3-pie'
 import { setRing } from './d3-ring'
@@ -18,7 +18,7 @@ import { setRadialStackedBar } from './d3-radialStackedBar'
 //import { setMap } from './d3-map'
 
 export {
-	setHistogram,
+	setBar,
 	setArea,
 	setPie,
 	setRing,

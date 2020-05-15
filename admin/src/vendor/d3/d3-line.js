@@ -13,7 +13,6 @@ export function setLine(opt) {
       bottom: 30,
       left: 60
     },
-    bgs: ['#ccc', '#ddd'],
     colors: [
       '#6bcd07',
       '#fbd029',
@@ -36,7 +35,6 @@ export function setLine(opt) {
   const height = options.containerHeight - margin.top - margin.bottom
   const primary = options.primary
   const colors = options.colors
-  const bgs = options.bgs
   const title = options.title
   const labelPadding = 3
 
@@ -45,9 +43,12 @@ export function setLine(opt) {
     .attr('width', options.containerWidth)
     .attr('height', options.containerHeight)
 
+  // 设最外包层在总图上的相对位置
   let g = chart
     .append('g')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')') // 设最外包层在总图上的相对位置
+    .attr('class', 'chart-line')
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
   const timeParse = d3.timeParse('%H:%M')
 
   const key = Object.keys(data[0])[1]
@@ -63,16 +64,18 @@ export function setLine(opt) {
   })
   const stepValue = 50 // 用于生成背景柱
   const rangeByStep = d3.range(0, maxValue, stepValue) // 用于生成背景柱
-  
+
   const names = ['优', '良', '轻度污染', '中度污染', '重度污染', '严重污染']
 
+  // 定义x轴
   let x = d3
-    .scaleTime() // 定义x轴
+    .scaleTime()
     .domain([serieArr[0].time, serieArr[data.length - 1].time])
     .range([0, width])
 
+  // 定义y轴
   let y = d3
-    .scaleLinear() // 定义y轴
+    .scaleLinear()
     .domain([0, maxValue])
     .range([height, 0])
 
@@ -88,7 +91,8 @@ export function setLine(opt) {
       return y(d.value)
     })
 
-  let tip = d3Tip() // 设置tip
+  // 设置tip
+  let tip = d3Tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
@@ -103,9 +107,10 @@ export function setLine(opt) {
 
   chart.call(tip)
 
+  // 添加长方形方块，遮罩作用
   chart
     .append('defs')
-    .append('clipPath') // 添加长方形方块，遮罩作用
+    .append('clipPath')
     .attr('id', 'clip')
     .append('rect')
     .attr('height', height)
@@ -114,18 +119,20 @@ export function setLine(opt) {
     .duration(1000)
     .attr('width', width)
 
-  g.append('g') // 设置y轴
+  // 设置y轴
+  g.append('g')
     .attr('class', 'axis axis--y')
     .call(d3.axisLeft(y).tickValues(d3.range(0, maxValue, stepValue)))
     .append('text')
     .attr('y', -16)
     .attr('dy', '.71em')
     .style('text-anchor', 'middle')
-    .style('fill', '#000')
+    .style('fill', primary)
     .text('AQI 值')
 
-  g.append('g') // 设置背景柱
-    .attr('class', 'lineii--bg-bar')
+  // 设置背景柱
+  g.append('g')
+    .attr('class', 'line--bg')
     .selectAll('rect')
     .data(rangeByStep)
     .enter()
@@ -152,8 +159,9 @@ export function setLine(opt) {
       }
     })
 
-  g.append('g') // 设置背景柱文字
-    .attr('class', 'lineii--bg-bar-text')
+  // 设置背景柱文字
+  g.append('g')
+    .attr('class', 'line-bg-text')
     .selectAll('.ylabel') // 生成右边文字
     .data(rangeByStep)
     .enter()
@@ -181,7 +189,8 @@ export function setLine(opt) {
       return names[i]
     })
 
-  g.append('g') // 生成x轴
+  // 生成x轴
+  g.append('g')
     .attr('class', 'axis axis--x')
     .attr('transform', 'translate(0,' + height + ')')
     .call(
@@ -191,7 +200,8 @@ export function setLine(opt) {
       .tickFormat(d3.timeFormat('%H:%M'))
     )
 
-  g.selectAll('.axis--x .tick') // xx轴背景线
+  // xx轴背景线
+  g.selectAll('.axis--x .tick') 
     .append('line')
     .attr('class', 'bg-line')
     .attr('stroke', 'rgba(255,255,255,0.5)')
@@ -201,15 +211,17 @@ export function setLine(opt) {
     .attr('y2', height)
   g.select('.bg-line').remove()
 
+  // 生成线条
   let serie = g
-    .selectAll('.serie') // 生成线条
+    .selectAll('.serie')
     .data([serieArr])
     .enter()
     .append('g')
     .attr('class', 'serie')
 
+  // 绘画线条
   serie
-    .append('path') // 绘画线条
+    .append('path')
     .attr('clip-path', 'url(#clip)')
     .attr('class', 'line')
     .style('stroke', function(d) {
@@ -219,8 +231,9 @@ export function setLine(opt) {
     .attr('fill', 'none')
     .attr('d', line)
 
+  // 生成文字包层
   let label = serie
-    .selectAll('.label') // 生成文字包层
+    .selectAll('.label')
     .data(function(d) {
       return d
     })
@@ -234,8 +247,9 @@ export function setLine(opt) {
       return 'translate(' + x(d.time) + ',' + y(d.value) + ')'
     })
 
+  // 生成数值文字
   label
-    .append('text') // 生成数值文字
+    .append('text')
     .attr('dy', '.35em')
     .attr('fill', '#fff')
     .attr('text-anchor', 'middle')
@@ -243,8 +257,9 @@ export function setLine(opt) {
       return d.value
     })
 
+  // 生成背景白块
   label
-    .insert('rect', 'text') // 生成背景白块
+    .insert('rect', 'text')
     .datum(function() {
       return this.nextSibling.getBBox()
     })
@@ -264,9 +279,10 @@ export function setLine(opt) {
       return d.height + 2 * labelPadding
     })
 
+  // 标题
   chart
-    .append('g') // 输出标题
-    .attr('class', 'line-title')
+    .append('g')
+    .attr('class', 'chart-title')
     .append('text')
     .attr('fill', '#000')
     .attr('font-weight', '700')

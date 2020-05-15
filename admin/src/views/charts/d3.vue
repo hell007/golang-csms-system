@@ -31,7 +31,7 @@ export default {
       list: [{
         name: '柱状图',
         callback: function(opt){
-          d3.setHistogram(opt)
+          d3.setBar(opt)
         },
         opt: {
           container: null,
@@ -779,14 +779,14 @@ export default {
   },
   mounted() {
     const self = this
-    const index = 0
+    const index = 7
     const container = '.container-' + index
     self.active = index
     setTimeout(function(){
       self.list[index].opt.container = document.querySelector(container)
       self.list[index].opt.containerWidth = self.$refs.wrap.offsetWidth
       self.list[index].opt.primary = self.primary
-      d3.setHistogram(self.list[index].opt)
+      d3.setLine(self.list[index].opt)
     },200)
   }
 }
