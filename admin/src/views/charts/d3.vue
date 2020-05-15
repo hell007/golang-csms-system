@@ -17,7 +17,6 @@
     </div>
   </el-card>
 </template>
-
 <script>
 import { Theme } from '@/config'
 import * as d3 from '@/vendor/d3/index'
@@ -32,7 +31,7 @@ export default {
       list: [{
         name: '柱状图',
         callback: function(opt){
-          d3.setBar(opt)
+          d3.setHistogram(opt)
         },
         opt: {
           container: null,
@@ -787,7 +786,7 @@ export default {
       self.list[index].opt.container = document.querySelector(container)
       self.list[index].opt.containerWidth = self.$refs.wrap.offsetWidth
       self.list[index].opt.primary = self.primary
-      d3.setBar(self.list[index].opt)
+      d3.setHistogram(self.list[index].opt)
     },200)
   }
 }

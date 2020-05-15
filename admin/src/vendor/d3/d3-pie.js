@@ -12,7 +12,6 @@ export function setPie(opt) {
       bottom: 30,
       left: 60
     },
-    bgs: ['#ccc', '#ddd'],
     colors: [
       '#19d4ae',
       '#5867c3',
@@ -35,7 +34,6 @@ export function setPie(opt) {
   const width = options.containerWidth - margin.left - margin.right
   const height = options.containerHeight - margin.top - margin.bottom
   const primary = options.primary
-  const bgs = options.bgs
   const title = options.title
 
   const chart = d3
@@ -97,7 +95,7 @@ export function setPie(opt) {
     return d.population
   })
 
-  // 定义颜色值域
+  // 定义颜色值域 
   colors.domain(
     d3
     .map(data, function(d) {
@@ -121,11 +119,11 @@ export function setPie(opt) {
     })
     .each(function(d) {
       // 储存当前起始与终点的角度、并设为相等
-      let tem = {...d,
+      let temp = {...d,
         endAngle: d.startAngle
       }
       d.outerRadius = radius - 10
-      this._currentData = tem
+      this._currentData = temp
     })
     .on('mouseover', arcTween(radius + 20, 0))
     .on('mouseout', arcTween(radius - 10, 150))
@@ -188,7 +186,7 @@ export function setPie(opt) {
     label
       .append('text')
       .attr('class', 'age-text')
-      .attr('fill', '#cddc39')
+      .attr('fill', '#fff')
       .attr('font-weight', '700')
       .attr('font-size', '14px')
       .attr('text-anchor', 'middle')

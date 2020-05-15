@@ -15,12 +15,10 @@ export function setChord(opt) {
     },
     bgs: ['#ccc', '#ddd'],
     colors: [
-      '#6bcd07',
-      '#fbd029',
-      '#fe8800',
-      '#fe0000',
-      '#970454',
-      '#62001e'
+      '#98abc5', 
+      '#7b6888', 
+      '#a05d56', 
+      '#ff8c00'
     ],
     primary: '',
     title: '',
@@ -65,7 +63,7 @@ export function setChord(opt) {
   let color = d3
     .scaleOrdinal() // 四种颜色
     .domain(d3.range(4))
-    .range(['#98abc5', '#7b6888', '#a05d56', '#ff8c00'])
+    .range(colors)
 
   let tip = d3Tip() // 设置tip
     .attr('class', 'd3-tip chord-tip')
