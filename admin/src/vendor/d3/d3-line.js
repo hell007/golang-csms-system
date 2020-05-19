@@ -108,13 +108,14 @@ export function setLine(opt) {
   chart.call(tip)
 
   // 添加长方形方块，遮罩作用
+  // 用遮罩实现线动画 水平移动
   chart
     .append('defs')
     .append('clipPath')
     .attr('id', 'clip')
     .append('rect')
     .attr('height', height)
-    .attr('width', 0) // 用遮罩实现线动画
+    .attr('width', 0) 
     .transition()
     .duration(1000)
     .attr('width', width)

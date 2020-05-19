@@ -15,7 +15,6 @@ $space-vertical: 22px;
   border-top-color: $color-border-gray;
 }
 
-
 .xa-dialog {
   .el-dialog {
     width: 700px;
@@ -191,18 +190,6 @@ $space-vertical: 22px;
   text-align: right;
 }
 
-.xa-position-right {
-  position: absolute;
-  padding-right: 10px;
-  right: 0;
-  top: 0;
-}
-
-.xa-inline-block {
-  display: inline-block;
-  padding-right: 15px;
-}
-
 .xa-text-secondary {
   color: #999;
   font-size: 12px;
@@ -219,10 +206,6 @@ $space-vertical: 22px;
 
 .xa-text-black {
   color: #666;
-}
-
-thead .xa-text-danger {
-  color: #909399;
 }
 
 .xa-text-danger {
@@ -247,25 +230,6 @@ thead .xa-text-danger {
 
 .xa-text-subtitle {
   font-size: 16px;
-}
-
-.xa-tab-label {
-  position: relative;
-
-  &__count {
-    background: #f00;
-    position: absolute;
-    right: 0;
-    top: 2px;
-    border-radius: 50%;
-    line-height: 14px;
-    font-size: 12px;
-    min-width: 14px;
-    color: #fff;
-    text-align: center;
-    transform: translateX(50%) scale(0.9);
-    font-family: Arial;
-  }
 }
 
 .xa-no-entry {

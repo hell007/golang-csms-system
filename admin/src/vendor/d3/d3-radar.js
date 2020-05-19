@@ -41,7 +41,7 @@ export function setRadar(opt) {
       'translate(' +
       options.containerWidth / 2 +
       ',' +
-      (height + margin.top + margin.bottom) / 2 +
+      options.containerHeight / 2 +
       ')'
     )
 
@@ -54,6 +54,7 @@ export function setRadar(opt) {
   }
 
   const keys = Object.keys(data[0]).slice(1)
+  //console.log('keys==',keys)
   const series = data.map(d => {
     return keys.map(key => {
       return {
@@ -63,6 +64,8 @@ export function setRadar(opt) {
       }
     })
   })
+  //console.log('series==',series)
+
 
   // 定义x轴
   let x = d3
@@ -200,6 +203,7 @@ export function setRadar(opt) {
     .text(function(d) {
       return names[d]
     })
+
   
   // 绘画雷达线条
   let serie = g
@@ -214,6 +218,7 @@ export function setRadar(opt) {
   
   // 开始绘画雷达线条
   serie
+    .attr('class', 'radar-serie')
     .append('path') 
     .attr('class', 'radar-line')
     .style('stroke', function(d) {
@@ -258,6 +263,11 @@ export function setRadar(opt) {
     .append('g')
     .attr('transform', function(d, i) {
       return 'translate(0,' + i * 20 + ')'
+    })
+    .on('click', function(d, i){
+      //console.log(d.className+'===',d)
+      const rs = document.querySelector('.radar-serie')
+      rs[i].style.dispaly = 'none'
     })
 
   legend
