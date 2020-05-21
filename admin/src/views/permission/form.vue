@@ -66,7 +66,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单栏显示" prop="hidden" >
-          <el-radio-group v-model="form.hidden">
+          <el-radio-group 
+            v-model="form.hidden" 
+            size="small">
             <el-radio-button
               v-for="item, index in options.hidden"
               :key="item.value"
@@ -74,7 +76,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="级别" prop="level" >
-          <el-radio-group v-model="form.level">
+          <el-radio-group 
+            v-model="form.level"
+            size="small">
             <el-radio-button
               v-for="item, index in options.level"
               :key="item.value"

@@ -42,7 +42,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="导航显示" prop="isNav" >
-          <el-radio-group v-model="form.isNav">
+          <el-radio-group 
+            v-model="form.isNav"
+            size="small">
             <el-radio-button
               v-for="item, index in options.navs"
               :key="item.value"

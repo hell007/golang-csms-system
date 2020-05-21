@@ -44,7 +44,9 @@
             </el-input>
           </el-form-item>
           <el-form-item label="上架" prop="isOnSale" >
-            <el-radio-group v-model="goods.isOnSale">
+            <el-radio-group 
+              v-model="goods.isOnSale"
+              size="small">
               <el-radio-button
                 v-for="item, index in options.sales"
                 :key="`sales-${item.value}`"
@@ -52,7 +54,9 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="主推" prop="isFirst" >
-            <el-radio-group v-model="goods.isFirst">
+            <el-radio-group 
+              v-model="goods.isFirst"
+              size="small">
               <el-radio-button
                 v-for="item, index in options.firsts"
                 :key="`first-${item.value}`"
@@ -60,7 +64,9 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="热门" prop="isHot" >
-            <el-radio-group v-model="goods.isHot">
+            <el-radio-group 
+              v-model="goods.isHot"
+              size="small">
               <el-radio-button
                 v-for="item, index in options.hots"
                 :key="`hot-${item.value}`"
@@ -181,7 +187,7 @@ export default {
           {value: 4, label: '30枝/扎'}
         ],
         editor: {
-          height:'500',
+          height:'300',
           uploadJson: URIS.Kindeditor
         }
       },
