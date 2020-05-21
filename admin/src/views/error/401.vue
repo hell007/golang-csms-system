@@ -9,7 +9,7 @@
         <ul class="list-unstyled">
           <li>或者你可以去:</li>
           <li class="link-type">
-            <router-link to="/dashboard">回首页</router-link>
+            <router-link to="/">回首页</router-link>
           </li>
           <li><a @click.prevent="dialogVisible=true" href="#">点我看图</a></li>
         </ul>
@@ -24,7 +24,7 @@
   </div>
 </template>
 <script>
-import errGif from '@/assets/images/401.gif'
+import errGif from '@/assets/images/error/401.gif'
 
 export default {
   data() {
@@ -38,7 +38,7 @@ export default {
       back() {
         if (this.$route.query.noGoBack) {
           this.$router.push({
-            path: '/dashboard'
+            path: '/'
           })
         } else {
           this.$router.go(-1)

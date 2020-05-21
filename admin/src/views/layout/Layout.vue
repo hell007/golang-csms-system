@@ -26,7 +26,7 @@
             <span class="el-dropdown-link">
               <img
                 class="xa-header-nav__user-avatar"
-                src="../../assets/images/avatar.jpg"
+                src="../../assets/project/images/avatar.jpg"
               />
               <span class="xa-header-nav__user-role">{{user.username}}</span>
             </span>

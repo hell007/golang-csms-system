@@ -23,52 +23,66 @@ export const constantRouter = [{
   component: () => import('@/views/error/401'),
   hidden: true
 }, {
-  path: '/', //注意一级path为/ 或者 /xxxx
+  path: '/',
   component: Layout,
   hidden: false,
   redirect: '/home',
   name: '首页',
   icon: 'xa-icon xa-icon-station',
   children: [{
-    path: 'home', // 注意：二级path前面没有 /，否则路由错误，（会出现空白页面）
+    path: 'home',
     component: () => import('@/views/home/index')
   }]
 },
-/*{ // 三级菜单
-  path: '/unit',
+{ 
+  path: '/charts',
   component: Layout,
+  redirect: '/d3',
   hidden: false,
-  name: '单元管理',
-  icon: 'xa-icon xa-icon-copy',
-  meta: {
-    role: ['admin', 'editor']
-  },
+  name: '数据可视化',
+  icon: 'xa-icon xa-icon-data',
   noDropdown: true,
   children: [{
-    path: '/unit1',
-    component: View,
-    redirect: '/unit1/list',
-    name: '单元测试',
-    meta: {
-      role: ['superadmin', 'admin']
-    },
-    children: [{
-      path: 'list',
-      component: () => import('@/views/unit/list'),
-      name: '单元列表',
-      meta: {
-        role: ['superadmin', 'admin']
-      }
-    }, {
-      path: 'form',
-      component: () => import('@/views/unit/form'),
-      name: '单元表单',
-      meta: {
-        role: ['superadmin', 'admin']
-      }
-    }]
+    path: '/d3',
+    component: () => import('@/views/charts/d3'),
+    name: 'd3'
   }]
-}*/
+},
+// { // 三级菜单
+//   path: '/unit',
+//   component: Layout,
+//   hidden: false,
+//   name: '单元管理',
+//   icon: 'xa-icon xa-icon-copy',
+//   meta: {
+//     role: ['admin', 'editor']
+//   },
+//   noDropdown: true,
+//   children: [{
+//     path: '/unit1',
+//     component: View,
+//     redirect: '/unit1/list',
+//     name: '单元测试',
+//     meta: {
+//       role: ['superadmin', 'admin']
+//     },
+//     children: [{
+//       path: 'list',
+//       component: () => import('@/views/unit/list'),
+//       name: '单元列表',
+//       meta: {
+//         role: ['superadmin', 'admin']
+//       }
+//     }, {
+//       path: 'form',
+//       component: () => import('@/views/unit/form'),
+//       name: '单元表单',
+//       meta: {
+//         role: ['superadmin', 'admin']
+//       }
+//     }]
+//   }]
+// }
 ]
 
 
