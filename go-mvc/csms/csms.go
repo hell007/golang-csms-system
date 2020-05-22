@@ -39,7 +39,7 @@ func main() {
 	app.HandleDir("/assets", StaticAssets)
 	app.HandleDir("/uploads", Uploads)
 
-	// 日志设置
+	// 日志设置 日志只生成到文件
 	logFile := time.Now().Format(conf.GlobalConfig.TimeformatShort) + ".log"
 	f, _ := files.CreateFile(conf.GlobalConfig.LogsOutput + logFile)
 	defer f.Close()

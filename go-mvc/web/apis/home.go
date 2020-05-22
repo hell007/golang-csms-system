@@ -1,10 +1,7 @@
 package apis
 
 import (
-	"fmt"
 	"github.com/kataras/iris/v12"
-	"go-mvc/framework/conf"
-
 	models "go-mvc/framework/models/goods"
 	"go-mvc/framework/services"
 	"go-mvc/framework/utils/page"
@@ -23,8 +20,6 @@ func (c *Home) GetV1() {
 		firstList []models.GoodsDetail
 		maps      = make(map[string]interface{}, 0)
 	)
-
-	fmt.Println("Secret====", conf.GlobalConfig.RedisPrefix)
 
 	// 分页设置
 	p, err = page.NewPagination(c.Ctx)
