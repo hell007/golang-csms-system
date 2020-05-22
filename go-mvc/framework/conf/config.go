@@ -114,6 +114,7 @@ func GetUploadFile() string {
 
 func init() {
 	GlobalConfig.getConf()
-	fmt.Println("RedisPrefix===", GlobalConfig.RedisPrefix)
-	fmt.Println("UploadStyle===", GlobalConfig.UploadStyle[0])
+	fmt.Println("framework conf-->", "配置文件已经加载...")
+	//fmt.Println("RedisPrefix===", GlobalConfig.RedisPrefix)
+	//fmt.Println("UploadStyle===", GlobalConfig.UploadStyle[0])
 }
