@@ -41,8 +41,13 @@
 
 ### sms
 
-[alibaba-cloud-sdk](//https://github.com/aliyun/alibaba-cloud-sdk-go.git)
+[alibaba-cloud-sdk](https://github.com/aliyun/alibaba-cloud-sdk-go.git)
 
+### Golang 定时任务
+
+[从99.9%CPU浅谈Golang的定时器实现原理](https://www.jianshu.com/p/c9e8aaa13415)
+
+[golang 实现定时任务](https://www.cnblogs.com/jssyjam/p/11910851.html)
 
 
 ## 项目版本依赖说明
@@ -54,4 +59,12 @@
 1、go-xorm group by Vs FindAndCount()
     
     解决办法： 不用group by ,采用 sql 其他过滤方法解决
+
+2、go mod 时出现dial tcp 216.239.37.1:443: connectex: A connection attempt failed这种错误
+
+		最后是因为set GOSUMDB=sum.golang.org
+		先go env 看 GOSUMDB 的配置
+
+		go env -w GOSUMDB=off
+		把他关掉就好了
 
