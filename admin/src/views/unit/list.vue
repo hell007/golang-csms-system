@@ -115,13 +115,13 @@
         </el-table-column>
         <el-table-column
           fixed
-          prop="username"
+          prop="name"
           label="姓名"
           width="100"
           align="center">
         </el-table-column>
         <el-table-column
-          prop="Role.roleName"
+          prop="roleName"
           label="角色"
           width="100"
           align="center">
@@ -294,12 +294,12 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    ...mapActions(['getUserList', 'deleteUser', 'closeUser', 'batchDeleteUser']),
+    ...mapActions(['getUnitList', 'deleteUnit']),
     //获取list数据，传入筛选对象
     getList() {
       const self = this
       self.loading = true
-      self.getUserList(self.listQuery).then(response => {
+      self.getUnitList(self.listQuery).then(response => {
         logger('info', response)
         const status = response.data.state
         const res = response.data.data
@@ -346,7 +346,7 @@ export default {
     //删除
     handleDelete(row) {
       const self = this
-      self.deleteUser(row).then(response => {
+      self.deleteUnit(row).then(response => {
         logger('info',response)
         const status = response.data.state
         const res = response.data.data
@@ -377,7 +377,7 @@ export default {
       const self = this 
       if (self.mulSelection.length === 0) return
 
-      self.batchDeleteUser(self.mulSelection).then(response => {
+      self.deleteUnit(self.mulSelection).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -400,27 +400,6 @@ export default {
     handleStatus() {
       const self = this 
       if (self.mulSelection.length === 0) return
-
-      self.closeUser(self.mulSelection).then(response => {
-        const status = response.data.state
-        const res = response.data.data
-        const message = response.data.msg
-        if (status) {
-          self.$notify({
-            title: '成功',
-            message: message,
-            type: 'success',
-            duration: 2000
-          })
-          self.getList() // 刷新
-        } else {
-          this.$notify({
-            title: '失败',
-            message: message,
-            type: 'error'
-          })
-        }
-      })
     },
     //导出xlsx
     handleDownload() {

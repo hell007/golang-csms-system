@@ -97,6 +97,7 @@
           <template v-for="menu, index in menus">
             <el-submenu
               v-if="!menu.hidden && menu.noDropdown"
+              :key="`menu-${index}`"
               :index="`menu-${index}`">
               <template slot="title">
                 <i :class="menu.icon"></i>
@@ -104,7 +105,8 @@
               </template>
               <el-menu-item
                 v-for="subMenu, subIndex in menu.children"
-                :index="`submenu-${subIndex}`">
+                :key="`submenu-${subIndex}`"
+                :index="`menu-${index}-${subIndex}`">
                 <router-link
                   class="xa-sidebar__link"
                   :to="`${subMenu.path}`" >
@@ -172,7 +174,7 @@ export default {
     return {
       menus: [],
       menu: {
-        active: '0',
+        active: 'menu-0',
         collapsed: window.innerWidth < 1440
       },
       message: {

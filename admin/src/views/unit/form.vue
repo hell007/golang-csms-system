@@ -138,9 +138,7 @@
         <el-form-item label="文章内容" prop="content" >
           <kindeditor>
             v-model="form.content" 
-            :width=800 
-            :height=300 
-            ref="editor" >
+            :options="options.editor" >
           </kindeditor>  
         </el-form-item>
       </div>
@@ -173,7 +171,7 @@ import kindeditor from '@/components/kindeditor' //富文本编辑器
 import axios from 'axios'
 
 export default {
-  name: 'unitform',
+  name: 'unit-form',
   components: {
     kindeditor
   },
@@ -222,7 +220,10 @@ export default {
           roleId: '2',
           roleName: 'goods'
         }],
-        area:[]
+        area:[],
+        editor: {
+
+        }
       },
       //验证规则
       formRules: {
@@ -301,7 +302,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getRoles', 'getUser', 'saveUser']),
+    ...mapActions(['getUnit', 'saveUnit']),
     getAreaData() {
       const self = this
       axios.get(self.areas).then(function(response){
@@ -318,7 +319,7 @@ export default {
     //根据id获取数据
     getItem() {
       const self = this
-      self.getUser(self.form.id).then(response => {
+      self.getUnit(self.form.id).then(response => {
         //console.log('getItem==', response)
         const status = response.data.success
         const res = response.data.data
@@ -368,7 +369,7 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-          self.saveUser(this.form).then(response => {
+          self.saveUnit(this.form).then(response => {
             //console.log('handleSubmit==', response)
             const status = response.data.success
             const res = response.data.data
@@ -397,7 +398,7 @@ export default {
       })
     },
     handleCancle() {
-      this.$router.push('/unit/list')
+      this.$router.push('/unit1/list')
     }
   },
   beforeCreate: noop,
@@ -405,7 +406,7 @@ export default {
     this.getAreaData()
 
     if (this.isEdit) {
-      this.getItem();
+      //this.getItem();
     }
   },
   beforeMount: noop,
