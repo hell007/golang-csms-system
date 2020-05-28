@@ -181,6 +181,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          fixed="right"
           label="操作"
           width="65"
           align="center"
@@ -199,6 +200,12 @@
                   <i class="el-icon-edit" 
                     @click="handleEdit(scope.row.id)">
                     编辑
+                  </i>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <i class="el-icon-view" 
+                    @click="handleView(scope.row.id)">
+                    查看
                   </i>
                 </el-dropdown-item>
                 <el-dropdown-item>
@@ -342,6 +349,9 @@ export default {
       //this.$router.push({ path: '/user/form'})
       // 命名的路由
       //this.$router.push({ name: '/user/form', params: { id: id }})
+    },
+    handleView(id) {
+      this.$router.push('/unit1/detail?id='+id);
     },
     //删除
     handleDelete(row) {

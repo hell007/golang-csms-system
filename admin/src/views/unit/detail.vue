@@ -13,7 +13,7 @@
             <span>基本信息</span>
             <span class="p-form__s-icon"
               @click="handleToggle(cards[0])">
-              <i :class="cards[0].active ? 'el-icon-arrow-down' : 'el-icon-arrow-up'"></i>
+              <i :class="cards[0].active ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
             </span>
           </div>
           <div class="p-form__s-body"
@@ -114,7 +114,7 @@
             <span>图片展示</span>
             <span class="p-form__s-icon"
               @click="handleToggle(cards[1])">
-              <i :class="cards[1].active ? 'el-icon-arrow-down' : 'el-icon-arrow-up'"></i>
+              <i :class="cards[1].active ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i>
             </span>
           </div>
           <div class="p-form__s-body"
@@ -177,10 +177,6 @@
       </el-form>
     </el-card>
 
-    <el-button
-      type="primary"
-      round
-      @click="handleGo">查看app页面</el-button>
     <el-button
       type="info"
       round
