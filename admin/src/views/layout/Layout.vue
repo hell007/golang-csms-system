@@ -45,7 +45,7 @@
             </el-dropdown-menu>
           </el-dropdown>
         </li>
-        <li class="xa-header-nav__item xa-header-nav__icon">
+        <!-- <li class="xa-header-nav__item xa-header-nav__icon">
           <el-dropdown>
             <span class="el-dropdown-link">
               <i class="xa-icon xa-icon-menu"></i>
@@ -67,7 +67,7 @@
               </div>
             </el-dropdown-menu>
           </el-dropdown>
-        </li>
+        </li> -->
         <li class="xa-header-nav__item xa-header-nav__icon">
           <el-badge :value="22" v-if="message.new">
             <i class="xa-icon xa-icon-message"></i>
@@ -96,7 +96,7 @@
 
           <template v-for="menu, index in menus">
             <el-submenu
-              v-if="!menu.hidden && menu.noDropdown"
+              v-if="!menu.hidden && menu.dropdown"
               :key="`menu-${index}`"
               :index="`menu-${index}`">
               <template slot="title">
@@ -117,7 +117,7 @@
             </el-submenu>
             
             <!-- 首页 -->
-            <el-menu-item v-if="!menu.noDropdown && !menu.hidden" 
+            <el-menu-item v-if="!menu.dropdown && !menu.hidden" 
               :index="`menu-${index}`">
               <router-link
                 class="xa-sidebar__link"

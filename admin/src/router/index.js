@@ -2,39 +2,74 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Layout from '@/views/layout/Layout'
 import View from '@/views/layout/View'
-export const myimport = require('./_import_' + process.env.NODE_ENV)
 
 Vue.use(VueRouter)
 
-export const constantRouter = [{
-  path: '/login',
-  component: () => import('@/views/login/index'),
-  hidden: true
-}, {
-  path: '/authredirect',
-  component: () => import('@/views/login/authredirect'),
-  hidden: true
-}, {
-  path: '/404',
-  component: () => import('@/views/error/404'),
-  hidden: true
-}, {
-  path: '/401',
-  component: () => import('@/views/error/401'),
-  hidden: true
-}, {
-  path: '/',
+
+const unit = {
+  path: '/unit',
   component: Layout,
   hidden: false,
-  redirect: '/home',
-  name: '首页',
-  icon: 'xa-icon xa-icon-station',
+  name: '单元管理',
+  icon: 'xa-icon xa-icon-copy',
+  meta: {
+    role: ['admin', 'editor']
+  },
+  dropdown: true,
   children: [{
-    path: 'home',
-    component: () => import('@/views/home/index')
+    path: '/unit1',
+    component: View,
+    redirect: '/unit1/list',
+    name: '页面测试',
+    meta: {
+      role: ['superadmin', 'admin']
+    },
+    children: [{
+      path: 'list',
+      component: () =>
+        import ('@/views/unit/list'),
+      name: '列表页',
+      meta: {
+        role: ['superadmin', 'admin']
+      }
+    }, {
+      path: 'form',
+      component: () =>
+        import ('@/views/unit/form'),
+      name: '表单页',
+      meta: {
+        role: ['superadmin', 'admin']
+      }
+    }, {
+      path: 'form',
+      component: () =>
+        import ('@/views/unit/detail'),
+      name: '详情页',
+      meta: {
+        role: ['superadmin', 'admin']
+      }
+    }]
+  }, {
+    path: '/unit2',
+    component: View,
+    redirect: '/unit2/list',
+    name: 'UI组件',
+    meta: {
+      role: ['superadmin', 'admin']
+    },
+    children: [{
+      path: 'list',
+      component: () =>
+        import ('@/views/unit/components'),
+      name: '组件使用',
+      meta: {
+        role: ['superadmin', 'admin']
+      }
+    }]
   }]
-},
-{ 
+}
+
+const charts = {
   path: '/charts',
   component: Layout,
   redirect: '/d3',
@@ -44,45 +79,47 @@ export const constantRouter = [{
   noDropdown: true,
   children: [{
     path: '/d3',
-    component: () => import('@/views/charts/d3'),
+    component: () =>
+      import ('@/views/charts/d3'),
     name: 'd3'
   }]
-},
-// { // 三级菜单
-//   path: '/unit',
-//   component: Layout,
-//   hidden: false,
-//   name: '单元管理',
-//   icon: 'xa-icon xa-icon-copy',
-//   meta: {
-//     role: ['admin', 'editor']
-//   },
-//   noDropdown: true,
-//   children: [{
-//     path: '/unit1',
-//     component: View,
-//     redirect: '/unit1/list',
-//     name: '单元测试',
-//     meta: {
-//       role: ['superadmin', 'admin']
-//     },
-//     children: [{
-//       path: 'list',
-//       component: () => import('@/views/unit/list'),
-//       name: '单元列表',
-//       meta: {
-//         role: ['superadmin', 'admin']
-//       }
-//     }, {
-//       path: 'form',
-//       component: () => import('@/views/unit/form'),
-//       name: '单元表单',
-//       meta: {
-//         role: ['superadmin', 'admin']
-//       }
-//     }]
-//   }]
-// }
+}
+
+export const constantRouter = [{
+    path: '/login',
+    component: () =>
+      import ('@/views/login/index'),
+    hidden: true
+  }, {
+    path: '/authredirect',
+    component: () =>
+      import ('@/views/login/authredirect'),
+    hidden: true
+  }, {
+    path: '/404',
+    component: () =>
+      import ('@/views/error/404'),
+    hidden: true
+  }, {
+    path: '/401',
+    component: () =>
+      import ('@/views/error/401'),
+    hidden: true
+  }, {
+    path: '/',
+    component: Layout,
+    hidden: false,
+    redirect: '/home',
+    name: '首页',
+    icon: 'xa-icon xa-icon-station',
+    children: [{
+      path: 'home',
+      component: () =>
+        import ('@/views/home/index')
+    }]
+  },
+  unit,
+  charts
 ]
 
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="node-wrap-box">
+  <div :class="[node.type === 'start' ? 'node-wrap-box start-node' : 'node-wrap-box']">
     <div class="node-panel">
       <div
         class="node-panel-title"
@@ -108,8 +108,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../../styles/_global.scss";
-
 .node {
   
   &-wrap {
@@ -141,8 +139,20 @@ export default {
         height: 4px;
         border-style: solid;
         border-width: 8px 6px 4px;
-        border-color: $color-primary transparent transparent;
+        border-color: #cacaca transparent transparent;
         background: #f5f5f7;
+      }
+
+      &.start-node {
+
+        &::before {
+          display:none;
+        }
+
+        .node-panel-text {
+          display: block;
+          white-space: nowrap;
+        }
       }
     }
   }

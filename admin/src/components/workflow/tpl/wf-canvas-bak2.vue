@@ -774,10 +774,9 @@
 													</div>
 													<div class="wf-overlay"></div>
 													<div class="wf-componentview">
-														<div class="wf-componentview-border">
-															<span class="wf-componentview-placeholder">
-																{{itemInTable.defaultProps}}
-															</span>
+														<div class="wf-componentview-content">
+															{{itemInTable.defaultProps}}<span
+															v-if="itemInTable.defaultRequired">（必填）</span>
 														</div>
 													</div>
 												</div>
@@ -965,7 +964,6 @@
   </section>
 </template>
 <script>
-import { getScrollTop } from '@/utils'
 export default{
   name: 'wf-canvas',
   props: {
@@ -979,16 +977,15 @@ export default{
 			isEmpty: true,
 			left: 0,
 			top: 0,
-			scrollTop: 0,
 			width: 0,
 			height: 0,
 			inCanvas: null,
 			components: [],
 			selected: null,
 			domArr: [],
-			isDrag: false,
-			dragIndex: null,
-			tabIndex: null,//拖动时明细组件的index
+			isDrag: false,    // 是否在手机内拖动
+			dragIndex: null,  // 拖动时组件的index
+			tabIndex: null,   // 拖动时tab组件的index
 			parNodeIndex: null
 		}
   },
@@ -1099,7 +1096,39 @@ export default{
 				}
 			}
 		},
-		getcomponents() {
+		addComponents(obj) {
+			let self = this
+			let component = JSON.parse(JSON.stringify(obj))
+			let componentsLength = self.getComponents()
+			
+			let idx = 0
+			for (let i = 0; i < self.components.length; i++) {
+				let item = self.components[i]
+				if (item.name == component.componentView.name) {
+					idx++
+				}
+			}
+
+			component.componentView.idx = componentsLength
+			//component.componentView.inTab = false
+
+			if (idx > 0) {
+				component.componentView.defaultLable = component.componentView.defaultLable + "（" + idx + "）"
+			}
+
+			if (self.inCanvas > 0) {
+				self.components.splice(self.inCanvas, 0, component.componentView)
+			} else if (self.inCanvas == 0) {
+				self.components.unshift(component.componentView)
+			}
+
+			self.selected = self.components.indexOf(component.componentView)
+
+			drag.$emit("selectComponent", component.componentView)
+
+			//console.log('addComponents=', self.components)
+		},
+		getComponents() {
 			let count = 0
 			for (let i = 0, l = this.domArr.length; i < l; i++) {
 				count++
@@ -1120,10 +1149,38 @@ export default{
   created() {
 		let self = this
 
+		// drag.$on("moveInCanvas", function (obj) {
+
+		// 	if (self.isInCanvas(obj)) {
+		// 		let topInCanvas = obj.clientY - self.top
+
+		// 		switch(self.domArr.length){
+		// 			case 0:
+		// 				self.inCanvas = 0;
+		// 				//self.tabIndex = null;
+		// 				break;
+		// 			case 1:
+		// 				break;
+		// 			default:
+		// 				switch(obj.componentName){
+		// 					case 'tablefield':
+		// 						//console.log(111);
+		// 						break;
+		// 					default:
+		// 						//console.log(222);
+		// 						//self.inCanvas = 0
+								
+		// 						break;
+		// 				}
+		// 				break;	
+		// 		}
+		// 		/*----*/
+		// 	}
+		// })
+
 		drag.$on("moveInCanvas", function (obj) {
-			console.log('moveInCanvas', obj.clientX, obj.clientY, self.top, self.left)
 			if (self.isInCanvas(obj)) {
-				let topInCanvas = obj.clientY - self.top + self.scrollTop
+				let topInCanvas = obj.clientY - self.top
 				//console.log('topInCanvas=', topInCanvas)
 
 				if (self.domArr.length <= 0) {
@@ -1148,6 +1205,7 @@ export default{
 							self.inCanvas = 1
 							self.tabIndex = null
 						} else if (topInCanvas <= self.domArr[0].middle_lower && topInCanvas > self.domArr[0].middle_top) {
+							console.log('进入此方法？')
 							let item = self.domArr[0]
 							self.inCanvas = null
 							self.tabIndex = 0
@@ -1260,15 +1318,11 @@ export default{
 				}
 			}
 		})
-
-
-		drag.$on("moveEnd", function (obj) {
-			let component = JSON.parse(JSON.stringify(obj))
-			let componentsLength = self.getcomponents()
 		
-			//console.log('明细组件外->拖动')
+		drag.$on("moveEnd", function (obj) {
+	
 			if (self.inCanvas != null) {
-				//拖动现在已有组件
+				//拖动
 				if (self.isDrag) {
 					self.dragIndex = self.dragIndex >> 0;
 					//如果以前在明细组件里面
@@ -1285,109 +1339,22 @@ export default{
 							self.selected = self.components.indexOf(dragItem)
 						}
 					}
-					// let dom = self.queryDomByIndex(document, self.dragIndex)
-					// dom.classList.remove('draging')
+
+					let dom = self.queryDomByIndex(document, self.dragIndex)
+					dom.classList.remove('draging')
 
 					self.dragIndex = null
 					self.isDrag = false
 				} else {
-					//console.log('添加新组件')
-					let idx = 0
-					for (let i = 0; i < self.components.length; i++) {
-						let item = self.components[i]
-						if (item.name == component.componentView.name) {
-							idx++
-						}
-					}
-					component.componentView.idx = componentsLength
-					if (idx > 0) {
-						component.componentView.defaultLable = component.componentView.defaultLable + "（" + idx + "）"
-					}
-					if (self.inCanvas > 0) {
-						self.components.splice(self.inCanvas, 0, component.componentView)
-					} else if (self.inCanvas == 0) {
-						self.components.unshift(component.componentView)
-					}
-					self.selected = self.components.indexOf(component.componentView)
-					
-					drag.$emit("selectComponent", component.componentView)
+					//添加组件
+					self.addComponents(obj)
 				}
+
 				self.inCanvas = null
-
-			} else if (self.tabIndex != null) {
-				//console.log('明细组件内->拖动')
-				if (self.isDrag) {
-					//在明细组件里面的位置
-					let inTabIndex = self.components[self.tabIndex].InTableCanvas >> 0
-					self.dragIndex = self.dragIndex >> 0
-
-					//如果从明细组件里面拖到外面
-					if (self.parNodeIndex == null) {
-						let dragItem = self.components[self.dragIndex]
-						if (!dragItem) return
-						self.components[self.tabIndex].components.splice(inTabIndex, 0, dragItem)
-						self.components[self.tabIndex].selected = inTabIndex
-						self.components.splice(self.dragIndex, 1)
-						self.selected = null
-					} else {
-						if ((self.parNodeIndex == self.tabIndex && self.dragIndex != inTabIndex && self.dragIndex != inTabIndex - 1) || self.parNodeIndex != self.tabIndex) {
-							let dragItem = self.components[self.parNodeIndex].components[self.dragIndex]
-							self.components[self.parNodeIndex].components.splice(self.dragIndex, 1)
-							if (inTabIndex > 0) {
-								self.components[self.tabIndex].components.splice(inTabIndex, 0, dragItem)
-							} else if (inTabIndex == 0) {
-								self.components[self.tabIndex].components.unshift(dragItem)
-							}
-							self.selected = null
-							self.components[self.tabIndex].selected = inTabIndex
-						}else {
-							// let dom = self.queryDomByIndex(self.queryDomByIndex(document, self.parNodeIndex), self.dragIndex);
-							// dom.classList.remove('draging');
-						}
-
-						// let dom = self.queryDomByIndex(self.queryDomByIndex(document, self.parNodeIndex), self.dragIndex)
-						// if(dom) dom.classList.remove('draging')
-					} 
-
-					self.dragIndex = null
-					self.isDrag = false
-				} else {
-					//console.log('添加到明细组件里面')
-
-					let idx = 0
-					for (let i = 0; i < self.components[self.tabIndex].components.length; i++) {
-						let item = self.components[self.tabIndex].components[i]
-						if (item.name == component.componentView.name) {
-							idx++
-						}
-					}
-					component.componentView.idx = componentsLength
-					if (idx > 0) {
-						component.componentView.defaultLable = component.componentView.defaultLable + "（" + idx + "）"
-					}
-					if (self.components[self.tabIndex].InTableCanvas > 0) {
-						self.components[self.tabIndex].components.splice(self.components[self.tabIndex].InTableCanvas, 0, component.componentView)
-					} else if (self.components[self.tabIndex].InTableCanvas == 0) {
-						self.components[self.tabIndex].components.unshift(component.componentView)
-					}
-					drag.$emit("selectComponent", component.componentView)
-				}
-				
-				for (let i = 0, l = self.components.length; i < l; i++) {
-					self.components[i].InTableCanvas = null
-				}
 			}
 			
-			if (self.components.length <= 0) {
-				self.isEmpty = true
-			} else {
-				self.isEmpty = false
-			}
 
-			document.querySelectorAll('.wf-component').forEach(it=>{
-				it.classList.remove('draging')
-			})
-
+			//console.log('moveEnd=', component, componentsLength)
 			drag.$emit("dragend", obj)
 		})
 
@@ -1431,7 +1398,6 @@ export default{
 		}
 		this.left = actualLeft
 		this.top = actualTop
-		this.scrollTop = document.querySelector('.xa-frame__main').scrollTop
 		this.width = dom.offsetWidth
 		this.height = dom.offsetHeight
 	},
@@ -1446,18 +1412,19 @@ export default{
 				let middleDom = obj.querySelectorAll('.wf-component')
 				for (let m = 0, n = middleDom.length; m < n; m++) {
 					let item = middleDom[m]
+					//49=41+8
 					middleDomArr.push({
 						height: item.offsetHeight,
-						middle_top: (objTop + 18 + item.offsetTop + item.offsetHeight / 2) >> 0,
-						middle_lower: (objTop + 18 + item.offsetTop + item.offsetHeight / 2) >> 0,
-						top: item.offsetTop + objTop
+						middle_top: (objTop + 49 + item.offsetTop + item.offsetHeight / 2) >> 0,
+						middle_lower: (objTop + 49 + item.offsetTop + item.offsetHeight / 2) >> 0,
+						top: item.offsetTop + objTop + 49
 					})
 				}
 				this.domArr.push({
 					height: obj.offsetHeight,
-					middle_top: (obj.offsetTop + 18) >> 0,
+					middle_top: (obj.offsetTop + 41) >> 0,
 					middle: (obj.offsetTop + obj.offsetHeight / 2) >> 0,
-					middle_lower: (obj.offsetTop + obj.offsetHeight - 23) >> 0,
+					middle_lower: (obj.offsetTop + obj.offsetHeight - 41) >> 0,
 					top: objTop,
 					domArr: middleDomArr
 				})
@@ -1471,8 +1438,8 @@ export default{
 				})
 			}
 	  }
-
-	  this.scrollTop = document.querySelector('.wf-canvas-inner').scrollTop + document.querySelector('.xa-frame__main').scrollTop
+	  //console.log('updated==', this.domArr)
+	  //console.log('self==', this)
 	}
 }
 </script>
@@ -1481,11 +1448,7 @@ export default{
 .wf {
 
 	&-canvas {
-    position:absolute;
-  	left:50%;
-    top:0;
-    bottom:0;
-    margin-left:-245px;
+    position: relative;
     height:670px;
     width:490px;
     background-size:100%;
@@ -1578,7 +1541,6 @@ export default{
 	  left: 0;
 	  z-index: 9;
 	  border: 1px dashed transparent;
-	  cursor: move;
 	}
 
 	&-component {
@@ -1597,6 +1559,12 @@ export default{
 			  border-style: dashed;
 			  background: #ccc;
 			  opacity: 0.8;
+			}
+		}
+
+		&.active {
+			& > .wf-overlay {
+				cursor: move;
 			}
 		}
 
@@ -1759,8 +1727,14 @@ export default{
 		  border-bottom: 1px solid rgba(200,200,202,0.5);
 		  vertical-align: middle;
 		}
+
+		&-content {
+		  padding: 10px;
+		  color: #858e99;
+		}
 	
 	}
+
 }	
 
 html.wf-cursor-move,

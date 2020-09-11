@@ -10,7 +10,7 @@
 <script>
 	export default{
 		name: 'wf-dragging',
-		data() {
+		data: function () {
 			return {
 				componentName: '',
 				componentText: '',
@@ -18,7 +18,7 @@
 				isStart: false
 			}
 		},
-		created() {
+		created: function () {
 			let self = this
 
 			drag.$on('moveStart', function (obj) {

@@ -1,7 +1,6 @@
 <template>
   <el-card class="xa-block" shadow="hover">
-    <el-form
-      class="p-form"
+    <el-form class="p-form"
       ref="postForm"
       :rules="formRules"
       :model="form"
@@ -26,71 +25,26 @@
         </el-form-item>
 
         <el-form-item label="姓名" prop="name">
-          <el-input class="p-form__input"
-            placeholder="请输入"
-            clearable
+          <el-input class="p-form__input" 
+            placeholder="请输入" 
             v-model="form.name"
             :maxlength="formRules.name[1].max" >
             <span class="p-input-count" slot="suffix">
             {{form.name.length}} / {{formRules.name[1].max}}
             </span>
           </el-input>
-          <div class="p-form__tip">提示说明文字</div>
         </el-form-item>
 
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="form.sex">
             <el-radio
-              v-for="item in options.sex"
-              :key="item.label"
-              :label="item.label">{{item.label}}</el-radio>
-          </el-radio-group>
-          <div class="p-form__tip">提示说明文字</div>
-        </el-form-item>
-
-        <el-form-item label="角色" prop="roleId">
-          <el-select
-            clearable
-            v-model="form.roleId"
-            placeholder="请选择">
-            <el-option
-              v-for="item in options.roles"
-              :key="item.label"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          <div class="p-form__tip">提示说明文字</div>
-        </el-form-item>
-
-        <el-form-item label="手机号" prop="mobile">
-          <el-input class="p-form__input-small"
-            clearable
-            placeholder="请输入"
-            maxlength="11"
-            v-model="form.mobile" />
-          <div class="p-form__tip">提示说明文字</div>
-        </el-form-item>
-
-        <el-form-item label="状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="item, index in options.status"
-              :key="item.label"
+              v-for="item, index in options.sex"
+              :key="item.value"
               :label="item.value">{{item.label}}</el-radio>
           </el-radio-group>
-          <div class="p-form__tip">提示说明文字</div>
         </el-form-item>
 
-        <el-form-item label="超级用户" prop="isSuper" >
-          <el-radio-group v-model="form.isSuper">
-            <el-radio-button label="1">是</el-radio-button>
-            <el-radio-button label="2">否</el-radio-button>
-          </el-radio-group>
-          <div class="p-form__tip">提示说明文字</div>
-        </el-form-item>
-
-       <el-form-item label="多选框" prop="checkbox">
+        <el-form-item label="多选框" prop="checkbox">
           <el-checkbox-group
             class="p-form__checkbox"
             v-model="form.checkbox">
@@ -104,14 +58,50 @@
           <div class="p-form__tip">提示说明文字</div>
         </el-form-item>
 
+        <el-form-item label="角色" prop="roleId">
+            <el-select 
+              clearable
+              v-model="form.roleId" 
+              placeholder="请选择">
+              <el-option
+                v-for="item in options.roles"
+                :key="item.roleName"
+                :label="item.roleName"
+                :value="item.roleId">
+              </el-option>
+            </el-select>
+        </el-form-item>
+
+        <el-form-item label="手机号" prop="mobile">
+          <el-input class="p-form__input" 
+            placeholder="请输入" 
+            maxlength="11"
+            v-model="form.mobile"></el-input>
+        </el-form-item>   
+
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio
+              v-for="item, index in options.status"
+              :key="item.value"
+              :label="item.value">{{item.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="超级用户" prop="isSuper" >
+          <el-radio-group v-model="form.isSuper">
+            <el-radio-button label="1">是</el-radio-button>
+            <el-radio-button label="2">否</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+
         <el-form-item label="创建时间" prop="createTime" >
           <el-date-picker class="p-form__picker"
-            v-model="form.createTime"
-            type="datetime"
-            format="yyyy-MM-dd HH:mm:ss"
+            v-model="form.createTime" 
+            type="datetime" 
+            format="yyyy-MM-dd HH:mm:ss" 
             placeholder="选择日期时间">
           </el-date-picker>
-          <div class="p-form__tip">提示说明文字</div>
         </el-form-item>
 
         <el-form-item label="营业时间">
@@ -168,67 +158,19 @@
 
         <el-form-item label="区域" prop="area">
           <el-cascader
-            clearable
             class="p-form__input"
             :options="options.area"
-            :props="{
-              value: 'id',
-              label: 'name'
-            }"
             v-model="form.area"
             @change="handleArea">
           </el-cascader>
-          <div class="p-form__tip">提示说明文字</div>
         </el-form-item>
 
         <el-form-item label="详细地址" prop="address">
-          <el-input
-            class="p-form__input"
-            type="textarea"
+          <el-input 
+            class="p-form__input" 
+            type="textarea" 
             placeholder="请输入"
             v-model="form.address" ></el-input>
-        </el-form-item>
-
-        <el-form-item label="身份证号" prop="ids">
-          <el-input class="p-form__input"
-            placeholder="请输入"
-            v-model="form.ids"
-            :maxlength="formRules.ids[1].ids" >
-            <span class="p-input-count" slot="suffix">
-            {{form.ids.length}} / {{formRules.ids[1].max}}
-            </span>
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="身份证照片" prop="photos">
-          <div class="p-uploader-inline">
-            <el-upload
-              class="p-uploader"
-              style="width: 300px; height: 200px;"
-              :action="uploadApi"
-              :show-file-list="false"
-              :on-success="handleIDFrontUpload"
-              :before-upload="handleNoop"
-              accept="image/jpeg, image/png">
-              <img class="p-uploader__img" v-if="form.photos[0]" :src="form.photos[0]">
-              <i v-else class="el-icon-plus p-uploader__icon"></i>
-            </el-upload>
-            <div>正面</div>
-          </div>
-          <div class="p-uploader-inline">
-            <el-upload
-              class="p-uploader"
-              style="width: 300px; height: 200px;"
-              :action="uploadApi"
-              :show-file-list="false"
-              :on-success="handleIDBackUpload"
-              :before-upload="handleNoop"
-              accept="image/jpeg, image/png">
-              <img class="p-uploader__img" v-if="form.photos[1]" :src="form.photos[1]">
-              <i v-else class="el-icon-plus p-uploader__icon"></i>
-            </el-upload>
-            <div>背面</div>
-          </div>
         </el-form-item>
 
         <el-form-item label="商品重量">
@@ -250,26 +192,63 @@
           </el-select>
         </el-form-item>
 
-        <!-- 富文本编辑器使用 -->
-        <el-form-item label="文章内容" prop="content" >
-          <div class="p-form__rich">
-            <kindeditor
-              :options="options.editor"
-              v-model="form.content" />
+        <el-form-item label="身份证号" prop="ids">
+          <el-input class="p-form__input" 
+            placeholder="请输入" 
+            v-model="form.ids"
+            :maxlength="formRules.ids[1].ids" >
+            <span class="p-input-count" slot="suffix">
+            {{form.ids.length}} / {{formRules.ids[1].max}}
+            </span>
+          </el-input>
+        </el-form-item>
+
+        <el-form-item label="身份证照片" prop="photos">
+          <div class="p-uploader-inline">
+            <el-upload
+              class="p-uploader"
+              style="width: 300px; height: 200px;"
+              :action="uploadApi"
+              :show-file-list="false"
+              :on-success="handleIDFrontUpload"
+              :before-upload="noop"
+              accept="image/jpeg, image/png">
+              <img class="p-uploader__img" v-if="form.photos[0]" :src="form.photos[0]">
+              <i v-else class="el-icon-plus p-uploader__icon"></i>
+            </el-upload>
+            <div>正面</div>
+          </div>
+          <div class="p-uploader-inline">
+            <el-upload
+              class="p-uploader"
+              style="width: 300px; height: 200px;"
+              :action="uploadApi"
+              :show-file-list="false"
+              :on-success="handleIDBackUpload"
+              :before-upload="noop"
+              accept="image/jpeg, image/png">
+              <img class="p-uploader__img" v-if="form.photos[1]" :src="form.photos[1]">
+              <i v-else class="el-icon-plus p-uploader__icon"></i>
+            </el-upload>
+            <div>背面</div>
           </div>
         </el-form-item>
 
+        <!-- 富文本编辑器使用 -->
+        <el-form-item label="文章内容" prop="content" >
+          <kindeditor>
+            v-model="form.content" 
+            :options="options.editor" >
+          </kindeditor>  
+        </el-form-item>
       </div>
 
+      <hr class="xa-separator" />
       <el-form-item>
-        <el-button
-          type="primary"
-          round
+        <el-button type="primary"
           :loading="processing"
           @click="handleSubmit">提交</el-button>
         <el-button
-          type="info"
-          round
           @click="handleCancle">返回</el-button>
       </el-form-item>
     </el-form>
@@ -277,8 +256,21 @@
 </template>
 
 <script>
+import {
+  mapActions
+} from 'vuex'
 
-import kindeditor from '@/components/kindeditor'
+import {
+  noop
+} from '@/utils'
+
+import {
+  validateMobile
+} from '@/utils/validate' //验证规则
+
+import kindeditor from '@/components/kindeditor' //富文本编辑器
+import axios from 'axios'
+
 export default {
   name: 'unit-form',
   components: {
@@ -287,7 +279,9 @@ export default {
   data() {
     return {
       uploadApi: 'http://127.0.0.1:9000/api/test/upload',
+      areas:'../assets/project/scripts/area.json',
       processing: false,
+      noop: noop,
       form: {
         id: '',
         avatar: '',
@@ -311,28 +305,6 @@ export default {
         unit:''
       },
       options: {
-        area: [
-          {
-            id: '1',
-            name: '云南省',
-            children: [
-              {
-                id: '11',
-                name: '昆明市',
-                children: [
-                  {
-                    id: '111',
-                    name: '西山区'
-                  },
-                  {
-                    id: '112',
-                    name: '官渡区'
-                  }
-                ]
-              }
-            ]
-          }
-        ],
         status: [{
           value: 1,
           label: '启用'
@@ -341,18 +313,18 @@ export default {
           label: '停用'
         }],
         sex: [{
-          value: 1,
+          value: '1',
           label: '男'
         },{
-          value: 2,
+          value: '2',
           label: '女'
         }],
         roles: [{
-          value: 1,
-          label: 'admin'
+          roleId: '1',
+          roleName: 'admin'
         },{
-          value: 2,
-          label: 'goods'
+          roleId: '2',
+          roleName: 'goods'
         }],
         boxs: [
           '上海',
@@ -407,7 +379,8 @@ export default {
         editor: {
           uploadJson:'http://127.0.0.1:9000/api/test/upload',
           height:300
-        }
+        },
+        area:[]
       },
       //验证规则
       formRules: {
@@ -439,6 +412,9 @@ export default {
           required: true,
           message: "请输入手机号码",
           trigger: 'blur'
+        }, {
+          validator: validateMobile,
+          trigger: 'blur'
         }],
         area: [{
           required: true,
@@ -465,10 +441,10 @@ export default {
           message: "身份证为18个字符",
           trigger: 'blur'
         }],
-        // photos: [{
-        //   required: true,
-        //   message: "请上传身份证照片"
-        // }]
+        photos: [{
+          required: true,
+          message: "请上传身份证照片"
+        }]
       }
     }
   },
@@ -477,33 +453,56 @@ export default {
     //判断是否处于编辑状态
     isEdit() {
       this.form.id = this.$route.query.id ? this.$route.query.id : null
-      return this.form.id
+      return this.form.id //根据参数id判断
+      //return this.$route.meta.isEdit // 根据meta判断
+      //return this.$route.path.indexOf('edit') !== -1 // 根据路由判断
     }
   },
   methods: {
+    ...mapActions(['getUnit', 'saveUnit']),
+    getAreaData() {
+      const self = this
+      axios.get(self.areas).then(function(response){
+        if (response.status==200) {
+          const data = response.data
+          self.options.area = data
+        }else {
+          console.log(response.status)
+        }
+      }).catch(function(error){
+        console.log(typeof+ error)
+      })
+    },
     //根据id获取数据
     getItem() {
       const self = this
-      self.$store.dispatch('unit/getUnit', self.form.id).then(response => {
-        console.log('getUnit===>',response)
+      self.getUnit(self.form.id).then(response => {
+        //console.log('getItem==', response)
         const status = response.data.state
         const res = response.data.data
-        const message = response.data.message
-
         if (status) {
           self.form = res
         } else {
           self.$notify({
             title: '失败',
-            message: message,
+            message: response.data.message,
             type: 'error'
           })
-        }
+        } 
         self.loading = false
       })
     },
     handleBeforeUpload (file) {
+      /*const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
 
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;*/
     },
     handleAvatarUpload(res) {
       console.log('res===', res)
@@ -527,26 +526,24 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-          self.$store.dispatch('unit/saveUnit', self.form).then(response => {
+          self.saveUnit(this.form).then(response => {
             //console.log('handleSubmit==', response)
             const status = response.data.success
             const res = response.data.data
-            const message = response.data.message
             if (status) {
-              self.form = res
               self.$notify({
                 title: '成功',
-                message: message,
+                message: response.data.message,
                 type: 'success',
                 duration: 2000
               })
             } else {
               self.$notify({
                 title: '失败',
-                message: message,
+                message: response.data.message,
                 type: 'error'
               })
-            }
+            } 
             self.processing = false
           })
         } else {
@@ -559,32 +556,19 @@ export default {
     },
     handleCancle() {
       this.$router.push('/unit1/list')
-    },
-    handleNoop(){
-    },
-    personConfirm(paramArr) {
-      console.log(paramArr);
     }
   },
-  mounted() {
-    this.getItem();
-
-    //文本编辑器
-    const editor = `
-      <b>1、文本编辑器内容初始化</b>
-      <p>需要在mouted里面进行请求赋值</p>
-      <br/>
-
-      <b>2、文本编辑器图片上传</b>
-      参数：uploadJson 后端上传图片的地址<br/>
-      请求类型：POST<br/>
-      请求参数：<br/>
-      imgFile: 文件form名称。可通过 filePostName 修改默认参数<br/>
-      dir: 上传类型，分别为图片image、动画flash、媒体media、文件file。<br/>
-      返回格式(JSON):<br/>
-      成功时 { "error" : 0, "url" : "http://www.example.com/path/to/file.ext" }<br/>
-      失败时 { "error" : 1, "message" : "错误信息" }`
-    this.form.content= editor
-  }
+  beforeCreate: noop,
+  created() {
+    this.getAreaData()
+  },
+  beforeMount: noop,
+  mounted(){
+    if (this.isEdit) {
+      this.getItem();
+    }
+  },
+  beforeDestory: noop,
+  destoryed: noop
 }
 </script>

@@ -28,14 +28,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import "../../../styles/_global.scss";
-
  .add-node-btn {
 
   &-box {
     width: 240px;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
     display: inline-flex;
+    -ms-flex-negative: 0;
     flex-shrink: 0;
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
     position: relative;
     
     &::before {
@@ -49,7 +52,7 @@ export default {
       margin: auto;
       width: 2px;
       height: 100%;
-      background-color: $color-primary;
+      background-color: #cacaca;
     }
   }
 } 

@@ -48,6 +48,7 @@ export default {
     addConditionFactor (node) {
       this.$emit('addConditionFactor', node)
       this.node = node
+      // console.log(this.node)
     }
   }
 }

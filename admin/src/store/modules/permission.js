@@ -1,7 +1,6 @@
 import {
   asyncRouter,
-  constantRouter,
-  myimport
+  constantRouter
 } from '@/router'
 
 import {
@@ -75,41 +74,44 @@ const permission = {
         //   accessedRouters = asyncRouter
         // } else {
 
-          // 三级 level = 123
-          // 1 2 级需要菜单显示 hidden=false
-          for (const a of access) {
-            switch (a.level) {
-              case 1:
-                a.noDropdown = true
-                a.component = Layout
-                a.hidden = false
-                break;
-              case 2:
-                a.component = View
-                a.hidden = false
-                a.redirect = a.redirect ? `/${a.redirect}` : ''
-                a.path = `/${a.path}`
-                break;
-              case 3:
-                a.component = myimport(a.redirect)
-                a.hidden = true
-                delete a.redirect
-                break;
-            }
-
-            a.icon = a.icon ? `xa-icon ${a.icon}` : ''
-            a.meta = {
-              role: roles
-            }
+        // 三级 level = 123
+        // 1 2 级需要菜单显示 hidden=false
+        for (const a of access) {
+          switch (a.level) {
+            case 1:
+              a.dropdown = true
+              a.component = Layout
+              a.hidden = false
+              break;
+            case 2:
+              a.component = View
+              a.hidden = false
+              a.redirect = a.redirect ? `/${a.redirect}` : ''
+              a.path = `/${a.path}`
+              break;
+            case 3:
+              let page = a.redirect
+              a.component = resolve => {
+                require(['@/views/' + page + '.vue'], resolve)
+              }
+              a.hidden = true
+              delete a.redirect
+              break;
           }
 
-          accessList = getTree(access)
-
-          for (const p of accessList) {
-            asyncRouter.push(p)
+          a.icon = a.icon ? `xa-icon ${a.icon}` : ''
+          a.meta = {
+            role: roles
           }
+        }
 
-          accessedRouters = filterAsyncRouter(asyncRouter, roles)
+        accessList = getTree(access)
+
+        for (const p of accessList) {
+          asyncRouter.push(p)
+        }
+
+        accessedRouters = filterAsyncRouter(asyncRouter, roles)
 
         //}
         commit('SET_ROUTERS', accessedRouters)

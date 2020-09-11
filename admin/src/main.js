@@ -19,6 +19,8 @@ Object.keys(filters).forEach(key => {
 //全局
 Vue.config.productionTip = false
 
+window.drag = new Vue();
+
 new Vue({
 	router,
 	store,
