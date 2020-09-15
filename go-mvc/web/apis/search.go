@@ -9,11 +9,8 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-type Search struct {
-	Ctx iris.Context
-}
 
-func (c *Search) GetV1() {
+func Search(ctx iris.Context) {
 	var (
 		err   error
 		val   string
@@ -24,19 +21,19 @@ func (c *Search) GetV1() {
 	)
 
 	// 分页设置
-	val = c.Ctx.URLParam("key")
-	p, err = page.NewPagination(c.Ctx)
+	val = ctx.URLParam("key")
+	p, err = page.NewPagination(ctx)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Search GetV1 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
+		ctx.Application().Logger().Errorf("Search.Search 参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	// 热销
 	list, total, err = services.NewGoodsService().GetGoods("key", val, p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Search GetV1 查询：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Search.Search 查询：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -46,6 +43,6 @@ func (c *Search) GetV1() {
 		Rows:  list,
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, res)
+	response.Ok(ctx, response.OptionSuccess, res)
 	return
 }

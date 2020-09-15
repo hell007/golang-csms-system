@@ -11,20 +11,22 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-type Test struct {
-	Ctx iris.Context
-}
 
 var keys = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat) //24
 
-func (c *Test) GetV1() {
+func Test(ctx iris.Context) {
+	response.Ok(ctx, response.OptionSuccess, true)
+	return
+}
+
+func V1(ctx iris.Context) {
 	err := redisClient.Set("test", "测试", 1 * time.Second).Err()
 	if err != nil {
 		fmt.Println("client.Set fail", err)
 	}
 }
 
-func (c *Test) GetV2() {
+func V2(ctx iris.Context) {
 	val, err := redisClient.Get("test").Result()
 	if err != nil {
 		fmt.Println("client.Set fail", err)
@@ -32,8 +34,7 @@ func (c *Test) GetV2() {
 	fmt.Println("val===", val)
 }
 
-// test
-func (c *Test) GetTest() {
+func V3(ctx iris.Context) {
 	var (
 		err error
 	)
@@ -48,7 +49,7 @@ func (c *Test) GetTest() {
 
 	fmt.Println("====",)
 
-	response.Ok(c.Ctx, response.OptionSuccess, err)
+	response.Ok(ctx, response.OptionSuccess, err)
 	return
 }
 

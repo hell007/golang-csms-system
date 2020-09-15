@@ -19,10 +19,6 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-type User struct {
-	Ctx iris.Context
-}
-
 const (
 	captchaKey string = "CAPTCHA"
 )
@@ -32,7 +28,7 @@ var locktime =  2 * 60 * 60 * time.Second //2小时
 var exprire = time.Duration(conf.GlobalConfig.RedisExprire) * time.Second //1小时
 
 // 会员注册
-func (c *User) PostRegister() {
+func Register(ctx iris.Context) {
 	var (
 		err     error
 		has     bool
@@ -43,9 +39,9 @@ func (c *User) PostRegister() {
 	)
 
 	// 读取
-	if err = c.Ctx.ReadJSON(&member); err != nil {
-		c.Ctx.Application().Logger().Errorf("手机号为[%s]的用户，注册失败：[%s]", member.Mobile, err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.RegisteFailur, nil)
+	if err = ctx.ReadJSON(&member); err != nil {
+		ctx.Application().Logger().Errorf("手机号为[%s]的用户，注册失败：[%s]", member.Mobile, err)
+		response.Error(ctx, iris.StatusBadRequest, response.RegisteFailur, nil)
 		return
 	}
 
@@ -53,13 +49,13 @@ func (c *User) PostRegister() {
 	user.Mobile = member.Mobile
 	has, err = services.NewMemberService().Exist(user)
 	if has || err != nil {
-		c.Ctx.Application().Logger().Errorf("手机号为[%s]的用户，已存在：[%s]", user.Mobile, err)
-		response.Failur(c.Ctx, response.RegisteExist, nil)
+		ctx.Application().Logger().Errorf("手机号为[%s]的用户，已存在：[%s]", user.Mobile, err)
+		response.Failur(ctx, response.RegisteExist, nil)
 		return
 	}
 
 	// 获取用户ip
-	ip := ips.ClientIP(c.Ctx.Request())
+	ip := ips.ClientIP(ctx.Request())
 	member.Ip = ip
 
 	// 数据处理
@@ -71,17 +67,17 @@ func (c *User) PostRegister() {
 
 	effect, err = services.NewMemberService().Create(member)
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("手机号为[%s]的用户，注册失败：[%s]", member.Mobile, err)
-		response.Failur(c.Ctx, response.RegisteFailur, nil)
+		ctx.Application().Logger().Errorf("手机号为[%s]的用户，注册失败：[%s]", member.Mobile, err)
+		response.Failur(ctx, response.RegisteFailur, nil)
 		return
 	}
 
-	response.Ok_(c.Ctx, response.RegisteSuccess)
+	response.Ok_(ctx, response.RegisteSuccess)
 	return
 }
 
 // 验证码
-func (c *User) GetCaptcha() {
+func Captcha(ctx iris.Context) {
 	cp := captcha.NewCaptcha(120, 40, 4)
 	cp.SetMode(0)
 	code, img  := cp.OutPut()
@@ -89,14 +85,14 @@ func (c *User) GetCaptcha() {
 	// 保存code 60s
 	err := redisClient.Set(conf.GlobalConfig.RedisPrefix + captchaKey, code, captchatime).Err()
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("User GetCaptcha 验证码：[%s]", err)
+		ctx.Application().Logger().Errorf("User.Captcha 验证码：[%s]", err)
 	}
-	c.Ctx.Header("Content-Type", "image/png; charset=utf-8")
-	png.Encode(c.Ctx, img)
+	ctx.Header("Content-Type", "image/png; charset=utf-8")
+	png.Encode(ctx, img)
 }
 
 // 会员登录
-func (c *User) PostLogin() {
+func Login(ctx iris.Context) {
 	var (
 		err     error
 		has, ckPassword bool
@@ -107,32 +103,32 @@ func (c *User) PostLogin() {
 	)
 
 	// 参数
-	if err = c.Ctx.ReadJSON(&user); err != nil {
-		c.Ctx.Application().Logger().Errorf("User Login 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.LoginFailur, nil)
+	if err = ctx.ReadJSON(&user); err != nil {
+		ctx.Application().Logger().Errorf("User.Login 参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.LoginFailur, nil)
 		return
 	}
 
 	// 验证码比对
 	code, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + captchaKey).Result()
 	if code != strings.ToUpper(user.Code)  || err != nil {
-		c.Ctx.Application().Logger().Errorf("User Login 验证码对比：[%s]", err)
-		response.Failur(c.Ctx, response.CaptchaFailur, nil)
+		ctx.Application().Logger().Errorf("User.Login 验证码对比：[%s]", err)
+		response.Failur(ctx, response.CaptchaFailur, nil)
 		return
 	}
 
 	// 查询用户
 	member, has, err = services.NewMemberService().GetMemberByMobile(user.Mobile)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("User Login 查询：[%s]", err)
-		response.Failur(c.Ctx, response.LoginFailur, nil)
+		ctx.Application().Logger().Errorf("User.Login 查询：[%s]", err)
+		response.Failur(ctx, response.LoginFailur, nil)
 		return
 	}
 
 	// 不存在，或者手机号不正确
 	if !has {
-		c.Ctx.Application().Logger().Error("用户不存在，或者登录的手机号不正确")
-		response.Failur(c.Ctx, response.LoginFailur, nil)
+		ctx.Application().Logger().Error("用户不存在，或者登录的手机号不正确")
+		response.Failur(ctx, response.LoginFailur, nil)
 		return
 	}
 
@@ -140,15 +136,15 @@ func (c *User) PostLogin() {
 	salt := encrypt.AESDecrypt(member.Salt, conf.GlobalConfig.JWTSalt)
 	ckPassword = encrypt.CheckPWD(user.Password, member.Password, salt)
 	if !ckPassword {
-		c.Ctx.Application().Logger().Error("用户存在，登录的密码不正确")
-		response.Failur(c.Ctx, response.LoginFailur, nil)
+		ctx.Application().Logger().Error("用户存在，登录的密码不正确")
+		response.Failur(ctx, response.LoginFailur, nil)
 		return
 	}
 
 	// 存在，不合法会员  { 2 未认证，3 已注销 }
 	if (member.Status != 1) {
-		c.Ctx.Application().Logger().Error("用户未认证或者已注销")
-		response.Failur(c.Ctx, "您还没有认证通过！请联系客服", nil)
+		ctx.Application().Logger().Error("用户未认证或者已注销")
+		response.Failur(ctx, "您还没有认证通过！请联系客服", nil)
 		return
 	}
 
@@ -160,7 +156,7 @@ func (c *User) PostLogin() {
 	columns = append(columns, "login_time", "salt", "password")
 	_, err = services.NewMemberService().Update(member, columns)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("User PostLogin 登录：[%s]", err)
+		ctx.Application().Logger().Errorf("User.Login 登录：[%s]", err)
 	}
 
 	// 存储合法会员信息
@@ -172,16 +168,16 @@ func (c *User) PostLogin() {
 	jsonU, _ := json.Marshal(user)
 	err = redisClient.Set(conf.GlobalConfig.RedisPrefix + user.Mobile, jsonU, exprire).Err()
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("User PostLogin 保存会员信息：[%s]", err)
+		ctx.Application().Logger().Errorf("User.Login 保存会员信息：[%s]", err)
 	}
 
 	// 返回user.token 保存
-	response.Ok(c.Ctx, response.LoginSuccess, user.Token)
+	response.Ok(ctx, response.LoginSuccess, user.Token)
 	return
 }
 
 // 用户退出
-func (c *User) GetLogout() {
+func Logout(ctx iris.Context) {
 	var (
 		err     error
 		token, keys, jsonU string
@@ -189,10 +185,10 @@ func (c *User) GetLogout() {
 	)
 
 	// 参数
-	token = c.Ctx.URLParam("token")
+	token = ctx.URLParam("token")
 	if token == ""{
-		c.Ctx.Application().Logger().Errorf("User Logout 参数：[%s]", err)
-		response.Failur(c.Ctx,  response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.Logout 参数：[%s]", err)
+		response.Failur(ctx,  response.OptionFailur, nil)
 		return
 	}
 
@@ -200,25 +196,25 @@ func (c *User) GetLogout() {
 	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		c.Ctx.Application().Logger().Errorf("User Logout 解密：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.Logout 解密：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
 	// redis 去除
 	err = redisClient.Del(conf.GlobalConfig.RedisPrefix + user.Mobile).Err()
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("User Logout 去除：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.Logout 去除：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
-	response.Ok(c.Ctx, response.LoginOutSuccess,nil)
+	response.Ok(ctx, response.LoginOutSuccess,nil)
 	return
 }
 
 // 用户信息
-func (c *User) GetV1() {
+func UserInfo(ctx iris.Context) {
 	var (
 		err     error
 		token, keys, jsonU string
@@ -226,10 +222,10 @@ func (c *User) GetV1() {
 	)
 
 	// 参数
-	token = c.Ctx.URLParam("token")
+	token = ctx.URLParam("token")
 	if token == ""{
-		c.Ctx.Application().Logger().Errorf("User V1 参数：[%s]", err)
-		response.Failur(c.Ctx,  response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.UserInfo 参数：[%s]", err)
+		response.Failur(ctx,  response.OptionFailur, nil)
 		return
 	}
 
@@ -237,19 +233,19 @@ func (c *User) GetV1() {
 	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		c.Ctx.Application().Logger().Errorf("User V1 解密：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.UserInfo 解密：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
 	// 处理信息
 	user.Password = ""
-	response.Ok(c.Ctx, response.OptionSuccess, user)
+	response.Ok(ctx, response.OptionSuccess, user)
 	return
 }
 
 // 找回密码
-func (c *User) PostFind() {
+func FindUser(ctx iris.Context) {
 	var (
 		err error
 		has bool
@@ -261,38 +257,38 @@ func (c *User) PostFind() {
 	)
 
 	// 恶意处理
-	ip = ips.ClientIP(c.Ctx.Request())
+	ip = ips.ClientIP(ctx.Request())
 	t, _ = redisClient.Get(conf.GlobalConfig.RedisPrefix + ip).Result()
 	if t != "" {
 		times, _ = strconv.Atoi(t)
 	}
 
 	if times >= 3 {
-		c.Ctx.Application().Logger().Errorf("User Find 攻击：[%s]", err)
-		response.Failur(c.Ctx, "输入错误次数过多，请稍后再试！", "error")
+		ctx.Application().Logger().Errorf("User.FindUser 攻击：[%s]", err)
+		response.Failur(ctx, "输入错误次数过多，请稍后再试！", "error")
 		return
 	}
 
 	// 参数
-	if err = c.Ctx.ReadJSON(&user); err != nil {
-		c.Ctx.Application().Logger().Errorf("User Find 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
+	if err = ctx.ReadJSON(&user); err != nil {
+		ctx.Application().Logger().Errorf("User.FindUser 参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
 	}
 
 	// 验证码比对 短信验证码最好
 	code, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + captchaKey).Result()
 	if code != strings.ToUpper(user.Code)  || err != nil {
-		c.Ctx.Application().Logger().Errorf("User Find 验证码对比：[%s]", err)
-		response.Failur(c.Ctx, response.CaptchaFailur, nil)
+		ctx.Application().Logger().Errorf("User.FindUser 验证码对比：[%s]", err)
+		response.Failur(ctx, response.CaptchaFailur, nil)
 		return
 	}
 
 	// 查询用户
 	member, has, err = services.NewMemberService().GetMemberByMobile(user.Mobile)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("User Find 查询：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.FindUser 查询：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -300,8 +296,8 @@ func (c *User) PostFind() {
 	if !has {
 		times++
 		redisClient.Set(conf.GlobalConfig.RedisPrefix + ip, times, locktime)
-		c.Ctx.Application().Logger().Error("用户不存在，或者登录的手机号不正确")
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Error("用户不存在，或者登录的手机号不正确")
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -309,15 +305,15 @@ func (c *User) PostFind() {
 	if user.Name != member.Name {
 		times++
 		redisClient.Set(conf.GlobalConfig.RedisPrefix + ip, times, locktime) //两小时
-		c.Ctx.Application().Logger().Error("用户不存在，姓名不正确")
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Error("用户不存在，姓名不正确")
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
 	// 存在，不合法会员  { 2 未认证，3 已注销 }
 	if (member.Status != 1) {
-		c.Ctx.Application().Logger().Error("用户未认证或者已注销")
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Error("用户未认证或者已注销")
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -328,17 +324,17 @@ func (c *User) PostFind() {
 	columns = append(columns, "password", "salt")
 	_, err = services.NewMemberService().Update(member, columns)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("User Find 修改：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.FindUser 修改：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, nil)
+	response.Ok(ctx, response.OptionSuccess, nil)
 	return
 }
 
 // 地址
-func (c *User) GetCity() {
+func City(ctx iris.Context) {
 	var (
 		err error
 		jsonP, jsonC, jsonA string
@@ -359,8 +355,8 @@ func (c *User) GetCity() {
 		city, err = services.NewZoneService().GetCity(2)
 		area, err = services.NewZoneService().GetCity(3)
 		if err != nil {
-			c.Ctx.Application().Logger().Errorf("User GetCity 查询地址出错：[%s]", err)
-			response.Failur(c.Ctx, response.OptionFailur, nil)
+			ctx.Application().Logger().Errorf("User.City 查询地址出错：[%s]", err)
+			response.Failur(ctx, response.OptionFailur, nil)
 			return
 		}
 
@@ -371,13 +367,13 @@ func (c *User) GetCity() {
 		jsonA, _ := json.Marshal(area)
 		err = redisClient.Set(conf.GlobalConfig.RedisPrefix+"area", jsonA, exprire).Err()
 		if err != nil {
-			c.Ctx.Application().Logger().Errorf("User GetCity redis：[%s]", err)
+			ctx.Application().Logger().Errorf("User.City redis：[%s]", err)
 		}
 
 		maps["province"] = province
 		maps["city"] = city
 		maps["area"] = area
-		response.Ok(c.Ctx, response.OptionSuccess, maps)
+		response.Ok(ctx, response.OptionSuccess, maps)
 		return
 	}
 
@@ -385,12 +381,12 @@ func (c *User) GetCity() {
 	maps["province"] = province
 	maps["city"] = city
 	maps["area"] = area
-	response.Ok(c.Ctx, response.OptionSuccess, maps)
+	response.Ok(ctx, response.OptionSuccess, maps)
 	return
 }
 
 // 收货地址列表
-func (c *User) GetAddress() {
+func UserAddress(ctx iris.Context) {
 	var (
 		err     error
 		token, key, jsonU   string
@@ -399,10 +395,10 @@ func (c *User) GetAddress() {
 	)
 
 	// 参数
-	token = c.Ctx.URLParam("uid")
+	token = ctx.URLParam("uid")
 	if token == ""{
-		c.Ctx.Application().Logger().Errorf("User Address 参数：[%s]", err)
-		response.Failur(c.Ctx,  response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.UserAddress 参数：[%s]", err)
+		response.Failur(ctx,  response.OptionFailur, nil)
 		return
 	}
 
@@ -410,19 +406,19 @@ func (c *User) GetAddress() {
 	key = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + key).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		c.Ctx.Application().Logger().Errorf("User Address 解密：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.UserAddress 解密：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
 	// 会员地址
 	md, err = services.NewMemberService().Get(user.Id)
-	response.Ok(c.Ctx, response.OptionSuccess, md.List)
+	response.Ok(ctx, response.OptionSuccess, md.List)
 	return
 }
 
 // 地址更新
-func (c *User) PostSaveaddr() {
+func SaveAddress(ctx iris.Context) {
 	var (
 		err     error
 		effect int64
@@ -432,9 +428,9 @@ func (c *User) PostSaveaddr() {
 		ad = new(models.AddressDetail)
 	)
 
-	if err = c.Ctx.ReadJSON(&ad); err != nil {
-		c.Ctx.Application().Logger().Errorf("User PostSaveaddr Json：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
+	if err = ctx.ReadJSON(&ad); err != nil {
+		ctx.Application().Logger().Errorf("User.SaveAddress Json：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
 	}
 
@@ -442,8 +438,8 @@ func (c *User) PostSaveaddr() {
 	key = encrypt.AESDecrypt(ad.Token, conf.GlobalConfig.JWTSalt)
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + key).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		c.Ctx.Application().Logger().Errorf("User PostSaveaddr 解密：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.SaveAddress 解密：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -458,37 +454,37 @@ func (c *User) PostSaveaddr() {
 	}
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("User PostSaveaddr 操作：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.SaveAddress 操作：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, nil)
+	response.Ok(ctx, response.OptionSuccess, nil)
 	return
 }
 
 // 删除地址
-func (c *User) GetDeladdr() {
+func DeleteAddress(ctx iris.Context) {
 	var (
 		err    error
 		id     int
 		effect int64
 	)
 
-	id, err = c.Ctx.URLParamInt("id")
+	id, err = ctx.URLParamInt("id")
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("UserController PostDeladdr 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
+		ctx.Application().Logger().Errorf("User.DeleteAddress 参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	effect, err = services.NewAddressService().Delete(id)
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("User PostDeladdr 删除：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("User.DeleteAddress 删除：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, nil)
+	response.Ok(ctx, response.OptionSuccess, nil)
 	return
 }

@@ -8,11 +8,7 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-type Home struct {
-	Ctx iris.Context
-}
-
-func (c *Home) GetV1() {
+func Home(ctx iris.Context) {
 	var (
 		err       error
 		p         *page.Pagination
@@ -22,10 +18,10 @@ func (c *Home) GetV1() {
 	)
 
 	// 分页设置
-	p, err = page.NewPagination(c.Ctx)
+	p, err = page.NewPagination(ctx)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Home GetV1 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
+		ctx.Application().Logger().Errorf("Home.Home参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
@@ -37,6 +33,6 @@ func (c *Home) GetV1() {
 	firstList, _, err = services.NewGoodsService().GetGoods("first", "1", p)
 	maps["first"] = firstList
 
-	response.Ok(c.Ctx, response.OptionSuccess, maps)
+	response.Ok(ctx, response.OptionSuccess, maps)
 	return
 }

@@ -17,11 +17,8 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-type Product struct {
-	Ctx iris.Context
-}
 
-func (c *Product) GetV1() {
+func ProductList(ctx iris.Context) {
 	var (
 		err     error
 		id      int
@@ -29,26 +26,26 @@ func (c *Product) GetV1() {
 	)
 
 	// 参数
-	id, err = c.Ctx.URLParamInt("id")
+	id, err = ctx.URLParamInt("id")
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Product GetV1 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
+		ctx.Application().Logger().Errorf("Product.ProductList 参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	// 查询
 	product, err = services.NewGoodsService().GetProduct(id)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Product GetV1 查询：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Product.ProductList 查询：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, product)
+	response.Ok(ctx, response.OptionSuccess, product)
 	return
 }
 
-func (c *Product) PostDo() {
+func ProductDo(ctx iris.Context) {
 	var (
 		err    error
 		effect int64
@@ -60,9 +57,9 @@ func (c *Product) PostDo() {
 	)
 
 	// 参数
-	if err = c.Ctx.ReadJSON(&form); err != nil {
-		c.Ctx.Application().Logger().Errorf("Product PostDo Json：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
+	if err = ctx.ReadJSON(&form); err != nil {
+		ctx.Application().Logger().Errorf("Product.ProductDo Json：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
@@ -70,8 +67,8 @@ func (c *Product) PostDo() {
 	keys = encrypt.AESDecrypt(form.Token, conf.GlobalConfig.JWTSalt)
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		c.Ctx.Application().Logger().Error("Product PostDo user不存在")
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Error("Product.ProductDo user不存在")
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -93,8 +90,8 @@ func (c *Product) PostDo() {
 
 			effect, err = services.NewOrderService().Create(order, goods)
 			if effect <= 0 && err != nil {
-				c.Ctx.Application().Logger().Errorf("Product PostDo 添加：[%s]", err)
-				response.Failur(c.Ctx, response.OptionFailur, nil)
+				ctx.Application().Logger().Errorf("Product.ProductDo 添加：[%s]", err)
+				response.Failur(ctx, response.OptionFailur, nil)
 				return
 			}
 
@@ -102,7 +99,7 @@ func (c *Product) PostDo() {
 
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, nil)
+	response.Ok(ctx, response.OptionSuccess, nil)
 	return
 }
 

@@ -9,11 +9,7 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-type Category struct {
-	Ctx iris.Context
-}
-
-func (c Category) GetV1() {
+func CategoryList(ctx iris.Context) {
 	var (
 		val string
 		maps = make(map[string]interface{}, 0)
@@ -22,8 +18,8 @@ func (c Category) GetV1() {
 
 	categoryList, err := services.NewCategoryService().List(0)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Category GetV1 查询：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Category.CategoryList 查询：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 	maps["categoryList"] = categoryList
@@ -37,11 +33,11 @@ func (c Category) GetV1() {
 	goodsList,_,_ := services.NewGoodsService().GetGoods("category",val, p)
 	maps["goodsList"] = goodsList
 
-	response.Ok(c.Ctx, response.OptionSuccess, maps)
+	response.Ok(ctx, response.OptionSuccess, maps)
 	return
 }
 
-func (c Category) GetGoods() {
+func CategoryGoods(ctx iris.Context) {
 	var (
 		err error
 		id  int
@@ -49,18 +45,18 @@ func (c Category) GetGoods() {
 		res   *page.Result
 	)
 
-	p, err = page.NewPagination(c.Ctx)
-	id, err = c.Ctx.URLParamInt("id")
+	p, err = page.NewPagination(ctx)
+	id, err = ctx.URLParamInt("id")
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Category GetGoods 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
+		ctx.Application().Logger().Errorf("Category.CategoryGoods 参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	list, total, err := services.NewGoodsService().GetGoods("category", strconv.Itoa(id), p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Category GetGoods 查询：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Category.CategoryGoods 查询：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -70,6 +66,6 @@ func (c Category) GetGoods() {
 		Rows:  list,
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, res)
+	response.Ok(ctx, response.OptionSuccess, res)
 	return
 }

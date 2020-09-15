@@ -15,12 +15,8 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-type Order struct {
-	Ctx iris.Context
-}
-
 // list
-func (c *Order) GetV1() {
+func OrderList(ctx iris.Context) {
 	var (
 		err      error
 		state    int
@@ -33,29 +29,29 @@ func (c *Order) GetV1() {
 	)
 
 	// 分页设置
-	p, err = page.NewPagination(c.Ctx)
+	p, err = page.NewPagination(ctx)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetV1 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
+		ctx.Application().Logger().Errorf("Order.OrderList 参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	// 解密
-	token = c.Ctx.URLParam("token")
+	token = ctx.URLParam("token")
 	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetV1 解密：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Order.OrderList 解密：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
 	// 查询
-	state, _ = c.Ctx.URLParamInt("state")
+	state, _ = ctx.URLParamInt("state")
 	list, total, err = services.NewOrderService().GetOrderListByMid(user.Id, state, p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetV1 查询：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Order.OrderList 查询：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -65,12 +61,12 @@ func (c *Order) GetV1() {
 		Rows:  list,
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, res)
+	response.Ok(ctx, response.OptionSuccess, res)
 	return
 }
 
 // item
-func (c *Order) GetItem() {
+func OrderItem(ctx iris.Context) {
 	var (
 		err         error
 		ordersn     string
@@ -78,27 +74,27 @@ func (c *Order) GetItem() {
 	)
 
 	// 参数处理
-	ordersn = c.Ctx.URLParam("id")
+	ordersn = ctx.URLParam("id")
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetItem 参数：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
+		ctx.Application().Logger().Errorf("Order.OrderItem 参数：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	// 查询
 	orderDetail, err = services.NewOrderService().Get(ordersn)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetItem 查询：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Order.OrderItem 查询：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, orderDetail)
+	response.Ok(ctx, response.OptionSuccess, orderDetail)
 	return
 }
 
 // save
-func (c *Order) PostSave() {
+func SaveOrder(ctx iris.Context) {
 	var (
 		err    error
 		effect int64
@@ -106,9 +102,9 @@ func (c *Order) PostSave() {
 		order   = new(models.Order)
 	)
 
-	if err = c.Ctx.ReadJSON(&order); err != nil {
-		c.Ctx.Application().Logger().Errorf("Order PostSave Json：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
+	if err = ctx.ReadJSON(&order); err != nil {
+		ctx.Application().Logger().Errorf("Order.SaveOrder Json：[%s]", err)
+		response.Error(ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
 	}
 
@@ -120,11 +116,11 @@ func (c *Order) PostSave() {
 	}
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Order PostSave 操作：[%s]", err)
-		response.Failur(c.Ctx, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Order.SaveOrder 操作：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
-	response.Ok(c.Ctx, response.OptionSuccess, nil)
+	response.Ok(ctx, response.OptionSuccess, nil)
 	return
 }
