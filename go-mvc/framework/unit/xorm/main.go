@@ -27,9 +27,8 @@ var x *xorm.Engine
 //创建orm引擎
 func init() {
 	var err error
-	//x, err = xorm.NewEngine("mysql", "root:admin@tcp(127.0.0.1:3306)/jie?charset=utf8")
 
-	x, err = xorm.NewEngine("mysql", "root:admin@tcp(127.0.0.1:3306)/csms-system?charset=utf8")
+	x, err = xorm.NewEngine("mysql", "root:admin@tcp(127.0.0.1:3306)/jie?charset=utf8")
 
 	if err != nil {
 		golog.Fatal("数据库连接失败:", err)

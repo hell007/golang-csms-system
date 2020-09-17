@@ -15,12 +15,12 @@ func (t *testTask) Run() {
 }
 
 // $ go test -v -cover crons_test.go crons.go
-func TestNewCrontabmain(t *testing.T) {
+func TestNewCrontab(t *testing.T) {
 	crontab := NewCrontab()
 	// 实现接口的方式添加定时任务
 	task := &testTask{}
 	if err := crontab.AddByID("1", "* * * * *", task); err != nil {
-		fmt.Printf("error to add crontab task:%s", err)
+		fmt.Printf("error to add crontab task 1:%s", err)
 		os.Exit(-1)
 	}
 
@@ -29,7 +29,7 @@ func TestNewCrontabmain(t *testing.T) {
 		fmt.Println("hello world")
 	}
 	if err := crontab.AddByFunc("2", "* * * * *", taskFunc); err != nil {
-		fmt.Printf("error to add crontab task:%s", err)
+		fmt.Printf("error to add crontab task 2:%s", err)
 		os.Exit(-1)
 	}
 	crontab.Start()
