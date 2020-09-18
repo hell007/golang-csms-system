@@ -9,34 +9,24 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
+/**
+商品分类
+ */
 func CategoryList(ctx iris.Context) {
-	var (
-		val string
-		maps = make(map[string]interface{}, 0)
-		p = new(page.Pagination)
-	)
-
 	categoryList, err := services.NewCategoryService().List(0)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Category.CategoryList 查询：[%s]", err)
+		ctx.Application().Logger().Errorf("Category.CategoryList查询商品分类错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
-	maps["categoryList"] = categoryList
 
-	if len(categoryList) > 0 {
-		val =  strconv.Itoa(categoryList[0].Id)
-	}
-
-	p.PageNumber = 1
-	p.PageSize = 100
-	goodsList,_,_ := services.NewGoodsService().GetGoods("category",val, p)
-	maps["goodsList"] = goodsList
-
-	response.Ok(ctx, response.OptionSuccess, maps)
+	response.Ok(ctx, response.OptionSuccess, categoryList)
 	return
 }
 
+/**
+商品分类商品列表
+ */
 func CategoryGoods(ctx iris.Context) {
 	var (
 		err error
@@ -48,14 +38,14 @@ func CategoryGoods(ctx iris.Context) {
 	p, err = page.NewPagination(ctx)
 	id, err = ctx.URLParamInt("id")
 	if err != nil {
-		ctx.Application().Logger().Errorf("Category.CategoryGoods 参数：[%s]", err)
+		ctx.Application().Logger().Errorf("Category.CategoryGoods参数错误：[%s]", err)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	list, total, err := services.NewGoodsService().GetGoods("category", strconv.Itoa(id), p)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Category.CategoryGoods 查询：[%s]", err)
+		ctx.Application().Logger().Errorf("Category.CategoryGoods查询商品错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}

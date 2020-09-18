@@ -35,24 +35,24 @@ func Configure(b *bootstrap.Bootstrapper) {
 
 	// 首页路由
 	home :=  api.Party("/home")
-	home.Get("/v1", apis.Home)
+	home.Get("/list", apis.Home)
 
 	// 分类路由
 	category := api.Party("/category")
 	{
-		category.Get("/v1", apis.CategoryList)
-		category.Get("/v2", apis.CategoryGoods)
+		category.Get("/type", apis.CategoryList)
+		category.Get("/list", apis.CategoryGoods)
 	}
 
 	// 搜索路由
 	search := api.Party("/search")
-	search.Get("/v1", apis.Search)
+	search.Get("/list", apis.Search)
 
 	// 产品路由
 	product := api.Party("/product")
 	{
-		product.Get("/v1", apis.ProductList)
-		product.Get("/v2", apis.ProductDo)
+		product.Get("/detail", apis.ProductDetail)
+		product.Get("/save", apis.SaveProduct)
 	}
 
 	// 用户路由
@@ -73,8 +73,8 @@ func Configure(b *bootstrap.Bootstrapper) {
 	// 订单路由
 	order := api.Party("/order")
 	{
-		order.Get("/orderList", apis.OrderList)
-		order.Get("/orderItem", apis.OrderItem)
-		order.Post("/saveOrder", apis.SaveOrder)
+		order.Get("/list", apis.OrderList)
+		order.Get("/detail", apis.OrderDetail)
+		order.Post("/save", apis.SaveOrder)
 	}
 }

@@ -14,6 +14,7 @@ type GoodsService interface {
 	Create(goods *models.Goods) (int64, error)
 	Delete(ids []int) (int64, error)
 	Close(ids []int) (int64, error)
+
 	//前端
 	GetGoods(state string, val string, p *page.Pagination) ([]models.GoodsDetail, int64, error)
 	GetProduct(id int) (*models.Product, error)

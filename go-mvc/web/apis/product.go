@@ -17,8 +17,10 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-
-func ProductList(ctx iris.Context) {
+/**
+产品详情
+ */
+func ProductDetail(ctx iris.Context) {
 	var (
 		err     error
 		id      int
@@ -28,7 +30,7 @@ func ProductList(ctx iris.Context) {
 	// 参数
 	id, err = ctx.URLParamInt("id")
 	if err != nil {
-		ctx.Application().Logger().Errorf("Product.ProductList 参数：[%s]", err)
+		ctx.Application().Logger().Errorf("Product.ProductList参数错误：[%s]", err)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -36,7 +38,7 @@ func ProductList(ctx iris.Context) {
 	// 查询
 	product, err = services.NewGoodsService().GetProduct(id)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Product.ProductList 查询：[%s]", err)
+		ctx.Application().Logger().Errorf("Product.ProductList查询产品详情错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -45,7 +47,7 @@ func ProductList(ctx iris.Context) {
 	return
 }
 
-func ProductDo(ctx iris.Context) {
+func SaveProduct(ctx iris.Context) {
 	var (
 		err    error
 		effect int64
@@ -58,7 +60,7 @@ func ProductDo(ctx iris.Context) {
 
 	// 参数
 	if err = ctx.ReadJSON(&form); err != nil {
-		ctx.Application().Logger().Errorf("Product.ProductDo Json：[%s]", err)
+		ctx.Application().Logger().Errorf("Product.SaveProduct参数错误：[%s]", err)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -67,7 +69,7 @@ func ProductDo(ctx iris.Context) {
 	keys = encrypt.AESDecrypt(form.Token, conf.GlobalConfig.JWTSalt)
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		ctx.Application().Logger().Error("Product.ProductDo user不存在")
+		ctx.Application().Logger().Error("Product.SaveProduct解密错误：user不存在")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -90,7 +92,7 @@ func ProductDo(ctx iris.Context) {
 
 			effect, err = services.NewOrderService().Create(order, goods)
 			if effect <= 0 && err != nil {
-				ctx.Application().Logger().Errorf("Product.ProductDo 添加：[%s]", err)
+				ctx.Application().Logger().Errorf("Product.SaveProduct提交订单错误：[%s]", err)
 				response.Failur(ctx, response.OptionFailur, nil)
 				return
 			}

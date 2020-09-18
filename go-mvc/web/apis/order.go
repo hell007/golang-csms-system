@@ -15,7 +15,9 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-// list
+/**
+订单列表
+ */
 func OrderList(ctx iris.Context) {
 	var (
 		err      error
@@ -31,7 +33,7 @@ func OrderList(ctx iris.Context) {
 	// 分页设置
 	p, err = page.NewPagination(ctx)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderList 参数：[%s]", err)
+		ctx.Application().Logger().Errorf("Order.OrderList参数错误：[%s]", err)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -41,7 +43,7 @@ func OrderList(ctx iris.Context) {
 	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
 	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderList 解密：[%s]", err)
+		ctx.Application().Logger().Errorf("Order.OrderList解密错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -50,7 +52,7 @@ func OrderList(ctx iris.Context) {
 	state, _ = ctx.URLParamInt("state")
 	list, total, err = services.NewOrderService().GetOrderListByMid(user.Id, state, p)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderList 查询：[%s]", err)
+		ctx.Application().Logger().Errorf("Order.OrderList查询用户订单错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -65,8 +67,10 @@ func OrderList(ctx iris.Context) {
 	return
 }
 
-// item
-func OrderItem(ctx iris.Context) {
+/**
+订单详情
+ */
+func OrderDetail(ctx iris.Context) {
 	var (
 		err         error
 		ordersn     string
@@ -76,7 +80,7 @@ func OrderItem(ctx iris.Context) {
 	// 参数处理
 	ordersn = ctx.URLParam("id")
 	if err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderItem 参数：[%s]", err)
+		ctx.Application().Logger().Errorf("Order.OrderDetail参数错误：[%s]", err)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -84,7 +88,7 @@ func OrderItem(ctx iris.Context) {
 	// 查询
 	orderDetail, err = services.NewOrderService().Get(ordersn)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderItem 查询：[%s]", err)
+		ctx.Application().Logger().Errorf("Order.OrderDetail查询订单详情错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -93,7 +97,9 @@ func OrderItem(ctx iris.Context) {
 	return
 }
 
-// save
+/**
+订单保存
+ */
 func SaveOrder(ctx iris.Context) {
 	var (
 		err    error
@@ -103,8 +109,8 @@ func SaveOrder(ctx iris.Context) {
 	)
 
 	if err = ctx.ReadJSON(&order); err != nil {
-		ctx.Application().Logger().Errorf("Order.SaveOrder Json：[%s]", err)
-		response.Error(ctx, iris.StatusBadRequest, response.OptionFailur, nil)
+		ctx.Application().Logger().Errorf("Order.SaveOrder读取订单参数错误：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -113,12 +119,11 @@ func SaveOrder(ctx iris.Context) {
 		order.OrderState = 4 //已取消
 		columns = append(columns, "order_state")
 		effect, err =  services.NewOrderService().Update(order, columns)
-	}
-
-	if effect < 0 || err != nil {
-		ctx.Application().Logger().Errorf("Order.SaveOrder 操作：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
+		if effect < 0 || err != nil {
+			ctx.Application().Logger().Errorf("Order.SaveOrder更新订单状态错误：[%s]", err)
+			response.Failur(ctx, response.OptionFailur, nil)
+			return
+		}
 	}
 
 	response.Ok(ctx, response.OptionSuccess, nil)

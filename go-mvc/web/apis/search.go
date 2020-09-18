@@ -9,7 +9,9 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-
+/**
+搜索页
+ */
 func Search(ctx iris.Context) {
 	var (
 		err   error
@@ -24,7 +26,7 @@ func Search(ctx iris.Context) {
 	val = ctx.URLParam("key")
 	p, err = page.NewPagination(ctx)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Search.Search 参数：[%s]", err)
+		ctx.Application().Logger().Errorf("Search.Search参数错误：[%s]", err)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -32,7 +34,7 @@ func Search(ctx iris.Context) {
 	// 热销
 	list, total, err = services.NewGoodsService().GetGoods("key", val, p)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Search.Search 查询：[%s]", err)
+		ctx.Application().Logger().Errorf("Search.Search搜索商品错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
