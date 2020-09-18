@@ -23,7 +23,14 @@ func Configure(b *bootstrap.Bootstrapper) {
 	home.Get("/", func(ctx iris.Context) {
 		ctx.View("index.html")
 	})
-	home.Get("/test", hero.Handler(controllers.HomeTest))
+	home.Get("/test", hero.Handler(controllers.HomeList()))
+
+	// test resfull api
+	test := main.Party("/test")
+	{
+		test.Get("/list", hero.Handler(controllers.TestList))
+		test.Get("/getLog", hero.Handler(controllers.GetLog))
+	}
 
 	//-------mvc 路由模式------
 	// 系统模块
@@ -58,10 +65,6 @@ func Configure(b *bootstrap.Bootstrapper) {
 		accessService := services.NewAccessService()
 		access.Register(accessService)
 		access.Handle(new(controllers.AccessController))
-
-		// test
-		test := mvc.New(sys.Party("/test"))
-		test.Handle(new(controllers.TestController))
 	}
 
 	goods := main.Party("/goods")
