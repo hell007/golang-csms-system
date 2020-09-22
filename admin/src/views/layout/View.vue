@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: 'roterview',
+  name: 'el-view',
   components: {},
   data() {
     return {
@@ -30,7 +30,7 @@ export default {
       return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
     }
   },
-  created: function() {
+  created() {
   }
 }
 </script>

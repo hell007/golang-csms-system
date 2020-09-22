@@ -139,18 +139,9 @@
     <div class="xa-frame__main" element-loading-text="加载中">
       <div class="xa-content">
         <!-- 面包屑 -->
-        <Levelbar></Levelbar>
+        <levelbar />
         <!-- vue -->
-        <transition name="fade" mode="out-in">
-          <keep-alive>
-            <router-view v-if="$route.meta.keepAlive" :key="`page-${key}`">
-            </router-view>
-          </keep-alive>
-        </transition>
-        <transition name="fade" mode="out-in">
-          <router-view v-if="!$route.meta.keepAlive" :key="`page-${key}`">
-          </router-view>
-        </transition>
+        <el-view />
       </div>
     </div>
     
@@ -163,12 +154,14 @@ import {
   mapActions,
   mapGetters
 } from 'vuex'
-import { Levelbar } from './components'
+import { levelbar } from './components'
+import elView from './View'
 
 export default {
   name: 'layout',
   components: { 
-    Levelbar
+    Levelbar,
+    elView
   },
   data() {
     return {
@@ -210,10 +203,7 @@ export default {
     ...mapGetters([
       'permission_routers',
       'user'
-    ]),
-    key() {
-      return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
-    }
+    ])
   },
   created: function() {
     this.menus = this.permission_routers
