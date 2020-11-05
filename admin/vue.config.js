@@ -28,6 +28,15 @@ const cdn = {
 }
 
 module.exports = {
+  transpileDependencies: [
+    'element-ui',
+    'moment',
+    'axios',
+    'storejs',
+    'vue',
+    'vue-router',
+    'vuex'
+  ],
   publicPath: '/',
   outputDir: 'dist',
   //assetsDir: '/assets',

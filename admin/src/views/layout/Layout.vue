@@ -154,13 +154,13 @@ import {
   mapActions,
   mapGetters
 } from 'vuex'
-import { levelbar } from './components'
+import levelbar from './components/Levelbar'
 import elView from './View'
 
 export default {
   name: 'layout',
   components: { 
-    Levelbar,
+    levelbar,
     elView
   },
   data() {
