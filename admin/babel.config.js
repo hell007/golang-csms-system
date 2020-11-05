@@ -5,8 +5,7 @@ module.exports = {
 				useBuiltIns: 'entry',
 				polyfills: [
 					'es6.promise',
-					'es6.symbol',
-					'es6.calss'
+					'es6.symbol'
 				]
 			}
 		]
