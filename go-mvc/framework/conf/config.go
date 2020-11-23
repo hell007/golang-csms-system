@@ -105,9 +105,9 @@ func GetUploadFile() string {
 	var UploadFile string
 	sysType := runtime.GOOS
 	if sysType == "darwin" {
-		UploadFile = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/uploads"
+		UploadFile = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/uploads/"
 	} else if sysType == "windows" {
-		UploadFile = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/uploads"
+		UploadFile = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/uploads/"
 	}
 	return UploadFile
 }

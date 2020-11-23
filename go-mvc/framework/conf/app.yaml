@@ -48,8 +48,8 @@ Auth.Ignores: ['/',
 #自定义配置
 Upload.Url: http://127.0.0.1:9000/uploads
 Upload.Style: ['100x100','360x360','800x800']
-Upload.PicPath: ['/goods/','/article/','/ads/']
-Upload.Editor: ['/images/goods/','/images/article/']
+Upload.PicPath: ['goods/','article/','ads/']
+Upload.Editor: ['images/goods/','images/article/']
 #time
 Timeformat: 2006-01-02 15:04:05
 TimeformatShort: 2006-01-02

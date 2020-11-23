@@ -2,6 +2,7 @@ package thumbnail
 
 import (
 	"fmt"
+	"go-mvc/framework/conf"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
@@ -13,14 +14,14 @@ import (
 // 图片添加水印
 // $ go test -v watermark_test.go utils.go watermark.go
 func TestWaterMark(t *testing.T) {
-	fileName :=  "water-test.jpg"
-	newName := "water-test2.jpg"
-	newImage, info, err1 := LoadImage(GetUploadFile() + "/" + fileName)
+	fileName :=  "test.jpg"
+	newName := "water-test.jpg"
+	newImage, info, err1 := LoadImage(conf.GetUploadFile() + fileName)
 	fmt.Println("添加水印1", info, err1)
 
 	m, _ := WaterMark(newImage)
 
-	out, err2 := os.Create(GetUploadFile() + "/" + newName)
+	out, err2 := os.Create(conf.GetUploadFile() + newName)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
