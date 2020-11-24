@@ -24,7 +24,7 @@ func GetUploadFile() string {
 // $ go test -v -cover files_test.go files.go
 func TestFileExists(t *testing.T) {
 	//file := "test.jpg"
-	//b := FileExists(GetUploadFile() + file)
+	//b := FileExists(conf.GetUploadFile() + file)
 	//fmt.Println("b===", b)
 }
 
@@ -32,7 +32,7 @@ func TestFileExists(t *testing.T) {
 // $ go test -v -cover files_test.go files.go
 func TestEnsureDir(t *testing.T) {
 	//dir := "test2/"
-	//err := EnsureDir(GetUploadFile() + dir)
+	//err := EnsureDir(conf.GetUploadFile() + dir)
 	//fmt.Println("err===", err)
 }
 
@@ -45,8 +45,8 @@ func TestCreateFile(t *testing.T) {
 
 // 删除文件
 // $ go test -v -cover files_test.go files.go
-func TestFileRemove(t *testing.T) {
+func TestRemoveFile(t *testing.T) {
 	//file := "test.jpg"
-	//FileRemove(GetUploadFile() + file)
+	//RemoveFile(GetUploadFile() + file)
 }
 
