@@ -72,12 +72,23 @@
         let inputTxt = document.getElementById("input");
         let sendBtn = document.getElementById("sendBtn");
 
+        inputTxt.onkeyup = function(e){
+            const input = inputTxt.value;
+            if(!input) return
+            if (e.keyCode == '13') {
+                nsConn.emit("chat", input);
+                addMessage(username+": " + input);
+                inputTxt.value = "";
+            }
+        }
+
         sendBtn.disabled = false;
         sendBtn.onclick = function () {
             const input = inputTxt.value;
-            inputTxt.value = "";
+            if(!input) return;
             nsConn.emit("chat", input);
-            addMessage("Me: " + input);
+            addMessage(username+": " + input);
+            inputTxt.value = "";
         };
     }
 
@@ -138,6 +149,5 @@
     //     conn.connect("default").then(handleNamespaceConnectedConn).catch(handleError);
     // }).catch(handleError);
 </script>
-<script src="js/chat.js" type="text/javascript"></script>
 </body>
 </html>

@@ -24,11 +24,13 @@ const (
 var clientEvents = websocket.Namespaces{
 	namespace: websocket.Events{
 		websocket.OnNamespaceConnected: func(c *websocket.NSConn, msg websocket.Message) error {
-			log.Printf("connected to namespace: %s", msg.Namespace)
+			//log.Printf("connected to namespace: %s", msg.Namespace)
+			log.Printf("连接成功，我们可以聊天了！")
 			return nil
 		},
 		websocket.OnNamespaceDisconnect: func(c *websocket.NSConn, msg websocket.Message) error {
-			log.Printf("disconnected from namespace: %s", msg.Namespace)
+			//log.Printf("disconnected from namespace: %s", msg.Namespace)
+			log.Printf("已断开连接，请稍后在试！")
 			return nil
 		},
 		"chat": func(c *websocket.NSConn, msg websocket.Message) error {
@@ -56,7 +58,7 @@ func main() {
 		panic(err)
 	}
 
-	c.Emit("chat", []byte("Hello from Go client side!"))
+	c.Emit("chat", []byte("客服：你好，我是客服小张!"))
 
 	fmt.Fprint(os.Stdout, ">> ")
 	scanner := bufio.NewScanner(os.Stdin)
