@@ -3,8 +3,14 @@ import VueRouter from 'vue-router'
 import Layout from '@/views/layout/Layout'
 import View from '@/views/layout/View'
 
-Vue.use(VueRouter)
+//解决路由 via a navigation guard.报错
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+    if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
+    return originalPush.call(this, location).catch(err => err)
+}
 
+Vue.use(VueRouter)
 
 const unit = {
   path: '/unit',
