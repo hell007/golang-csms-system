@@ -9,6 +9,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/edwingeng/wuid v0.0.0-20191129013112-1bf3d98c028d // indirect
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
+	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/xorm v0.7.9
@@ -44,4 +45,4 @@ require (
 	xorm.io/core v0.7.2-0.20190928055935-90aeac8d08eb
 )
 
-//replace github.com/casbin/casbin => github.com/casbin/casbin v1.9.2-0.20191210012758-08fbd3d30bd3
+replace golang.org/x/crypto => github.com/golang/crypto v0.0.0-20200622213623-75b288015ac9
