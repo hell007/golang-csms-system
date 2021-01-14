@@ -31,8 +31,8 @@ func (c *GalleryController) PostUpload() {
 	defer file.Close()
 
 	// 源图
-	fileName := thumbnail.ParseName(info.Filename,3)
-	filePath, err1 := files.MakeFilePath(conf.GetUploadFile() + conf.GlobalConfig.UploadPicPath[0], fileName)
+	fileName := thumbnail.ParseName(info.Filename, 3)
+	filePath, err1 := files.MakeFilePath(conf.GetUploadFile()+conf.GlobalConfig.UploadPicPath[0], fileName)
 	if err1 != nil {
 		c.Ctx.Application().Logger().Errorf("Gallery PostUpload 目录：[%s]", err1)
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
@@ -50,8 +50,8 @@ func (c *GalleryController) PostUpload() {
 	_, _ = io.Copy(out, file)
 
 	// 生成缩略图
-	small := thumbnail.ThumbnailSave(fileName,100, 100, 1)
-	medium := thumbnail.ThumbnailSave(fileName,360, 360, 2)
+	small := thumbnail.ThumbnailSave(fileName, 100, 100, 1)
+	medium := thumbnail.ThumbnailSave(fileName, 360, 360, 2)
 
 	// 入库
 	gallery := new(models.GoodsGallery)
@@ -59,9 +59,9 @@ func (c *GalleryController) PostUpload() {
 	gallery.Small = small
 	gallery.Medium = medium
 	gallery.Source = fileName
-	gallery.GoodsId,_ = strconv.Atoi(gid)
+	gallery.GoodsId, _ = strconv.Atoi(gid)
 
-	effect,err3 := services.NewGalleryService().Create(gallery)
+	effect, err3 := services.NewGalleryService().Create(gallery)
 	if effect < 0 || err3 != nil {
 		c.Ctx.Application().Logger().Errorf("Gallery PostUpload 添加：[%s]", err3)
 		response.Failur(c.Ctx, response.OptionFailur, nil)
@@ -74,8 +74,8 @@ func (c *GalleryController) PostUpload() {
 
 func (c *GalleryController) PostDelete() {
 	var (
-		err    error
-		effect int64
+		err     error
+		effect  int64
 		gallery = new(models.GoodsGallery)
 	)
 
@@ -93,7 +93,7 @@ func (c *GalleryController) PostDelete() {
 	}
 
 	// 删除图片
-	goodsPath :=  conf.GetUploadFile() + conf.GlobalConfig.UploadPicPath[0]
+	goodsPath := conf.GetUploadFile() + conf.GlobalConfig.UploadPicPath[0]
 	files.RemoveFile(goodsPath + gallery.Small)
 	files.RemoveFile(goodsPath + gallery.Medium)
 	files.RemoveFile(goodsPath + gallery.Source)

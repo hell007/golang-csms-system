@@ -5,11 +5,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/core"
 
+	"errors"
 	//"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	"github.com/kataras/golog"
 	"time"
-	"errors"
 )
 
 //定义结构体(xorm支持双向映射)
@@ -77,12 +77,12 @@ func getinfo(uid int) *Userinfo {
 
 // 事务处理操作
 type Test struct {
-	Id         int       `xorm:"int(10) pk autoincr"`
-	Name       string    `xorm:"varchar(20) unique"`
-	Price      int    `xorm:"int(10)"`
+	Id    int    `xorm:"int(10) pk autoincr"`
+	Name  string `xorm:"varchar(20) unique"`
+	Price int    `xorm:"int(10)"`
 }
 
-func transfer(id1, id2 int , price int) error {
+func transfer(id1, id2 int, price int) error {
 
 	t1 := &Test{Id: id1}
 	t2 := &Test{Id: id2}
@@ -101,15 +101,15 @@ func transfer(id1, id2 int , price int) error {
 	t2.Price += price
 
 	// 事务处理开始
-	sess:= x.NewSession()
+	sess := x.NewSession()
 	defer sess.Close()
 
-	if err := sess.Begin() ; err != nil {
+	if err := sess.Begin(); err != nil {
 		return errors.New("fail to session begin")
 	}
 
 	// 让1成功
-	if _, err := sess.Id(id1).Cols("price").Update(t1) ; err != nil {
+	if _, err := sess.Id(id1).Cols("price").Update(t1); err != nil {
 		sess.Rollback()
 		return errors.New("fail to update 1")
 	}
@@ -123,10 +123,9 @@ func transfer(id1, id2 int , price int) error {
 	return sess.Commit()
 }
 
-
 func main() {
 
-	x.ShowSQL(true) // 显示SQL的执行, 便于调试分析
+	x.ShowSQL(true)                // 显示SQL的执行, 便于调试分析
 	x.SetMapper(core.SameMapper{}) // 设置表名下划线转驼峰
 	//x.Sync2(new(Userinfo))
 
@@ -222,7 +221,7 @@ func main() {
 
 	// 5.事务
 
-	err := transfer(1,2, 200) //800 700
+	err := transfer(1, 2, 200) //800 700
 	fmt.Println("====", err)
 
 }

@@ -20,7 +20,7 @@ import (
 const (
 	StaticAssets = "./assets/"
 	Favicon      = "favicon.ico"
-	Uploads = "../uploads/"
+	Uploads      = "../uploads/"
 )
 
 func newApp() *bootstrap.Bootstrapper {

@@ -1,16 +1,16 @@
 package wechat
 
-
 import (
-	"os"
 	"fmt"
+	"os"
 	"testing"
 )
+
 var (
-	wechat_cert = "111111111111232121321311"
-	wechat_key = "12123222222222223232332323"
-	wechat_app_id = "102801212"
-	wechat_mch_id = "232312123"
+	wechat_cert    = "111111111111232121321311"
+	wechat_key     = "12123222222222223232332323"
+	wechat_app_id  = "102801212"
+	wechat_mch_id  = "232312123"
 	wechat_api_key = "121212"
 )
 var wechat_client *WechatPay

@@ -57,11 +57,11 @@ func (d *MemberDao) List(name string, status int, p *page.Pagination) ([]models.
 // Get
 func (d *MemberDao) Get(id int) (*models.MemberDetail, error) {
 	var (
-		err  error
-		ok   bool
-		member = new(models.Member)
-		memberDetail  = new(models.MemberDetail)
-		list = make([]models.Address, 0)
+		err          error
+		ok           bool
+		member       = new(models.Member)
+		memberDetail = new(models.MemberDetail)
+		list         = make([]models.Address, 0)
 	)
 	member.Id = id
 	ok, err = d.engine.Omit("password, salt").Get(member)

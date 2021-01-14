@@ -179,7 +179,7 @@ func (captcha *Captcha) doImage(dest *image.RGBA) (string, *image.RGBA) {
 // 验证码字符设置到图像上
 func (captcha *Captcha) doCode(gc *draw2dimg.GraphicContext, code string) {
 	for l := 0; l < len(code); l++ {
-		y := captcha.RangeRand(int64(captcha.FontSize) - 1, int64(captcha.H) + 6)
+		y := captcha.RangeRand(int64(captcha.FontSize)-1, int64(captcha.H)+6)
 		x := captcha.RangeRand(1, 20)
 
 		// 随机色
@@ -188,7 +188,7 @@ func (captcha *Captcha) doCode(gc *draw2dimg.GraphicContext, code string) {
 		b := uint8(captcha.RangeRand(0, 200))
 
 		gc.SetFillColor(color.RGBA{r, g, b, 255})
-		gc.FillStringAt(string(code[l]), float64(x)+captcha.FontSize*float64(l), float64(int64(captcha.H) - y) + captcha.FontSize)
+		gc.FillStringAt(string(code[l]), float64(x)+captcha.FontSize*float64(l), float64(int64(captcha.H)-y)+captcha.FontSize)
 		gc.Stroke()
 	}
 }

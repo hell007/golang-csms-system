@@ -3,8 +3,8 @@ package inits
 import (
 	"github.com/kataras/golog"
 
-	"go-mvc/framework/models/system"
 	"go-mvc/csms/inits/sys"
+	"go-mvc/framework/models/system"
 )
 
 func init() {

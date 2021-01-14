@@ -3,8 +3,8 @@ package dao
 import (
 	"github.com/go-xorm/xorm"
 
-	models "go-mvc/framework/models/system"
 	"fmt"
+	models "go-mvc/framework/models/system"
 )
 
 type MenuDao struct {

@@ -5,29 +5,29 @@ import (
 	"github.com/kataras/iris/v12"
 	"time"
 
+	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/conf"
 	members "go-mvc/framework/models/member"
 	models "go-mvc/framework/models/order"
 	"go-mvc/framework/services"
 	"go-mvc/framework/utils/encrypt"
 	"go-mvc/framework/utils/page"
-	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/utils/response"
 )
 
 /**
 订单列表
- */
+*/
 func OrderList(ctx iris.Context) {
 	var (
-		err      error
-		state    int
+		err                error
+		state              int
 		token, keys, jsonU string
-		p        *page.Pagination
-		res      *page.Result
-		list     []models.Orders
-		user = new(members.LoginUser)
-		total    int64
+		p                  *page.Pagination
+		res                *page.Result
+		list               []models.Orders
+		user               = new(members.LoginUser)
+		total              int64
 	)
 
 	// 分页设置
@@ -69,7 +69,7 @@ func OrderList(ctx iris.Context) {
 
 /**
 订单详情
- */
+*/
 func OrderDetail(ctx iris.Context) {
 	var (
 		err         error
@@ -99,11 +99,11 @@ func OrderDetail(ctx iris.Context) {
 
 /**
 订单保存
- */
+*/
 func SaveOrder(ctx iris.Context) {
 	var (
-		err    error
-		effect int64
+		err     error
+		effect  int64
 		columns []string
 		order   = new(models.Order)
 	)
@@ -118,7 +118,7 @@ func SaveOrder(ctx iris.Context) {
 		order.ShipTime = time.Now()
 		order.OrderState = 4 //已取消
 		columns = append(columns, "order_state")
-		effect, err =  services.NewOrderService().Update(order, columns)
+		effect, err = services.NewOrderService().Update(order, columns)
 		if effect < 0 || err != nil {
 			ctx.Application().Logger().Errorf("Order.SaveOrder更新订单状态错误：[%s]", err)
 			response.Failur(ctx, response.OptionFailur, nil)

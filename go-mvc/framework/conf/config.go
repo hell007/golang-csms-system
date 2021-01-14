@@ -100,7 +100,7 @@ func GetConfigPath() string {
 
 /**
 返回上传文件路径
- */
+*/
 func GetUploadFile() string {
 	var UploadFile string
 	sysType := runtime.GOOS

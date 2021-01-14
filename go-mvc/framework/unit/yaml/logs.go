@@ -8,7 +8,7 @@ import (
 	"go-mvc/framework/utils/files"
 )
 
-type MyLog  struct {
+type MyLog struct {
 	Logs LogInfo
 }
 

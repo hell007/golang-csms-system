@@ -48,7 +48,7 @@ func ParseName(fileName string, flag int) string {
 		fileNamePre = conf.GlobalConfig.UploadStyle[1]
 	case 3:
 		fileNamePre = conf.GlobalConfig.UploadStyle[2]
-	default://0
+	default: //0
 		fileNamePre = ""
 	}
 	return RenameFile() + fileNamePre + "." + args[1]
@@ -56,11 +56,11 @@ func ParseName(fileName string, flag int) string {
 
 // 文件重命名
 func RenameFile() string {
-	stringTime  := time.Now().Format("2006-01-02")
+	stringTime := time.Now().Format("2006-01-02")
 	//step1: 设置种子数
 	rand.Seed(time.Now().UnixNano())
 	//step2：获取随机数
-	stringInt64 := strconv.FormatInt(rand.Int63n(1000000000),10)
-	fileName := strings.Replace(stringTime, "-", "", -1 )
+	stringInt64 := strconv.FormatInt(rand.Int63n(1000000000), 10)
+	fileName := strings.Replace(stringTime, "-", "", -1)
 	return fileName + stringInt64
 }

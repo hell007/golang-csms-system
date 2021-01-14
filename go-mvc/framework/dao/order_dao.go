@@ -15,7 +15,7 @@ type OrderDao struct {
 	engine *xorm.Engine
 }
 
-func  NewOrderDao(engine *xorm.Engine) *OrderDao {
+func NewOrderDao(engine *xorm.Engine) *OrderDao {
 	return &OrderDao{
 		engine: engine,
 	}
@@ -28,12 +28,12 @@ func (d *OrderDao) List(name string, orderState int, p *page.Pagination) ([]mode
 	)
 
 	s := d.engine.Table("jie_order").Alias("o").Select("o.id, o.ordersn, o.order_state, " +
-		"o.create_time, o.pay_time, o.ship_time, o.confirm_time, o.pay_name, " +
-		"o.total_price, o.ship_price, o.pay_price, o.order_price, o.return_price, " +
-		"o.pay_name, o.ship_name, o.ship_no, o.ship_note, o.consignee, o.phone, o.tell, o.remark, " +
-		"(SELECT area_name from jie_zone WHERE province = area_id) as province, " +
-		"(SELECT area_name from jie_zone WHERE city = area_id) as city, " +
-		"(SELECT area_name from jie_zone WHERE district = area_id) as district, o.address ")
+			"o.create_time, o.pay_time, o.ship_time, o.confirm_time, o.pay_name, " +
+			"o.total_price, o.ship_price, o.pay_price, o.order_price, o.return_price, " +
+			"o.pay_name, o.ship_name, o.ship_no, o.ship_note, o.consignee, o.phone, o.tell, o.remark, " +
+			"(SELECT area_name from jie_zone WHERE province = area_id) as province, " +
+			"(SELECT area_name from jie_zone WHERE city = area_id) as city, " +
+			"(SELECT area_name from jie_zone WHERE district = area_id) as district, o.address ")
 
 	if name != "" {
 		s.Where("o.ordersn like ?", "%"+name+"%")
@@ -62,12 +62,12 @@ func (d *OrderDao) List(name string, orderState int, p *page.Pagination) ([]mode
 // Get
 func (d *OrderDao) Get(ordersn string) (*models.OrderDetail, error) {
 	var (
-		err  error
-		ok   bool
-		order = new(models.Order)
-		member = new(members.Member)
-		orderDetail  = new(models.OrderDetail)
-		list = make([]models.OrderGoodsDetail, 0)
+		err         error
+		ok          bool
+		order       = new(models.Order)
+		member      = new(members.Member)
+		orderDetail = new(models.OrderDetail)
+		list        = make([]models.OrderGoodsDetail, 0)
 	)
 
 	orderSql := fmt.Sprintf(`SELECT  o.id, o.ordersn, o.order_state, 
@@ -108,7 +108,7 @@ func (d *OrderDao) GetOrderListByMid(mid int, orderState int, p *page.Pagination
 	var (
 		olist = make([]models.Orders, 0)
 		glist = make([]models.OrderGoodsDetail, 0)
-		ids []int
+		ids   []int
 	)
 
 	s := d.engine.Table("jie_order").Cols("id", "ordersn", "order_state", "total_price", "ship_price", "pay_price", "order_price").
@@ -131,8 +131,8 @@ func (d *OrderDao) GetOrderListByMid(mid int, orderState int, p *page.Pagination
 			Select("OG.*, G.goods_sn, G.goods_name, G.color, G.unit, GA.small").
 			Join("LEFT", "jie_order_goods OG", "O.id = OG.order_id").
 			Join("LEFT", "jie_goods G", "OG.goods_id = G.id").
-			Join("LEFT", "(SELECT goods_id, small from jie_goods_gallery group by goods_id) as GA",
-				"OG.goods_id = GA.goods_id").In("O.id", ids).Find(&glist)
+				Join("LEFT", "(SELECT goods_id, small from jie_goods_gallery group by goods_id) as GA",
+					"OG.goods_id = GA.goods_id").In("O.id", ids).Find(&glist)
 
 		// 组装数据
 		// 根据order_id 合并多个商品到每个订单
@@ -170,14 +170,14 @@ func (d *OrderDao) Update(order *models.Order, columns []string) (int64, error) 
 // insert
 func (d *OrderDao) Create(order *models.Order, goods []models.OrderGoods) (int64, error) {
 	var (
-		err    error
+		err error
 	)
 
 	// 事务处理开始
 	session := d.engine.NewSession()
 	defer session.Close()
 
-	if err = session.Begin() ; err != nil {
+	if err = session.Begin(); err != nil {
 		return 0, errors.New("订单事务处理：")
 	}
 
@@ -188,7 +188,7 @@ func (d *OrderDao) Create(order *models.Order, goods []models.OrderGoods) (int64
 	}
 
 	// 设置新增成功返回的主键id
-	for k,_ := range goods {
+	for k, _ := range goods {
 		goods[k].Id = idgen.GenerateUuid()
 		goods[k].OrderId = order.Id
 	}

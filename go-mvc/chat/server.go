@@ -64,10 +64,10 @@ func main() {
 	}
 
 	//websocketRoute :=
-		app.Get("/echo", websocket.Handler(websocketServer, idGen))
+	app.Get("/echo", websocket.Handler(websocketServer, idGen))
 
 	//if enableJWT {
-		//websocketRoute.Use(j.Serve)
+	//websocketRoute.Use(j.Serve)
 	//}
 
 	// serves the browser-based websocket client.

@@ -16,7 +16,7 @@ import (
 使用Go内建的嵌入机制(匿名嵌入)，允许类型之前共享代码和数据
 Bootstrapper继承和共享 iris.Application
 参考文章： https://hackthology.com/golangzhong-de-mian-xiang-dui-xiang-ji-cheng.html
- */
+*/
 type Bootstrapper struct {
 	*iris.Application
 	AppName      string
@@ -30,7 +30,7 @@ type Configurator func(*Bootstrapper)
 
 /**
 Configure: accepts configurations and runs them inside the Bootstraper's context.
- */
+*/
 func (b *Bootstrapper) Configure(cs ...Configurator) {
 	for _, c := range cs {
 		c(b)
@@ -39,7 +39,7 @@ func (b *Bootstrapper) Configure(cs ...Configurator) {
 
 /**
 New: return a new Bootstrapper.
- */
+*/
 func New(appName, appOwner string, cfgs ...Configurator) *Bootstrapper {
 	b := &Bootstrapper{
 		AppName:      appName,
@@ -57,7 +57,7 @@ func New(appName, appOwner string, cfgs ...Configurator) *Bootstrapper {
 
 /**
 SetupViews: setting templates for html.
- */
+*/
 func (b *Bootstrapper) SetupViews(templateDir string) {
 	htmlEngine := iris.HTML(templateDir, ".html") //.Layout("layout.html")
 	// 每次重新加载模板 （线上关闭它）
@@ -67,7 +67,7 @@ func (b *Bootstrapper) SetupViews(templateDir string) {
 
 /**
 SetupSessions: initializes the sessions, optionally.
- */
+*/
 func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cookieBlockKey []byte) {
 	b.Sessions = sessions.New(sessions.Config{
 		Cookie:   "SECRET_SESS_COOKIE_" + b.AppName,
@@ -78,7 +78,7 @@ func (b *Bootstrapper) SetupSessions(expires time.Duration, cookieHashKey, cooki
 
 /**
 SetupWebsockets: prepares the websocket server.
- */
+*/
 //func (b *Bootstrapper) SetupWebsockets(endpoint string, onConnection websocket.ConnectionFunc) {
 //
 //	ws := websocket.New(websocket.Config{})
@@ -92,7 +92,7 @@ SetupWebsockets: prepares the websocket server.
 
 /**
 SetupErrorHandlers: prepares the http error handlers
- */
+*/
 func (b *Bootstrapper) SetupErrorHandlers() {
 	customLogger := logger.New(logger.Config{
 		//状态显示状态代码
@@ -147,7 +147,7 @@ func (b *Bootstrapper) SetupErrorHandlers() {
 /**
 Bootstrap: prepares our application.
 Returns itself.
- */
+*/
 func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 	b.SetupViews("./views")
 	b.SetupSessions(24*time.Hour,
@@ -160,7 +160,7 @@ func (b *Bootstrapper) Bootstrap() *Bootstrapper {
 
 /**
 Listen: starts the http server with the specified "addr".
- */
+*/
 func (b *Bootstrapper) Listen(addr string, cfgs ...iris.Configurator) {
 	b.Run(iris.Addr(addr), cfgs...)
 }

@@ -7,8 +7,9 @@ import (
 	"github.com/kataras/golog"
 	"github.com/tealeg/xlsx"
 )
+
 // 导入
-func Import(inFile string){
+func Import(inFile string) {
 	// 打开文件
 	xlFile, err := xlsx.OpenFile(inFile)
 	if err != nil {
@@ -33,7 +34,7 @@ func Import(inFile string){
 }
 
 // 导出
-func Export(outFile string, title string){
+func Export(outFile string, title string) {
 	file := xlsx.NewFile()
 	sheet, err := file.AddSheet(title)
 	if err != nil {

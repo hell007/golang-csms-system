@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<base href="http://127.0.0.1:7000/" />
+<base href="http://127.0.0.1:7000/"/>
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="mobile-web-app-capable" content="yes"/>
@@ -23,15 +23,15 @@
 
 <!--<script src="assets/vendors/jquery/3.3.1/dist/jquery.js"></script>-->
 <script>
-  $(function(){
+  $(function () {
     $.ajax({
-      type:"GET",
-      url:"http://127.0.0.1:7000/api/home/v1?pageNumber=1&pageSize=10",
-      dataType:"json",
-      success:function(data){
+      type: "GET",
+      url: "http://127.0.0.1:7000/api/home/v1?pageNumber=1&pageSize=10",
+      dataType: "json",
+      success: function (data) {
         console.log('success===>', data)
       },
-      error:function(err){
+      error: function (err) {
         console.log('error===>', err)
       }
     });

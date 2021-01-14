@@ -1,8 +1,8 @@
 package dao
 
 import (
-	models "go-mvc/framework/models/system"
 	"github.com/go-xorm/xorm"
+	models "go-mvc/framework/models/system"
 )
 
 type AccessDao struct {

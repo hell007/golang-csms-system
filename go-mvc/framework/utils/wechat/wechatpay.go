@@ -2,9 +2,9 @@ package wechat
 
 import (
 	"crypto/md5"
+	"crypto/tls"
 	"encoding/hex"
 	"fmt"
-	"crypto/tls"
 	"math/rand"
 	"net/http"
 	"sort"
@@ -62,7 +62,7 @@ func GetSign(mReq map[string]interface{}, key string) (sign string) {
 
 //wxpay验证签名
 func (this *WechatPay) VerifySign(needVerifyM map[string]interface{}, sign string) bool {
-	delete(needVerifyM,"sign")
+	delete(needVerifyM, "sign")
 	signCalc := GetSign(needVerifyM, this.ApiKey)
 
 	if sign == signCalc {

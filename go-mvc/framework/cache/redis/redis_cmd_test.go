@@ -27,7 +27,7 @@ func TestSet(t *testing.T) {
 	list := services.NewUserService().GetAll()
 	jsonData, _ := json.Marshal(list)
 
-	err2 := Set("test2", jsonData, 100 * time.Second).Err()
+	err2 := Set("test2", jsonData, 100*time.Second).Err()
 	if err2 != nil {
 		fmt.Println("client.Set fail", err2)
 	}
@@ -55,7 +55,7 @@ func TestGet(t *testing.T) {
 		fmt.Println("son.Unmarshal fail", err2)
 	}
 
-	for _,v := range list {
+	for _, v := range list {
 		fmt.Println("user ===", v)
 		fmt.Println("user.username ===", v.Username)
 	}
@@ -85,4 +85,3 @@ func Testmain(t *testing.T) {
 		fmt.Println("Subscribe msg", msg.String())
 	}
 }
-

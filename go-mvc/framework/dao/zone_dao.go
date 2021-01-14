@@ -44,8 +44,8 @@ func (d *ZoneDao) List(p *page.Pagination) ([]models.Zone, int64, error) {
 // GetCity
 func (d *ZoneDao) GetCity(areaType interface{}) ([]models.City, error) {
 	var (
-		err error
-		sql string
+		err  error
+		sql  string
 		list = make([]models.City, 0)
 	)
 

@@ -3,9 +3,9 @@ package dao
 import (
 	"github.com/go-xorm/xorm"
 
+	"fmt"
 	models "go-mvc/framework/models/goods"
 	"go-mvc/framework/utils/page"
-	"fmt"
 )
 
 type GoodsDao struct {
@@ -66,12 +66,12 @@ func (d *GoodsDao) List(name string, category int, isOnSale int, isFirst int, is
 // Get
 func (d *GoodsDao) Get(id int) (*models.Goods, []models.GoodsGallery, []models.GoodsSkuKey, []models.GoodsSkuVal, error) {
 	var (
-		err  error
-		ok   bool
-		goods = new(models.Goods)
+		err      error
+		ok       bool
+		goods    = new(models.Goods)
 		gallerys = make([]models.GoodsGallery, 0)
-		skuKey = make([]models.GoodsSkuKey, 0)
-		skuVal = make([]models.GoodsSkuVal, 0)
+		skuKey   = make([]models.GoodsSkuKey, 0)
+		skuVal   = make([]models.GoodsSkuVal, 0)
 	)
 
 	goods.Id = id
@@ -89,10 +89,10 @@ func (d *GoodsDao) Get(id int) (*models.Goods, []models.GoodsGallery, []models.G
 		SELECT K.kid FROM jie_goods_sku_key K WHERE K.goods_sn = "%s" )`, goods.GoodsSn)
 		err = d.engine.SQL(skuvSql).OrderBy("V.vid").Find(&skuVal)
 
-		return  goods, gallerys, skuKey, skuVal, err
+		return goods, gallerys, skuKey, skuVal, err
 
 	} else {
-		return  goods, gallerys, skuKey, skuVal, nil
+		return goods, gallerys, skuKey, skuVal, nil
 	}
 }
 
@@ -143,7 +143,7 @@ func (d *GoodsDao) Close(ids []int) (int64, error) {
 }
 
 // 热门商品 主推商品
-func (d *GoodsDao) GetGoods(state string, val string, p *page.Pagination) ([]models.GoodsDetail, int64, error){
+func (d *GoodsDao) GetGoods(state string, val string, p *page.Pagination) ([]models.GoodsDetail, int64, error) {
 	var (
 		list = make([]models.GoodsDetail, 0)
 	)
@@ -189,13 +189,13 @@ func (d *GoodsDao) GetGoods(state string, val string, p *page.Pagination) ([]mod
 // 产品详情
 func (d *GoodsDao) GetProduct(id int) (*models.Product, error) {
 	var (
-		err  error
-		ok   bool
-		goods = new(models.Goods)
-		product = new(models.Product)
+		err      error
+		ok       bool
+		goods    = new(models.Goods)
+		product  = new(models.Product)
 		gallerys = make([]models.GoodsGallery, 0)
-		skus = make([]models.GoodsSku, 0)
-		vlist = make([]models.GoodsSkuVal, 0)
+		skus     = make([]models.GoodsSku, 0)
+		vlist    = make([]models.GoodsSkuVal, 0)
 	)
 
 	goods.Id = id
@@ -218,8 +218,8 @@ func (d *GoodsDao) GetProduct(id int) (*models.Product, error) {
 		err = d.engine.SQL(skuvSql).Find(&vlist)
 
 		// 构造需要的数据结构，减少数据库的查询
-		for i,_ := range skus {
-			for j,_ := range vlist {
+		for i, _ := range skus {
+			for j, _ := range vlist {
 				if skus[i].Kid == vlist[j].Kid {
 					skus[i].List = append(skus[i].List, vlist[j])
 				}
@@ -227,8 +227,8 @@ func (d *GoodsDao) GetProduct(id int) (*models.Product, error) {
 		}
 
 		product.Sku = skus
-		return  product, err
+		return product, err
 	} else {
-		return  product, err
+		return product, err
 	}
 }

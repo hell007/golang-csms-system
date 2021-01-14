@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"github.com/kataras/iris/v12"
 	models "go-mvc/framework/models/goods"
 	"go-mvc/framework/services"
 	"go-mvc/framework/utils/response"
-	"github.com/kataras/iris/v12"
 )
 
 type SkuController struct {
@@ -14,7 +14,7 @@ type SkuController struct {
 //save
 func (c *SkuController) PostVal() {
 	var (
-		err    error
+		err error
 		//effect int64
 		skuValList = make([]models.GoodsSkuVal, 0)
 	)
@@ -25,7 +25,7 @@ func (c *SkuController) PostVal() {
 		return
 	}
 
-	for _,v := range skuValList {
+	for _, v := range skuValList {
 		if v.Vid > 0 {
 			services.NewSkuService().UpdateVal(&v, nil)
 		} else {

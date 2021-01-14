@@ -1,10 +1,10 @@
 package yaag
 
 import (
-	"github.com/kataras/iris/v12"
-	"go-mvc/framework/bootstrap"
 	"github.com/betacraft/yaag/irisyaag"
 	"github.com/betacraft/yaag/yaag"
+	"github.com/kataras/iris/v12"
+	"go-mvc/framework/bootstrap"
 )
 
 /**
@@ -19,7 +19,7 @@ yaag.Init(&yaag.Config(On: true, DocTile: "Iris", DocPath: "apidoc.html"))
 
 注册yaag中间件
 app.Use(irisyaag.New()) irisyaag记录响应主体并向apidoc提供所有必要的信息
- */
+*/
 
 type myXML struct {
 	Result string `xml:"result"`
@@ -29,9 +29,9 @@ func Configure(b *bootstrap.Bootstrapper) {
 
 	//初始化中间件
 	yaag.Init(&yaag.Config{
-		On:       true,                 //是否开启自动生成API文档功能
+		On:       true, //是否开启自动生成API文档功能
 		DocTitle: "Iris",
-		DocPath:  "apidoc.html",        //生成API文档名称存放路径
+		DocPath:  "apidoc.html", //生成API文档名称存放路径
 		BaseUrls: map[string]string{"Production": "", "Staging": ""},
 	})
 

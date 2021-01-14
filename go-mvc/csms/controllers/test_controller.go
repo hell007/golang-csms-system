@@ -12,7 +12,7 @@ import (
 )
 
 type TestController struct {
-	Ctx iris.Context
+	Ctx     iris.Context
 	Service services.UserService
 }
 
@@ -37,7 +37,7 @@ func TestList(ctx iris.Context) {
 	if !has {
 		ctx.Application().Logger().Errorf("TestController.GetItem查询错误：[%s]", err)
 		golog.Error("UserController GetItem：" + err.Error())
-		response.Failur(ctx,  response.OptionFailur, nil)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -59,10 +59,10 @@ func GetLog(ctx iris.Context) {
 // 图片上传
 func (c *TestController) PostUpload2() {
 	var (
-		err error
-		uploadfiles  = make([]models.UploadFile, 0) //接收数组
-		path string
-		paths = make([]string, 0)
+		err         error
+		uploadfiles = make([]models.UploadFile, 0) //接收数组
+		path        string
+		paths       = make([]string, 0)
 	)
 
 	// 读取
@@ -75,11 +75,10 @@ func (c *TestController) PostUpload2() {
 	fileDir := conf.GetUploadFile()
 
 	// 获取返回的上传路径
-	for _,v := range uploadfiles {
+	for _, v := range uploadfiles {
 		path, err = thumbnail.Base64Upload(fileDir, v.FileData)
 		paths = append(paths, path)
 	}
 
 	response.Ok(c.Ctx, response.OptionSuccess, paths)
 }
-

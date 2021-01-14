@@ -14,20 +14,20 @@ import (
 )
 
 type OrderController struct {
-	Ctx iris.Context
+	Ctx     iris.Context
 	Service services.OrderService
 }
 
 // list
 func (c *OrderController) GetList() {
 	var (
-		err      error
-		name     string
-		orderState  int
-		p        *page.Pagination
-		res      *page.Result
-		list     []models.Order
-		total    int64
+		err        error
+		name       string
+		orderState int
+		p          *page.Pagination
+		res        *page.Result
+		list       []models.Order
+		total      int64
 	)
 
 	// 分页设置
@@ -66,8 +66,8 @@ FAIL:
 // item
 func (c *OrderController) GetItem() {
 	var (
-		err  error
-		ordersn   string
+		err         error
+		ordersn     string
 		orderDetail = new(models.OrderDetail)
 	)
 
@@ -98,8 +98,8 @@ FAIL:
 // save
 func (c *OrderController) PostSave() {
 	var (
-		err    error
-		effect int64
+		err     error
+		effect  int64
 		columns []string
 		order   = new(models.Order)
 	)
@@ -221,5 +221,3 @@ FAIL:
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
-
-

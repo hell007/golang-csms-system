@@ -59,7 +59,7 @@ func (c *PermissionController) GetItem() {
 	menu, err = c.Service.Get(id)
 	if err != nil {
 		c.Ctx.Application().Logger().Errorf("Permission GetItem 查询：[%s]", err)
-		response.Failur(c.Ctx,  response.OptionFailur, nil)
+		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
 

@@ -34,7 +34,7 @@ func (s *goodsService) List(name string, category int, isOnSale int, isFirst int
 	return s.dao.List(name, category, isOnSale, isFirst, isHot, p)
 }
 
-func (s *goodsService) Get(id int) (*models.Goods, []models.GoodsGallery, []models.GoodsSkuKey, []models.GoodsSkuVal, error)  {
+func (s *goodsService) Get(id int) (*models.Goods, []models.GoodsGallery, []models.GoodsSkuKey, []models.GoodsSkuVal, error) {
 	return s.dao.Get(id)
 }
 
@@ -54,13 +54,10 @@ func (s *goodsService) Close(ids []int) (int64, error) {
 	return s.dao.Close(ids)
 }
 
-func (s *goodsService) GetGoods(state string, val string, p *page.Pagination) ([]models.GoodsDetail, int64, error){
+func (s *goodsService) GetGoods(state string, val string, p *page.Pagination) ([]models.GoodsDetail, int64, error) {
 	return s.dao.GetGoods(state, val, p)
 }
 
 func (s *goodsService) GetProduct(id int) (*models.Product, error) {
 	return s.dao.GetProduct(id)
 }
-
-
-

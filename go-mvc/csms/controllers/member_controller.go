@@ -22,13 +22,13 @@ type MemberController struct {
 // list?pageNumber=1&pageSize=2&name=曹操
 func (c *MemberController) GetList() {
 	var (
-		err      error
-		name string
-		status   int
-		p        *page.Pagination
-		res      *page.Result
-		list     []models.Member
-		total    int64
+		err    error
+		name   string
+		status int
+		p      *page.Pagination
+		res    *page.Result
+		list   []models.Member
+		total  int64
 	)
 
 	// 分页设置
@@ -65,8 +65,8 @@ FAIL:
 // item?id=1
 func (c *MemberController) GetItem() {
 	var (
-		err  error
-		id   int
+		err          error
+		id           int
 		memberDetail = new(models.MemberDetail)
 	)
 
@@ -99,7 +99,7 @@ func (c *MemberController) PostSave() {
 	var (
 		err    error
 		effect int64
-		member   = new(models.Member)
+		member = new(models.Member)
 	)
 
 	if err = c.Ctx.ReadJSON(&member); err != nil {

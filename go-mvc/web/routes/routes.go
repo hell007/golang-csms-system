@@ -15,7 +15,7 @@ func Configure(b *bootstrap.Bootstrapper) {
 	//main.Use(middleware.ServeAPIS)
 
 	// 首屏渲染
-	page :=  main.Party("/")
+	page := main.Party("/")
 	page.Get("/", func(ctx iris.Context) {
 		ctx.ViewData("path", ctx.Path())
 		ctx.View("index.html")
@@ -25,7 +25,7 @@ func Configure(b *bootstrap.Bootstrapper) {
 	api := main.Party("/api")
 
 	// 测试路由------S
-	test := api.Party("/test", func(ctx iris.Context){
+	test := api.Party("/test", func(ctx iris.Context) {
 		ctx.Next()
 	})
 	{
@@ -34,7 +34,7 @@ func Configure(b *bootstrap.Bootstrapper) {
 	// 测试路由------E
 
 	// 首页路由
-	home :=  api.Party("/home")
+	home := api.Party("/home")
 	home.Get("/list", apis.Home)
 
 	// 分类路由

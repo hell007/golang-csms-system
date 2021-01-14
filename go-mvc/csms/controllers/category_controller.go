@@ -18,15 +18,15 @@ type CategoryController struct {
 // list
 func (c *CategoryController) GetList() {
 	var (
-		err   error
-		list  []models.Category
-		pid int
+		err  error
+		list []models.Category
+		pid  int
 	)
 
 	pid, _ = c.Ctx.URLParamInt("pid")
 
 	// 查询
-	list, err  = c.Service.List(pid)
+	list, err = c.Service.List(pid)
 	if err != nil {
 		c.Ctx.Application().Logger().Errorf("Category GetList 查询：[%s]", err)
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
@@ -40,8 +40,8 @@ func (c *CategoryController) GetList() {
 // item
 func (c *CategoryController) GetItem() {
 	var (
-		err  error
-		id   int
+		err      error
+		id       int
 		category = new(models.Category)
 	)
 
@@ -72,9 +72,9 @@ FAIL:
 // save
 func (c *CategoryController) PostSave() {
 	var (
-		err    error
-		effect int64
-		category   = models.Category{}
+		err      error
+		effect   int64
+		category = models.Category{}
 	)
 
 	if err = c.Ctx.ReadJSON(&category); err != nil {
@@ -193,4 +193,3 @@ FAIL:
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
-

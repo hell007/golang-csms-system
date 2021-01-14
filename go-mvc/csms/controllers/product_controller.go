@@ -17,7 +17,7 @@ import (
 )
 
 type ProductController struct {
-	Ctx iris.Context
+	Ctx     iris.Context
 	Service services.GoodsService
 }
 
@@ -26,10 +26,10 @@ func (c *ProductController) GetList() {
 	var (
 		err      error
 		name     string
-		category  int
-		isOnSale   int
-		isFirst   int
-		isHot   int
+		category int
+		isOnSale int
+		isFirst  int
+		isHot    int
 		p        *page.Pagination
 		res      *page.Result
 		list     []models.GoodsDetail
@@ -75,12 +75,12 @@ FAIL:
 // item
 func (c *ProductController) GetItem() {
 	var (
-		err  error
-		id   int
-		goods = new(models.Goods)
+		err         error
+		id          int
+		goods       = new(models.Goods)
 		galleryList = make([]models.GoodsGallery, 0)
-		skuValList = make([]models.GoodsSkuVal, 0)
-		maps = make(map[string]interface{}, 0)
+		skuValList  = make([]models.GoodsSkuVal, 0)
+		maps        = make(map[string]interface{}, 0)
 	)
 
 	// 参数处理
@@ -116,7 +116,7 @@ func (c *ProductController) PostSave() {
 	var (
 		err    error
 		effect int64
-		goods = new(models.Goods)
+		goods  = new(models.Goods)
 	)
 
 	if err = c.Ctx.ReadJSON(&goods); err != nil {
@@ -160,7 +160,7 @@ func (c *ProductController) PostUpload() {
 
 	// 源图
 	fileName := thumbnail.ParseName(info.Filename, 0)
-	filePath, err1 := files.MakeFilePath(conf.GetUploadFile() + conf.GlobalConfig.UploadEditor[0], fileName)
+	filePath, err1 := files.MakeFilePath(conf.GetUploadFile()+conf.GlobalConfig.UploadEditor[0], fileName)
 	if err1 != nil {
 		c.Ctx.Application().Logger().Errorf("Product PostUpload 目录：[%s]", err1)
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
@@ -178,7 +178,6 @@ func (c *ProductController) PostUpload() {
 
 	defer out.Close()
 	_, _ = io.Copy(out, file)
-
 
 	res.Error = 0
 	res.Url = conf.GlobalConfig.UploadUrl + conf.GlobalConfig.UploadEditor[0] + fileName
@@ -281,4 +280,3 @@ FAIL:
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
-

@@ -37,12 +37,12 @@ gtcsfield=Other.Field: 必须大于 struct Other 中 Field 的值；
 gtecsfield=Other.Field: 必须大于等于 struct Other 中 Field 的值；
 ltcsfield=Other.Field: 必须小于 struct Other 中 Field 的值；
 ltecsfield=Other.Field: 必须小于等于 struct Other 中 Field 的值
- */
+*/
 
 type Users struct {
-	Id    string `json:"id"`
+	Id       string `json:"id"`
 	Name     string `json:"name" validate:"required,CustomValidationErrors"` //包含自定义函数
-	Phone    string `json:"phone" validate:"required"`
+	Phone    string `json:"phone" validate:"required,len=11"`
 	Passwd   string `json:"passwd" validate:"required,max=20,min=6"`
 	Repasswd string `json:"repasswd" validate:"required,max=20,min=6,eqfield=Passwd"`
 	Code     string `json:"code" validate:"required,len=6"`
@@ -55,11 +55,11 @@ func CustomValidationErrors(fl validator.FieldLevel) bool {
 func main() {
 
 	users := &Users{
-		Name:   "test",//"admin" //自定义验证
-		Phone:  "13837462388",
-		Passwd: "123456789",
-		Repasswd: "123456789x",
-		Code:   "708090",
+		Name:     "test", //"admin" //自定义验证
+		Phone:    "13837462388",
+		Passwd:   "123456789",
+		Repasswd: "123456789",
+		Code:     "708090",
 	}
 	validate := validator.New()
 

@@ -15,7 +15,7 @@ import (
 const (
 	StaticAssets = "./assets/"
 	Favicon      = "favicon.ico"
-	Uploads = "../uploads/"
+	Uploads      = "../uploads/"
 )
 
 func newApp() *bootstrap.Bootstrapper {
@@ -24,7 +24,6 @@ func newApp() *bootstrap.Bootstrapper {
 	app.Configure(identity.Configure, routes.Configure)
 	return app
 }
-
 
 func main() {
 	// 创建实例

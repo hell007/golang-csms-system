@@ -73,10 +73,10 @@ func ThumbnailSimple(maxWidth, maxHeight uint, img image.Image) image.Image {
 }
 
 // 缩略图保存
-func ThumbnailSave(filename string, width uint, height uint, flag int) string{
+func ThumbnailSave(filename string, width uint, height uint, flag int) string {
 	var (
 		filePath string
-		newName string
+		newName  string
 	)
 
 	switch flag {

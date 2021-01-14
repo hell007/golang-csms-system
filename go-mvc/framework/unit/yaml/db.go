@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	Db MySql // for casbin to user
+	Db           MySql // for casbin to user
 	masterEngine *xorm.Engine
 	slaveEngine  *xorm.Engine
 	once         sync.Once
@@ -37,7 +37,7 @@ type DbInfo struct {
 	Database     string `yaml:"database"`
 	Charset      string `yaml:"charset"`
 	ShowSql      bool   `yaml:"showSql"`
-	Prefix		   string `yaml:"prefix"`
+	Prefix       string `yaml:"prefix"`
 	LogLevel     string `yaml:"logLevel"`
 	MaxIdleConns int    `yaml:"maxIdleConns"`
 	MaxOpenConns int    `yaml:"maxOpenConns"`
@@ -70,7 +70,7 @@ func GetConnURL(c *DbInfo) (url string) {
 }
 
 // 创建xorm
-func newEngine() *xorm.Engine{
+func newEngine() *xorm.Engine {
 	var d MySql
 	master := d.GetConf().Master
 	engine, err := xorm.NewEngine(master.Dialect, GetConnURL(&master))

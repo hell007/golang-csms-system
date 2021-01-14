@@ -21,7 +21,7 @@ var (
 
 /**
 获取数据库连接的url
- */
+*/
 func GetConnURL() (url string) {
 	url = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s",
 		conf.GlobalConfig.MysqlMasterUser,
@@ -35,8 +35,8 @@ func GetConnURL() (url string) {
 
 /**
 创建xorm Engine
- */
-func newEngine() *xorm.Engine{
+*/
+func newEngine() *xorm.Engine {
 	engine, err := xorm.NewEngine(conf.GlobalConfig.MysqlDialect, GetConnURL())
 	if err != nil {
 		golog.Fatalf("db.Engine, %s", err)

@@ -9,7 +9,7 @@ import (
 func TestNewCaptcha(t *testing.T) {
 	cp := NewCaptcha(120, 40, 4)
 	cp.SetMode(1) // 设置为数学公式
-	code, img  := cp.OutPut()
+	code, img := cp.OutPut()
 
 	fmt.Println("captcha===", code, img)
 }

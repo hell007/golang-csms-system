@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<base href="http://127.0.0.1:9000/" />
+<base href="http://127.0.0.1:9000/"/>
 <head>
-    <meta charset="UTF-8">
-    <title>test</title>
+	<meta charset="UTF-8">
+	<title>test</title>
 </head>
 <body>
 
 <script src="assets/vendors/jquery/3.3.1/dist/jquery.js"></script>
 <script>
-$(function(){
+  $(function () {
     $.ajax({
-        type:"GET",
-        url:"http://127.0.0.1:9000/sys/user/list?pageNumber=1&pageSize=10&names=",
-        dataType:"json",
-        success:function(data){
-            console.log('success===>', data)
-        },
-        error:function(err){
-            console.log('error===>', err)
-        }
+      type: "GET",
+      url: "http://127.0.0.1:9000/sys/user/list?pageNumber=1&pageSize=10&names=",
+      dataType: "json",
+      success: function (data) {
+        console.log('success===>', data)
+      },
+      error: function (err) {
+        console.log('error===>', err)
+      }
     });
-})
+  })
 </script>
 </body>
 </html>

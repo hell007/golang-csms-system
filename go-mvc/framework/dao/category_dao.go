@@ -19,7 +19,7 @@ func NewCategoryDao(engine *xorm.Engine) *CategoryDao {
 // list
 func (d *CategoryDao) List(pid int) ([]models.Category, error) {
 	var (
-		err error
+		err  error
 		list = make([]models.Category, 0)
 	)
 
@@ -28,8 +28,8 @@ func (d *CategoryDao) List(pid int) ([]models.Category, error) {
 	} else {
 		err = d.engine.Table("jie_category").Alias("C").Select("C.*, GA.small").
 			Join("LEFT", "jie_goods G", "C.id = G.category_id").
-		 	Join("LEFT", "jie_goods_gallery GA", "G.id = GA.goods_id").
-		 	Where("status = ?", 1).GroupBy("C.category_name").Find(&list)
+			Join("LEFT", "jie_goods_gallery GA", "G.id = GA.goods_id").
+			Where("status = ?", 1).GroupBy("C.category_name").Find(&list)
 	}
 
 	return list, err
@@ -87,4 +87,3 @@ func (d *CategoryDao) Close(ids []int) (int64, error) {
 	effect, err = d.engine.In("id", ids).Cols("status").Update(category)
 	return effect, err
 }
-

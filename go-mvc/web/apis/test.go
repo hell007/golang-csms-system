@@ -5,12 +5,11 @@ import (
 	"github.com/kataras/iris/v12"
 	"time"
 
+	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/conf"
 	"go-mvc/framework/utils/idgen"
-	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/utils/response"
 )
-
 
 var keys = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat) //24
 
@@ -20,7 +19,7 @@ func Test(ctx iris.Context) {
 }
 
 func V1(ctx iris.Context) {
-	err := redisClient.Set("test", "测试", 1 * time.Second).Err()
+	err := redisClient.Set("test", "测试", 1*time.Second).Err()
 	if err != nil {
 		fmt.Println("client.Set fail", err)
 	}
@@ -47,11 +46,8 @@ func V3(ctx iris.Context) {
 	// 15位
 	idgen.GenerateOrdersn()
 
-	fmt.Println("====",)
+	fmt.Println("====", )
 
 	response.Ok(ctx, response.OptionSuccess, err)
 	return
 }
-
-
-

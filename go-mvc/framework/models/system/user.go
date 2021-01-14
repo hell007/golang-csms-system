@@ -19,6 +19,6 @@ type User struct {
 }
 
 type UserDetail struct {
-	User             `xorm:"extends"`
-	RoleName string  `json:"roleName"`
+	User     `xorm:"extends"`
+	RoleName string `json:"roleName"`
 }

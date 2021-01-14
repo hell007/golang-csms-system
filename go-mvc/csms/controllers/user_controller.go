@@ -27,12 +27,12 @@ type UserController struct {
 // 注意：后台用户登录没有使用salt盐值加密密码，仅仅使用/conf里面的设置值
 func (c *UserController) PostLogin() {
 	var (
-		err  error
-		columns []string
+		err        error
+		columns    []string
 		ckPassword bool
-		token string
-		user = new(models.User)
-		ut = new(models.UserToken) //需要返回的组装user
+		token      string
+		user       = new(models.User)
+		ut         = new(models.UserToken) //需要返回的组装user
 	)
 
 	if err = c.Ctx.ReadJSON(&user); err != nil {
@@ -70,7 +70,7 @@ func (c *UserController) PostLogin() {
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.TokenCreateFailur, nil)
 		return
 	}
-	
+
 	// 更新登录时间，盐值, ip
 	// 获取用户ip
 	ip := ips.ClientIP(c.Ctx.Request())
@@ -184,7 +184,7 @@ func (c *UserController) GetItem() {
 	if !has {
 		c.Ctx.Application().Logger().Errorf("UserController GetItem 查询：[%s]", err)
 		golog.Error("UserController GetItem：" + err.Error())
-		response.Failur(c.Ctx,  response.OptionFailur, nil)
+		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
 

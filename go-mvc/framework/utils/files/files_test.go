@@ -49,4 +49,3 @@ func TestRemoveFile(t *testing.T) {
 	//file := "test.jpg"
 	//RemoveFile(GetUploadFile() + file)
 }
-

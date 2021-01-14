@@ -27,7 +27,6 @@ func NewOrderService() OrderService {
 	}
 }
 
-
 func (s *orderService) List(name string, orderState int, p *page.Pagination) ([]models.Order, int64, error) {
 	return s.dao.List(name, orderState, p)
 }

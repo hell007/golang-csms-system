@@ -34,7 +34,7 @@ func Del(key string) *redis.IntCmd {
 }
 
 //incr
-func Incr(key string) *redis.IntCmd{
+func Incr(key string) *redis.IntCmd {
 	if conf.GlobalConfig.RedisClusterState {
 		return redisClusterClient.Incr(key)
 	} else {

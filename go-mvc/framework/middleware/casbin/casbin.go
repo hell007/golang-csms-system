@@ -10,8 +10,8 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/kataras/iris/v12/context"
 
-	"go-mvc/framework/db"
 	"go-mvc/framework/conf"
+	"go-mvc/framework/db"
 	"go-mvc/framework/middleware/jwt"
 	"go-mvc/framework/utils/response"
 )
@@ -58,8 +58,8 @@ func GetEnforcer() *casbin.Enforcer {
 		return e
 	}
 
-	m,_ := model.NewModelFromString(rbacModel)
-	e,_ = casbin.NewEnforcer(m, singleAdapter())
+	m, _ := model.NewModelFromString(rbacModel)
+	e, _ = casbin.NewEnforcer(m, singleAdapter())
 
 	e.EnableLog(true)
 	return e
@@ -89,7 +89,7 @@ func CheckPermissions(ctx context.Context) bool {
 
 	//uid := strconv.Itoa(int(ut.Id))
 	rolename := ut.Rolename
-	yes,_ := GetEnforcer().Enforce(rolename, ctx.Path(), ctx.Method(), ".*")
+	yes, _ := GetEnforcer().Enforce(rolename, ctx.Path(), ctx.Method(), ".*")
 
 	if !yes {
 		response.Unauthorized(ctx, response.PermissionsLess, nil)

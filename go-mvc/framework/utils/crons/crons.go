@@ -14,7 +14,6 @@ type Crontab struct {
 	mutex sync.Mutex
 }
 
-
 // NewCrontab new crontab
 func NewCrontab() *Crontab {
 	return &Crontab{

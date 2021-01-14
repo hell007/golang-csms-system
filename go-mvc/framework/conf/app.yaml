@@ -40,11 +40,11 @@ JWT.Salt: ARRSWdczx13213EDDSWQ!!@W
 JWT.Timeout: 3600 #单位秒：设置1小时
 #Auth
 Auth.Ignores: ['/',
-'/sys/user/login',
-'/sys/user/loginout',
-'/sys/rule/menus',
-'/sys/test/upload',
-'/api/test/index']
+               '/sys/user/login',
+               '/sys/user/loginout',
+               '/sys/rule/menus',
+               '/sys/test/upload',
+               '/api/test/index']
 #自定义配置
 Upload.Url: http://127.0.0.1:9000/uploads
 Upload.Style: ['100x100','360x360','800x800']

@@ -2,7 +2,7 @@ package test
 
 /**
 单元测试
- */
+*/
 
 import (
 	"testing"

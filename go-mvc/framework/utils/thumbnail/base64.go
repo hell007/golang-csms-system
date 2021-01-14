@@ -1,8 +1,8 @@
 package thumbnail
 
 import (
-	"go-mvc/framework/utils/files"
 	"encoding/base64"
+	"go-mvc/framework/utils/files"
 	"os"
 	"strings"
 )

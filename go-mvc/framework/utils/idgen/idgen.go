@@ -11,16 +11,16 @@ import (
 )
 
 const (
-	orderSnKey = "jie-order-sn"
-	orderSnStart = "100000000000000" // 15位
-	orderSnTime = 365 * 24 * 60 * 60 * time.Second // 1年
+	orderSnKey   = "jie-order-sn"
+	orderSnStart = "100000000000000"                // 15位
+	orderSnTime  = 365 * 24 * 60 * 60 * time.Second // 1年
 )
 
 // uuid 测试
 func Generate() {
 	u1 := uuid.NewV1()
 	u2 := uuid.NewV2(0x00)
-	u3 := uuid.NewV3(u1,"uid")
+	u3 := uuid.NewV3(u1, "uid")
 	u4 := uuid.NewV4()
 	u5 := uuid.NewV5(u1, "u1")
 
@@ -38,7 +38,7 @@ func GenerateUuid() string {
 }
 
 // 生成订单号
-func GenerateOrdersn() int64{
+func GenerateOrdersn() int64 {
 	// 淘宝18位 14位 + 15/16 + 17/18
 	// 利用redis生成订单号策略
 	// 失效日期需要永久
@@ -46,7 +46,7 @@ func GenerateOrdersn() int64{
 
 	// 15位
 	var (
-		err error
+		err     error
 		ordersn int64
 	)
 
@@ -55,7 +55,7 @@ func GenerateOrdersn() int64{
 	//stringTime  := time.Now().Format("01-02")
 	//fmt.Println(stringTime)
 
-	_, err  = redisClient.Get(orderSnKey).Result()
+	_, err = redisClient.Get(orderSnKey).Result()
 	if err != nil {
 		redisClient.Set(orderSnKey, orderSnStart, orderSnTime).Err()
 		golog.Infof("GenerateOrdersn Get %s", err)

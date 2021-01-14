@@ -14,7 +14,7 @@ import (
 // 图片添加水印
 // $ go test -v watermark_test.go utils.go watermark.go
 func TestWaterMark(t *testing.T) {
-	fileName :=  "test.jpg"
+	fileName := "test.jpg"
 	newName := "water-test.jpg"
 	newImage, info, err1 := LoadImage(conf.GetUploadFile() + fileName)
 	fmt.Println("添加水印1", info, err1)

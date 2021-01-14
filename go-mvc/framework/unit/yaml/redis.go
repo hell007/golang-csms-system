@@ -15,16 +15,16 @@ type Redis struct {
 }
 
 type SingleInfo struct {
-	Addr     string   `yaml:"addr"`
-	Password string   `yaml:"password"`
-	Db       int      `yaml:"db"`
-	PoolSize int      `yaml:"poolSize"`
+	Addr     string `yaml:"addr"`
+	Password string `yaml:"password"`
+	Db       int    `yaml:"db"`
+	PoolSize int    `yaml:"poolSize"`
 }
 
 type ClusterInfo struct {
-	Addrs     []string `yaml:"addrs"`
-	Password  string   `yaml:"password"`
-	State     bool     `yaml:"state"`
+	Addrs    []string `yaml:"addrs"`
+	Password string   `yaml:"password"`
+	State    bool     `yaml:"state"`
 }
 
 // 读取配置文件

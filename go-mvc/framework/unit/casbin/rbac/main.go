@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	e,_ := casbin.NewEnforcer("rbac.conf", "rbac.csv")
+	e, _ := casbin.NewEnforcer("rbac.conf", "rbac.csv")
 
 	fmt.Printf("RBAC test start\n") // output for debug
 

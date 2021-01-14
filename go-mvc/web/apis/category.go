@@ -11,7 +11,7 @@ import (
 
 /**
 商品分类
- */
+*/
 func CategoryList(ctx iris.Context) {
 	categoryList, err := services.NewCategoryService().List(0)
 	if err != nil {
@@ -26,13 +26,13 @@ func CategoryList(ctx iris.Context) {
 
 /**
 商品分类商品列表
- */
+*/
 func CategoryGoods(ctx iris.Context) {
 	var (
 		err error
 		id  int
-		p     *page.Pagination
-		res   *page.Result
+		p   *page.Pagination
+		res *page.Result
 	)
 
 	p, err = page.NewPagination(ctx)

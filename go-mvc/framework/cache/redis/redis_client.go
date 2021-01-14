@@ -9,6 +9,7 @@ import (
 
 //redis单机客户端
 var client *redis.Client
+
 //redis集群客户端
 var redisClusterClient *redis.ClusterClient
 
@@ -24,7 +25,7 @@ func init() {
 		})
 		//Ping
 		ping, err := redisClusterClient.Ping().Result()
-		golog.Infof("Redis Ping %s %s",ping, err)
+		golog.Infof("Redis Ping %s %s", ping, err)
 
 	} else {
 		//Redis客户端，由零个或多个基础连接组成的池。它对于多个goroutine的并发使用是安全的。
