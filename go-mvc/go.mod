@@ -3,6 +3,7 @@ module go-mvc
 go 1.13
 
 require (
+	github.com/360EntSecGroup-Skylar/excelize v1.4.1
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.60.287
 	github.com/casbin/casbin/v2 v2.1.2
