@@ -1,68 +1,68 @@
 {
-  "name": "csms-system",
-  "version": "1.0.0",
-  "description": "vue vant front",
+  "name": "vue3-typescript-vant",
+  "version": "0.1.0",
+  "description": "vue3",
   "author": "1048523306@qq.com",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "start": "vue-cli-service serve",
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "keywords": [
     "vue3",
-    "vue-cli-3",
-    "vue-function-based"
+    "typescript"
   ],
   "dependencies": {
-    "axios": "^0.19.0",
-    "better-scroll": "^1.15.2",
-    "clipboard": "^2.0.4",
-    "core-js": "^2.6.9",
-    "crypto-js": "^3.1.9-1",
-    "jquery": "^3.4.1",
-    "moment": "^2.24.0",
-    "simplemde": "^1.11.2",
+    "axios": "^0.20.0",
+    "core-js": "^3.6.5",
+    "hydrogen-js-sdk": "^2.2.4",
+    "lodash": "^4.17.20",
+    "mockjs": "^1.1.0",
+    "moment": "^2.29.1",
+    "normalize.css": "7.0.0",
+    "nprogress": "^0.2.0",
     "storejs": "^1.0.25",
-    "swiper": "^5.0.4",
-    "vue": "^2.6.10",
-    "vue-function-api": "^2.0.5",
-    "vue-i18n": "7.3.2",
-    "vue-infinite-scroll": "^2.0.2",
-    "vue-router": "^3.0.3",
-    "vuex": "^3.0.1"
+    "vant": "^3.0.2",
+    "vue": "^3.0.0-0",
+    "vue-class-component": "^8.0.0-0",
+    "vue-property-decorator": "^8.3.0",
+    "vue-router": "^4.0.0-0",
+    "vuex": "^4.0.0-0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.2.3",
-    "@vue/cli-plugin-pwa": "^4.2.3",
-    "@vue/cli-service": "^4.2.3",
-    "compression-webpack-plugin": "^3.1.0",
-    "mockjs": "1.0.1-beta3",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0-0",
+    "@vue/eslint-config-standard": "^5.1.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
+    "eslint": "^7.12.1",
+    "eslint-config-alloy": "^3.8.2",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^7.0.0-0",
+    "less": "^3.12.2",
+    "less-loader": "^7.0.2",
     "node-sass": "^4.12.0",
-    "normalize.css": "7.0.0",
-    "register-service-worker": "^1.6.2",
-    "sass-loader": "^8.0.2",
-    "sass-resources-loader": "^2.0.1",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "vue-template-compiler": "^2.6.10",
-    "zrender": "^4.3.0"
+    "postcss-px-to-viewport": "^1.1.1",
+    "prettier": "^1.19.1",
+    "sass-loader": "^10.0.4",
+    "sass-resources-loader": "^2.1.1",
+    "ts-import-plugin": "^1.6.6",
+    "typescript": "~3.9.3",
+    "vue-eslint-parser": "^7.0.0",
+    "vue-loader": "^15.9.5"
   },
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/"
-  },
-  "bugs": {
-    "url": "https://github.com/"
-  },
-  "homepage": "https://github.com/#readme"
+  }
 }

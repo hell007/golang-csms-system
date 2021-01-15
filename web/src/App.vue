@@ -1,34 +1,21 @@
 <template>
-  <section style="width:100%;height:100%;">
-    <transition name="fade" mode="out-in">
-      <keep-alive>
-        <router-view v-if="$route.meta.keepAlive" :key="`view-{key}`">
-        </router-view>
-      </keep-alive>
-    </transition>
-    <transition name="fade" mode="out-in">
-      <router-view v-if="!$route.meta.keepAlive" :key="`view-{key}`">
-      </router-view>
-    </transition>
-  </section>
+  <router-view v-slot="{ Component }">
+    <keep-alive :include="includeRoutes">
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
 </template>
-<script>
-export default {
-  name: 'APP',
-  components: {},
-  data() {
-    return {}
-  },
-  methods: {},
-  //实时计算属性
-  computed: {
-    key() {
-      return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
-    }
-  },
-  created: function() {}
-}
+<script lang="ts">
+import { defineComponent, reactive, toRefs } from 'vue';
+export default defineComponent({
+  setup() {
+    const state = reactive({
+      includeRoutes: []
+    });
+    return { ...toRefs(state) };
+  }
+});
 </script>
-<style type="text/css">
-@import './styles/common.css'
+<style lang="scss">
+@import './styles/common.scss';
 </style>

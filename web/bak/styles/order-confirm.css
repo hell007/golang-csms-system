@@ -1,0 +1,56 @@
+.order-user {
+  padding: 0.55555556rem;
+  margin: 0.55555556rem;
+  -webkit-border-radius: 0.27777778rem;
+  border-radius: 0.27777778rem;
+  background-color: #fff;
+  font-size: 0.66666667rem;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAAEBAMAAADVBcoxAAAAAXNSR0IB2cksfwAAAA9QTFRFAAAA8EhENJjb70dCMpbZFQL0ZgAAAAV0Uk5TAP//UVEdOjnaAAAANklEQVR4nGNgEIQBYQYGJRhQYWBgYIbLCDCwwGUUgDKMcBkDBia4jANQxhAuw8DgBJdhYDAAAKVFCLE7AuEaAAAAAElFTkSuQmCC);
+  background-position: left bottom;
+  background-repeat: repeat-x;
+  -webkit-background-size: 10% 10%;
+  background-size: 10%;
+}
+
+.order-user-name {
+  margin-bottom: 0.27777778rem;
+}
+
+.order-user-name span {
+  margin-right: 0.55555556rem;
+}
+
+.order-user p {
+  font-size: 0.66666667rem;
+  color: #999;
+  margin-bottom: 0;
+}
+
+.bar-left-confirm {
+  padding: 0 0.55555556rem;
+}
+
+.bar-right-confirm {
+  height:100%;
+  text-align: right;
+}
+
+.bar-right-confirm .btn {
+  height: 100%;
+  padding: 0;
+}
+
+.bar-price {
+  line-height: 2.77777778rem;
+  font-size: 1.2rem;
+  color: #d03629;
+}
+
+.bar-price b {
+  font-weight: normal;
+}
+
+.bar-price em {
+  font-style: normal;
+  font-size: 0.66666667rem;
+}
