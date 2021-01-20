@@ -35,7 +35,7 @@ Logs.Level: error
 Logs.Prefix:
 Logs.Output: logs/
 #Jwt
-JWT.Secret: SECRET_ #加盐
+JWT.Secret: JIE-- #加盐
 JWT.Salt: ARRSWdczx13213EDDSWQ!!@W
 JWT.Timeout: 3600 #单位秒：设置1小时
 #Auth

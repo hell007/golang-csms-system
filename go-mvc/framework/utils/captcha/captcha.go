@@ -15,6 +15,7 @@ import (
 	"github.com/golang/freetype"
 	"github.com/llgcode/draw2d"
 	"github.com/llgcode/draw2d/draw2dimg"
+	"go-mvc/framework/conf"
 	"image"
 	"image/color"
 	"io/ioutil"
@@ -32,7 +33,7 @@ const (
 	defaultLen      = 4
 	defaultFontSize = 25
 	defaultDpi      = 72
-	defaultFontPath = "./fonts/"
+	defaultFontPath = "fonts/"
 	defaultFontName = "weiruanyahei"
 )
 
@@ -56,7 +57,7 @@ type Captcha struct {
 // 实例化验证码
 func NewCaptcha(w, h, CodeLen int) *Captcha {
 	cp := &Captcha{W: w, H: h, CodeLen: CodeLen}
-	cp.SetFontPath(defaultFontPath)
+	cp.SetFontPath(conf.GetConfigPath() + defaultFontPath)
 	cp.SetFontName(defaultFontName)
 	return cp
 }

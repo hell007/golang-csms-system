@@ -58,11 +58,11 @@ func Configure(b *bootstrap.Bootstrapper) {
 	// 用户路由
 	user := api.Party("/user")
 	{
-		user.Get("/register", apis.Register)
+		user.Post("/register", apis.Register)
 		user.Get("/captcha", apis.Captcha)
 		user.Post("/login", apis.Login)
 		user.Get("/logout", apis.Logout)
-		user.Get("/userInfo", apis.UserInfo)
+		user.Get("/profile", apis.Profile)
 		user.Get("/findUser", apis.FindUser)
 		user.Get("/city", apis.City)
 		user.Get("/userAddress", apis.UserAddress)

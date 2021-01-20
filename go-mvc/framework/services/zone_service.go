@@ -8,9 +8,9 @@ import (
 )
 
 type ZoneService interface {
-	GetAll() []models.Zone
+	GetAll() ([]models.Zone, error)
 	List(p *page.Pagination) ([]models.Zone, int64, error)
-	GetCity(areaType interface{}) ([]models.City, error)
+	GetCity(pid int) ([]models.City, error)
 	Get(id int) (*models.Zone, error)
 	Delete(id int) (int64, error)
 	Update(zone *models.Zone, columns []string) (int64, error)
@@ -27,7 +27,7 @@ func NewZoneService() ZoneService {
 	}
 }
 
-func (s *zoneService) GetAll() []models.Zone {
+func (s *zoneService) GetAll() ([]models.Zone, error) {
 	return s.dao.GetAll()
 }
 
@@ -35,8 +35,8 @@ func (s *zoneService) List(p *page.Pagination) ([]models.Zone, int64, error) {
 	return s.dao.List(p)
 }
 
-func (s *zoneService) GetCity(areaType interface{}) ([]models.City, error) {
-	return s.dao.GetCity(areaType)
+func (s *zoneService) GetCity(pid int) ([]models.City, error) {
+	return s.dao.GetCity(pid)
 }
 
 func (s *zoneService) Get(id int) (*models.Zone, error) {

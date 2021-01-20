@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"fmt"
 	"github.com/go-xorm/xorm"
 
@@ -19,13 +20,13 @@ func NewZoneDao(engine *xorm.Engine) *ZoneDao {
 }
 
 // GetAll
-func (d *ZoneDao) GetAll() []models.Zone {
+func (d *ZoneDao) GetAll() ([]models.Zone, error) {
 	datalist := make([]models.Zone, 0)
 	err := d.engine.Desc("id").Find(&datalist)
 	if err != nil {
-		return datalist
+		return datalist, errors.New("查询错误")
 	} else {
-		return datalist
+		return datalist, nil
 	}
 }
 
@@ -42,21 +43,16 @@ func (d *ZoneDao) List(p *page.Pagination) ([]models.Zone, int64, error) {
 }
 
 // GetCity
-func (d *ZoneDao) GetCity(areaType interface{}) ([]models.City, error) {
+func (d *ZoneDao) GetCity(pid int) ([]models.City, error) {
 	var (
 		err  error
 		sql  string
 		list = make([]models.City, 0)
 	)
 
-	if areaType != nil {
-		sql = fmt.Sprintf(`SELECT Z.id, Z.area_id AS value, Z.area_name AS text, Z.pid FROM jie_zone Z 
-			WHERE Z.area_type = %d GROUP BY id asc`, areaType)
-		err = d.engine.SQL(sql).Find(&list)
-	} else {
-		sql = `SELECT Z.id, Z.area_id AS value, Z.area_name AS text, Z.pid FROM jie_zone Z GROUP BY id asc`
-		err = d.engine.SQL(sql).Find(&list)
-	}
+	sql = fmt.Sprintf(`SELECT Z.id, Z.area_id AS value, Z.area_name AS text, Z.pid FROM jie_zone Z 
+			WHERE Z.pid = %d GROUP BY id asc`, pid)
+	err = d.engine.SQL(sql).Find(&list)
 
 	return list, err
 }

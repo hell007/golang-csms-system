@@ -11,7 +11,6 @@ import (
 	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/conf"
 	models "go-mvc/framework/models/member"
-	"go-mvc/framework/models/zone"
 	"go-mvc/framework/services"
 	"go-mvc/framework/utils/captcha"
 	"go-mvc/framework/utils/encrypt"
@@ -223,7 +222,7 @@ func Logout(ctx iris.Context) {
 }
 
 // 用户信息
-func UserInfo(ctx iris.Context) {
+func Profile(ctx iris.Context) {
 	var (
 		err                error
 		token, keys, jsonU string
@@ -344,57 +343,22 @@ func FindUser(ctx iris.Context) {
 	return
 }
 
-/**
-地址
-*/
+// 全国省市县
 func City(ctx iris.Context) {
 	var (
-		err                  error
-		jsonP, jsonC, jsonA  string
-		province, city, area []zone.City
-		maps                 = make(map[string]interface{}, 0)
+		err      error
 	)
-	// redis
-	jsonP, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + "province").Result()
-	jsonC, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + "city").Result()
-	jsonA, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + "area").Result()
-	err = json.Unmarshal([]byte(jsonP), &province)
-	err = json.Unmarshal([]byte(jsonC), &city)
-	err = json.Unmarshal([]byte(jsonA), &area)
 
-	// redis不存在
+	// 根据pid查询
+	pid, _ := ctx.URLParamInt("aid")
+	cityList, err := services.NewZoneService().GetCity(pid)
 	if err != nil {
-		province, err = services.NewZoneService().GetCity(1)
-		city, err = services.NewZoneService().GetCity(2)
-		area, err = services.NewZoneService().GetCity(3)
-		if err != nil {
-			ctx.Application().Logger().Errorf("User.City查询地址错误：[%s]", err)
-			response.Failur(ctx, response.OptionFailur, nil)
-			return
-		}
-
-		jsonP, _ := json.Marshal(province)
-		err = redisClient.Set(conf.GlobalConfig.RedisPrefix+"province", jsonP, exprire).Err()
-		jsonC, _ := json.Marshal(city)
-		err = redisClient.Set(conf.GlobalConfig.RedisPrefix+"city", jsonC, exprire).Err()
-		jsonA, _ := json.Marshal(area)
-		err = redisClient.Set(conf.GlobalConfig.RedisPrefix+"area", jsonA, exprire).Err()
-		if err != nil {
-			ctx.Application().Logger().Errorf("User.City redis保存错误：[%s]", err)
-		}
-
-		maps["province"] = province
-		maps["city"] = city
-		maps["area"] = area
-		response.Ok(ctx, response.OptionSuccess, maps)
+		ctx.Application().Logger().Errorf("User.City查询错误：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
 
-	//redis存在
-	maps["province"] = province
-	maps["city"] = city
-	maps["area"] = area
-	response.Ok(ctx, response.OptionSuccess, maps)
+	response.Ok(ctx, response.OptionSuccess, cityList)
 	return
 }
 

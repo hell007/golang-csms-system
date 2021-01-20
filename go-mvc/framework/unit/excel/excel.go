@@ -52,6 +52,9 @@ func Export(outFile string, title string) {
 		nameCell := row.AddCell()
 		nameCell.Value = stu.Name
 
+		avatarCell := row.AddCell()
+		avatarCell.Value = stu.Avatar
+
 		ageCell := row.AddCell()
 		ageCell.Value = strconv.Itoa(stu.age)
 
@@ -95,6 +98,7 @@ func getStudents() []Student {
 	}
 	return students
 }
+
 
 func main() {
 	//导入
