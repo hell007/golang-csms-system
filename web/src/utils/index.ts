@@ -107,7 +107,7 @@ export function isPhone(phone: string) {
 
 /**
  * 手机号码分段显示
- * @param {string} phone
+ * @param phone
  */
 export function formatPhone(phone: string) {
   if (!isEmpty(phone)) {
@@ -117,7 +117,7 @@ export function formatPhone(phone: string) {
 
 /**
  * 隐私号码
- * @param {string} phone
+ * @param phone
  */
 export function privatePhone(phone: string) {
   if (!isEmpty(phone)) {
@@ -126,12 +126,96 @@ export function privatePhone(phone: string) {
 }
 
 /**
- * 将传入的数字以3位添加逗号返回 1,234元
- * [toThousandslsFilter description]
- * @param  {number} num
+ * 获取树
+ * @param  nodes
  */
-export function toThousandslsFilter(num: number) {
+export function getTree(nodes: any[]) {
+  // 删除 所有 children,以防止多次调用
+  nodes.forEach(function(item) {
+    delete item.children;
+  });
+
+  // 将数据存储为 以 id 为 KEY 的 map 索引数据列
+  let map: any = {};
+  nodes.forEach(function(item) {
+    map[item.id] = item;
+  });
+
+  let val: any = [];
+  nodes.forEach(function(item) {
+    // 以当前遍历项，的pid,去map对象中找到索引的id
+    let parent = map[item.pid];
+    // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+    if (parent) {
+      (parent.children || (parent.children = [])).push(item);
+    } else {
+      //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
+      val.push(item);
+    }
+  });
+  return val;
+}
+
+/**
+ * html2Text
+ * @param val
+ */
+export function html2Text(val: any) {
+  const div = document.createElement('div');
+  div.innerHTML = val;
+  return div.textContent || div.innerText;
+}
+
+/**
+ * 将传入的数字以3位添加逗号返回 1,234元
+ * @param  num
+ */
+export function formatThousandsls(num: number) {
   if (!isEmpty(num)) {
-    return num.toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+    return num.toString().replace(/^-?\d+/g, (m) => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','));
   }
+}
+
+/**
+ * 数字格式化
+ * @param num
+ * @param digits
+ */
+export function nFormatter(num: number, digits: number) {
+  const si = [
+    {
+      value: 1e18,
+      symbol: 'E'
+    },
+    {
+      value: 1e15,
+      symbol: 'P'
+    },
+    {
+      value: 1e12,
+      symbol: 'T'
+    },
+    {
+      value: 1e9,
+      symbol: 'G'
+    },
+    {
+      value: 1e6,
+      symbol: 'M'
+    },
+    {
+      value: 1e3,
+      symbol: 'k'
+    }
+  ];
+
+  for (let item of si) {
+    if (num >= item.value) {
+      return (
+        (num / item.value + 0.1).toFixed(digits).replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1') +
+        item.symbol
+      );
+    }
+  }
+  return num.toString();
 }

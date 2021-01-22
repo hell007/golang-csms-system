@@ -2,6 +2,9 @@
   <van-overlay :lock-scroll="lock" :class="styles" :show="show">
     <!-- dialog -->
     <section class="dialog-wrap" v-if="type === 'dialog'">
+      <div class="dialog-header" v-if="title">
+        {{ title }}
+      </div>
       <div class="dialog-body">
         <slot name="body"></slot>
       </div>
@@ -9,7 +12,7 @@
         <slot name="footer"></slot>
       </div>
       <div class="dialog-close" v-if="showClose" @click="onClose">
-        <van-icon name="close" size="20" :color="primary" />
+        <van-icon name="close" size="20" color="#fff" />
       </div>
     </section>
     <!-- loading -->
@@ -32,6 +35,10 @@ export default defineComponent({
     type: {
       type: String,
       default: 'dialog'
+    },
+    title: {
+      type: String,
+      default: ''
     },
     styles: {
       type: String,
@@ -93,6 +100,14 @@ export default defineComponent({
     font-size: 14px;
   }
 
+  &-header {
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: $color-32;
+  }
+
   &-body {
     padding: 20px 10px;
   }
@@ -100,13 +115,14 @@ export default defineComponent({
   &-footer {
     @include flex-row();
     align-items: center;
+    justify-content: center;
     padding: 10px;
 
     /deep/ .van-button {
-      flex: 1;
+      margin-left: 20px;
 
       &:last-child {
-        margin-left: 20px;
+        margin-left: 0px;
       }
     }
   }
@@ -114,7 +130,7 @@ export default defineComponent({
   &-close {
     position: absolute;
     right: 0;
-    top: -24px;
+    top: -34px;
     z-index: 10;
   }
 

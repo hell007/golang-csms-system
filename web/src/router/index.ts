@@ -1,32 +1,95 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import View from '@/views/layout/view.vue';
+import { unitList } from './default';
 
-const routes: Array<RouteRecordRaw> = [
+let routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: '单元',
-    component: () => import(/* webpackChunkName: "unit-index" */ '../views/unit/index.vue')
-  },
-  {
-    path: '/unitList',
-    name: '单元-上拉加载',
-    component: () => import(/* webpackChunkName: "unit-list" */ '../views/unit/list.vue')
-  },
-  {
-    path: '/unitRefresh',
-    name: '单元-下拉刷新',
-    component: () => import(/* webpackChunkName: "unit-refresh" */ '../views/unit/refresh.vue')
-  },
-  {
-    path: '/unitUtils',
-    name: '单元-工具类',
-    component: () => import(/* webpackChunkName: "unit-utils" */ '../views/unit/utils.vue')
-  },
-  {
-    path: '/unitDialog',
-    name: '单元-弹窗使用',
-    component: () => import(/* webpackChunkName: "unit-dialog" */ '../views/unit/modal.vue')
+    path: '/user',
+    component: View,
+    redirect: '/user/profile',
+    name: '个人中心',
+    children: [
+      {
+        path: 'profile',
+        //name: '个人中心',
+        component: () => import('@/views/user/profile.vue')
+      },
+      {
+        path: 'info',
+        component: () => import('../views/user/info.vue')
+      },
+      {
+        path: 'address',
+        component: () => import('../views/user/address.vue')
+      },
+      {
+        path: 'editAddress',
+        component: () => import('../views/user/editAddress.vue')
+      },
+      {
+        path: 'register',
+        component: () => import('../views/user/register.vue')
+      },
+      {
+        path: 'login',
+        component: () => import('../views/user/login.vue')
+      }
+    ]
   }
+  // {
+  //   path: '/order',
+  //   redirect: 'order/list',
+  //   name: '我的订单',
+  //   children: [
+  //     {
+  //       path: '/list',
+  //       component: () => import('../views/order/list.vue')
+  //     },
+  //     {
+  //       path: '/detail',
+  //       component: () => import('../views/order/lidetailst.vue')
+  //     },
+  //     {
+  //       path: '/confirm',
+  //       component: () => import('../views/order/index.vue')
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/login',
+  //   component: () => import('../views/user/login.vue')
+  // },
+  // {
+  //   path: '/404',
+  //   component: () => import('../views/error/404.vue')
+  // },
+  // {
+  //   path: '/500',
+  //   component: () => import('../views/error/500.vue')
+  // },
+  // {
+  //   path: '/',
+  //   component: () => import('../views/home/index.vue')
+  // },
+  // {
+  //   path: '/category',
+  //   component: () => import('../views/category/index.vue')
+  // },
+  // {
+  //   path: '/search',
+  //   component: () => import('../views/search/index.vue')
+  // },
+  // {
+  //   path: '/product',
+  //   component: () => import('../views/product/index.vue')
+  // }
 ];
+
+for (let item of unitList) {
+  routes.push(item);
+}
+
+//routes.concat(unitList);
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

@@ -1,11 +1,29 @@
 import store from 'storejs';
+import { CSMSKEY } from '@/config';
 
 export function set(key: string, val: any) {
-  store.set(key, val);
+  let expire = Date.now() + CSMSKEY.expire * 1000;
+  store.set(key, {
+    value: val,
+    expire: expire
+  });
 }
 
 export function get(key: string) {
-  return store.get(key);
+  const data = store.get(key);
+
+  if (!data) return null;
+
+  if (data.expire == -1) return data;
+
+  if (Date.now() >= data.expire) {
+    console.log('过期==', key);
+    store.remove(key);
+    store.clear();
+    return null;
+  } else {
+    return data.value;
+  }
 }
 
 export function remove(key: string) {
@@ -17,9 +35,9 @@ export function clear() {
 }
 
 export function hasToken() {
-  return store.has('token');
+  return store.has(CSMSKEY.token);
 }
 
 export function getToken() {
-  return get('token');
+  return get(CSMSKEY.token);
 }

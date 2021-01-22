@@ -33,3 +33,20 @@ textarea {
 .fr {
   float: right;
 }
+
+.no-entry {
+  padding: 50px 10px;
+  text-align: center;
+  font-size: 12px;
+  color: $color-96;
+
+  &::before {
+    display: block;
+    content: '';
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 20px;
+    background-size: 100%;
+    background-image: url('./assets/images/empty.png');
+  }
+}

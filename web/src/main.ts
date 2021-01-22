@@ -11,6 +11,12 @@ import { Toast, Dialog } from 'vant';
 const app = createApp(App);
 app.config.globalProperties.$bmob = Bmob;
 
+// app.directive('loading', {
+//   mounted(el) {
+//     el.Loading();
+//   }
+// });
+
 app
   .use(store)
   .use(router)
