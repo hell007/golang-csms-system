@@ -3,6 +3,7 @@ package apis
 import (
 	"encoding/json"
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/utils/tool"
 	"image/png"
 	"strconv"
 	"strings"
@@ -22,10 +23,17 @@ const (
 	captchaKey string = "CAPTCHA"
 )
 
-var key = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat) //24
-var captchatime = 5 * 60 * time.Second                                                  //5分钟
-var locktime = 2 * 60 * 60 * time.Second                                                //2小时
-var exprire = time.Duration(conf.GlobalConfig.RedisExprire) * time.Second               //1小时
+//24
+var key = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat)
+
+//5分钟
+var captchatime = 5 * 60 * time.Second
+
+//2小时
+var locktime = 2 * 60 * 60 * time.Second
+
+//1小时
+var exprire = time.Duration(conf.GlobalConfig.RedisExprire) * time.Second
 
 /**
 会员注册
@@ -46,6 +54,15 @@ func Register(ctx iris.Context) {
 		response.Error(ctx, iris.StatusBadRequest, response.RegisteFailur, nil)
 		return
 	}
+
+	//验证
+	//validate := validator.New()
+	//err = validate.Struct(member)
+	//if err != nil {
+	//	ctx.Application().Logger().Errorf("user.Register：手机号为[%s]的用户，已存在：[%s]", user.Mobile, err)
+	//	response.Failur(ctx, response.RegisteExist, nil)
+	//	return
+	//}
 
 	// 是否已存在
 	user.Mobile = member.Mobile
@@ -194,7 +211,7 @@ func Logout(ctx iris.Context) {
 
 	// 参数
 	token = ctx.URLParam("token")
-	if token == "" {
+	if tool.IsEmpty(token) {
 		ctx.Application().Logger().Errorf("User.Logout参数错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
@@ -231,7 +248,7 @@ func Profile(ctx iris.Context) {
 
 	// 参数
 	token = ctx.URLParam("token")
-	if token == "" {
+	if tool.IsEmpty(token) {
 		ctx.Application().Logger().Errorf("User.UserInfo参数错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
@@ -346,7 +363,7 @@ func FindUser(ctx iris.Context) {
 // 全国省市县
 func City(ctx iris.Context) {
 	var (
-		err      error
+		err error
 	)
 
 	// 根据pid查询
@@ -373,7 +390,7 @@ func UserAddress(ctx iris.Context) {
 
 	// 参数
 	token = ctx.URLParam("uid")
-	if token == "" {
+	if tool.IsEmpty(token) {
 		ctx.Application().Logger().Errorf("User.UserAddress参数错误：[%s]", err)
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
