@@ -1,11 +1,22 @@
-package contains
+package tool
 
 import (
 	"fmt"
 	"testing"
 )
 
-func TestCollectionContain(t *testing.T) {
+
+func TestIsEmpty(t *testing.T) {
+	//c := 1
+	//c := ""
+	c := []int{} //slice
+	//c := []int{1, 2, 3} //slice
+
+	res := IsEmpty(c)
+	fmt.Println("res==", res)
+}
+
+func TestContain(t *testing.T) {
 	//数组
 	a := 1
 	b := [3]int{1, 2, 3}
