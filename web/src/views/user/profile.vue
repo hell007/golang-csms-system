@@ -65,7 +65,7 @@ import { useRouter } from 'vue-router';
 import { theme } from '@/theme';
 import { getApp } from '@/hooks';
 import { fetchGet } from '@/utils/api';
-import { getToken } from '@/utils/storage';
+import { getToken, clear } from '@/utils/storage';
 import { URIS } from '@/config';
 
 export default defineComponent({
@@ -159,19 +159,24 @@ export default defineComponent({
       });
     };
 
+    //退出
     const logout = () => {
-      // const self = this
-      // self.logout(self.listQuery).then(response => {
-      //   const res = response.data.data
-      //   const state = response.data.state
-      //   const message = response.data.msg
-      //   if (state) {
-      //     storage.clear()
-      //     self.$router.push('/login')
-      //   } else {
-      //     self.$toast(message, 'error')
-      //   }
-      // })
+      let query = { token: getToken() };
+      fetchGet(URIS.user.profile, query)
+        .then(function(res) {
+          const ok = res.data.state;
+          const message = res.data.msg;
+          if (ok) {
+            app.$toast.success(message);
+            clear();
+          } else {
+            app.$toast.fail(message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          app.$toast.fail(err);
+        });
     };
 
     onMounted(() => {

@@ -25,6 +25,11 @@ const unitList: Array<RouteRecordRaw> = [
     path: '/unitDialog',
     name: '单元-弹窗使用',
     component: () => import(/* webpackChunkName: "unit-dialog" */ '../views/unit/modal.vue')
+  },
+  {
+    path: '/',
+    name: '单元-测试',
+    component: () => import(/* webpackChunkName: "unit-dialog" */ '../views/unit/test.vue')
   }
 ];
 

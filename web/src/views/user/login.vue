@@ -47,7 +47,7 @@
           </template>
         </van-field> -->
 
-        <van-field
+        <!-- <van-field
           v-model="form.code"
           required
           clearable
@@ -62,7 +62,7 @@
             </span>
             <van-button size="small" round :color="primary" @click="getCaptcha">看不清</van-button>
           </template>
-        </van-field>
+        </van-field> -->
 
         <van-field
           v-model="form.password"
@@ -72,6 +72,9 @@
           input-align="left"
           placeholder="请输入密码"
         />
+
+        <br />
+        <slideVerify tips="请按住滑块拖动验证" message="验证通过" @onSucess="onVerifySucess" />
       </section>
 
       <div class="login-bar">
@@ -91,10 +94,13 @@ import { fetchPost } from '@/utils/api';
 import * as utils from '@/utils/index';
 import { set } from '@/utils/storage';
 import { CSMSKEY, URIS } from '@/config';
+import slideVerify from '@/components/slideVerify/index.vue';
 
 export default defineComponent({
   name: 'user-login',
-  components: {},
+  components: {
+    slideVerify
+  },
   setup(_props, _ctx) {
     const app = getApp();
     const router = useRouter();
@@ -160,6 +166,10 @@ export default defineComponent({
       });
     };
 
+    const onVerifySucess = () => {
+      console.log('通过');
+    };
+
     const onRegister = () => {
       router.push('/user/register');
     };
@@ -175,6 +185,7 @@ export default defineComponent({
       onSend,
       onMsgFinish,
       getCaptcha,
+      onVerifySucess,
       onSubmit,
       onRegister
     };

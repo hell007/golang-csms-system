@@ -15,10 +15,6 @@ let routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/user/profile.vue')
       },
       {
-        path: 'info',
-        component: () => import('../views/user/info.vue')
-      },
-      {
         path: 'address',
         component: () => import('../views/user/address.vue')
       },

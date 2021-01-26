@@ -1,8 +1,10 @@
 <template>
-  <page-header :title="title" />
+  <!-- <page-header :title="title" /> -->
 
   <div class="page-main">
-    <div class="page-scroller">
+    <slideVerify />
+
+    <div class="page-scroller" style="display:none">
       <h2>utils</h2>
       <section class="demo">
         <code>
