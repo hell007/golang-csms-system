@@ -1,21 +1,23 @@
 package middleware
 
 import (
+	"go-mvc/framework/conf"
+	"go-mvc/framework/utils/response"
+	"go-mvc/framework/utils/tool"
 	"strings"
 
 	"github.com/kataras/iris/v12/context"
 
-	"go-mvc/framework/conf"
 	"go-mvc/framework/middleware/casbin"
 	"go-mvc/framework/middleware/jwt"
 )
 
-// 后台系统
+// 后台系统拦截
 func ServeHTTP(ctx context.Context) {
 	path := ctx.Path()
 
-	// 过滤静态资源、login接口、首页等...不需要验证
-	if checkURL(path) || strings.Contains(path, "/assets") {
+	// 静态资源、login接口、首页等...不需要验证
+	if checkURL(path, conf.GlobalConfig.AuthIgnoresWeb) {
 		ctx.Next()
 		return
 	}
@@ -35,39 +37,36 @@ func ServeHTTP(ctx context.Context) {
 		}
 	}
 
-	// Pass to real API
 	ctx.Next()
+	return
 }
 
-// 前台
+// api路由拦截器
 func ServeAPIS(ctx context.Context) {
 	path := ctx.Path()
 
-	// 过滤静态资源、login接口、首页等...不需要验证
-	if checkURL(path) || strings.Contains(path, "/assets") {
+	// 静态资源、login接口、首页等...不需要验证
+	if checkURL(path, conf.GlobalConfig.AuthIgnoresApp) {
 		ctx.Next()
 		return
 	}
 
-	// jwt token拦截
-	if !jwt.Serve(ctx) {
-		return
-	}
+	// token验证
+	if VerifyUrl(path, conf.GlobalConfig.AuthVerifyApp) {
 
-	// Pass to real API
-	ctx.Next()
-}
+		token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+		if tool.IsEmpty(token) {
+			response.Unauthorized(ctx, response.TokenParseFailurAndEmpty, nil)
+			return
+		}
 
-/**
-return
-	true:则跳过不需验证，如登录接口等...
-	false:需要进一步验证
-*/
-func checkURL(reqPath string) bool {
-	for _, v := range conf.GlobalConfig.AuthIgnores {
-		if reqPath == v {
-			return true
+		_, err := tool.GetUserByToken(token)
+		if err != nil {
+			response.Unauthorized(ctx, response.TokenParseFailurAndInvalid, nil)
+			return
 		}
 	}
-	return false
+
+	ctx.Next()
+	return
 }

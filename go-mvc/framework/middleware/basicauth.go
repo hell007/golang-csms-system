@@ -1,13 +1,30 @@
-// file: middleware/basicauth.go
-// 未使用
-
 package middleware
 
-import "github.com/kataras/iris/v12/middleware/basicauth"
+import "strings"
 
-// BasicAuth middleware sample.
-var BasicAuth = basicauth.New(basicauth.Config{
-	Users: map[string]string{
-		"admin": "admin123",
-	},
-})
+/**
+url校验
+true:则跳过不需验证，如登录接口等...
+false:需要进一步验证,比如token验证
+*/
+func checkURL(p string, list []string) bool {
+	for _, v := range list {
+		if p == v {
+			return true
+		}
+	}
+	return false
+}
+
+/**
+token url 验证
+Auth.verify 需要验证，排除 “/user/login”
+*/
+func VerifyUrl(p string, list []string) bool {
+	for _, v := range list {
+		if strings.Contains(p, v) {
+			return true
+		}
+	}
+	return false
+}

@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 )
@@ -11,7 +10,7 @@ import (
 */
 func IsEmpty(obj interface{}) bool {
 	targetValue := reflect.ValueOf(obj)
-	fmt.Println("===>", targetValue, reflect.TypeOf(obj).Kind())
+	//fmt.Println("===>", targetValue, reflect.TypeOf(obj).Kind())
 	switch reflect.TypeOf(obj).Kind() {
 	case reflect.String:
 		if len(strings.TrimSpace(obj.(string))) == 0 {

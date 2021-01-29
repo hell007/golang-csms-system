@@ -36,15 +36,27 @@ Logs.Prefix:
 Logs.Output: logs/
 #Jwt
 JWT.Secret: JIE-- #加盐
-JWT.Salt: ARRSWdczx13213EDDSWQ!!@W
+JWT.Salt: JIESWdczx13213EDDSWQ!!@W
 JWT.Timeout: 3600 #单位秒：设置1小时
 #Auth
-Auth.Ignores: ['/',
-               '/sys/user/login',
-               '/sys/user/loginout',
-               '/sys/rule/menus',
-               '/sys/test/upload',
-               '/api/test/index']
+Auth.Ignores.Web: [
+  '/assets',
+  '/sys/user/login',
+  '/sys/user/logout',
+  '/sys/rule/menus',
+  '/sys/test/upload']
+Auth.Ignores.App: [
+  '/assets',
+  '/api/user/login',
+  '/api/user/register']
+Auth.Verify.App: [
+  '/user',
+  '/order']
+Auth.Token: Authorization
+#图片验证码验证
+Captcha.Verify: false
+Captcha.Key: CAPTCHA
+Captcha.Exprire: 300 # 5 * 60 * time.Second 5分钟
 #自定义配置
 Upload.Url: http://127.0.0.1:9000/uploads
 Upload.Style: ['100x100','360x360','800x800']

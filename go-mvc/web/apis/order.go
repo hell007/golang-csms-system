@@ -1,16 +1,14 @@
 package apis
 
 import (
-	"encoding/json"
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/utils/tool"
 	"time"
 
-	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/conf"
 	members "go-mvc/framework/models/member"
 	models "go-mvc/framework/models/order"
 	"go-mvc/framework/services"
-	"go-mvc/framework/utils/encrypt"
 	"go-mvc/framework/utils/page"
 	"go-mvc/framework/utils/response"
 )
@@ -22,7 +20,6 @@ func OrderList(ctx iris.Context) {
 	var (
 		err                error
 		state              int
-		token, keys, jsonU string
 		p                  *page.Pagination
 		res                *page.Result
 		list               []models.Orders
@@ -38,15 +35,9 @@ func OrderList(ctx iris.Context) {
 		return
 	}
 
-	// 解密
-	token = ctx.URLParam("token")
-	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
-	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
-	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderList解密错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
+	//通过token获取redis保存的用户
+	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	user, _ = tool.GetUserByToken(token)
 
 	// 查询
 	state, _ = ctx.URLParamInt("state")

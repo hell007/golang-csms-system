@@ -19,15 +19,11 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-const (
-	captchaKey string = "CAPTCHA"
-)
-
 //24
 var key = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat)
 
 //5分钟
-var captchatime = 5 * 60 * time.Second
+var captchatime = time.Duration(conf.GlobalConfig.CaptchaExprire) * time.Second
 
 //2小时
 var locktime = 2 * 60 * 60 * time.Second
@@ -43,7 +39,6 @@ func Register(ctx iris.Context) {
 		err    error
 		has    bool
 		effect int64
-		keys   string
 		user   = new(models.Member)
 		member = new(models.Member)
 	)
@@ -54,15 +49,6 @@ func Register(ctx iris.Context) {
 		response.Error(ctx, iris.StatusBadRequest, response.RegisteFailur, nil)
 		return
 	}
-
-	//验证
-	//validate := validator.New()
-	//err = validate.Struct(member)
-	//if err != nil {
-	//	ctx.Application().Logger().Errorf("user.Register：手机号为[%s]的用户，已存在：[%s]", user.Mobile, err)
-	//	response.Failur(ctx, response.RegisteExist, nil)
-	//	return
-	//}
 
 	// 是否已存在
 	user.Mobile = member.Mobile
@@ -78,11 +64,9 @@ func Register(ctx iris.Context) {
 	member.Ip = ip
 
 	// 数据处理
-	keys = key //保证key相同
-	member.Salt = encrypt.AESEncrypt(keys, conf.GlobalConfig.JWTSalt)
-	member.Password = encrypt.AESEncrypt(member.Password, keys)
+	member.Password = encrypt.AESEncrypt(member.Password, conf.GlobalConfig.JWTSalt)
 	member.CreateTime = time.Now()
-	member.Status = 2 //未认证
+	member.Status = 1
 
 	effect, err = services.NewMemberService().Create(member)
 	if effect <= 0 || err != nil {
@@ -104,25 +88,27 @@ func Captcha(ctx iris.Context) {
 	code, img := cp.OutPut()
 
 	// 保存code 60s
-	err := redisClient.Set(conf.GlobalConfig.RedisPrefix+captchaKey, code, captchatime).Err()
+	err := redisClient.Set(conf.GlobalConfig.CaptchaKey, code, captchatime).Err()
 	if err != nil {
 		ctx.Application().Logger().Errorf("User.Captcha验证码保存错误：[%s]", err)
 	}
 	ctx.Header("Content-Type", "image/png; charset=utf-8")
-	png.Encode(ctx, img)
+	_ = png.Encode(ctx, img)
 }
 
 /**
 会员登录
+postman post 设置
+raw: {"mobile": "","password": ""}
 */
 func Login(ctx iris.Context) {
 	var (
-		err             error
-		has, ckPassword bool
-		code, keys      string
-		columns         []string
-		user            = new(models.LoginUser)
-		member          = new(models.Member)
+		err        error
+		has, equal bool
+		code       string
+		columns    []string
+		user       = new(models.LoginUser)
+		member     = new(models.Member)
 	)
 
 	// 参数
@@ -132,12 +118,14 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	// 验证码比对
-	code, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + captchaKey).Result()
-	if code != strings.ToUpper(user.Code) || err != nil {
-		ctx.Application().Logger().Errorf("User.Login验证码对比错误：[%s]", err)
-		response.Failur(ctx, response.CaptchaFailur, nil)
-		return
+	// 如果开启验证码校验，进行验证码校对
+	if conf.GlobalConfig.CaptchaVerify {
+		code, err = redisClient.Get(conf.GlobalConfig.CaptchaKey).Result()
+		if code != strings.ToUpper(user.Code) || err != nil {
+			ctx.Application().Logger().Errorf("User.Login验证码对比错误：[%s]", err)
+			response.Failur(ctx, response.CaptchaFailur, nil)
+			return
+		}
 	}
 
 	// 查询用户
@@ -156,9 +144,8 @@ func Login(ctx iris.Context) {
 	}
 
 	// 存在，验证密码
-	salt := encrypt.AESDecrypt(member.Salt, conf.GlobalConfig.JWTSalt)
-	ckPassword = encrypt.CheckPWD(user.Password, member.Password, salt)
-	if !ckPassword {
+	equal = encrypt.CheckPWD(user.Password, member.Password, conf.GlobalConfig.JWTSalt)
+	if !equal {
 		ctx.Application().Logger().Error("User.Login错误：用户存在，登录的密码不正确")
 		response.Failur(ctx, response.LoginFailur, nil)
 		return
@@ -171,25 +158,24 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	// 合法会员，登录时间,盐值,密码更新
-	keys = key
+	// 合法会员，登录时间,密码,token更新
 	member.LoginTime = time.Now()
-	member.Salt = encrypt.AESEncrypt(keys, conf.GlobalConfig.JWTSalt)
-	member.Password = encrypt.AESEncrypt(user.Password, keys)
-	columns = append(columns, "login_time", "salt", "password")
+	member.Token = encrypt.AESEncrypt(user.Mobile, key)
+	member.Password = encrypt.AESEncrypt(user.Password, conf.GlobalConfig.JWTSalt)
+	columns = append(columns, "login_time", "token", "password")
 	_, err = services.NewMemberService().Update(member, columns)
 	if err != nil {
-		ctx.Application().Logger().Errorf("User.Login登录错误：[%s]", err)
+		ctx.Application().Logger().Errorf("User.Login更新错误：[%s]", err)
 	}
 
 	// 存储合法会员信息
 	user.Id = member.Id
 	user.Name = member.Name
 	user.Gender = member.Gender
-	user.Password = ""
-	user.Token = encrypt.AESEncrypt(user.Mobile, conf.GlobalConfig.JWTSalt)
+	user.Mobile = member.Mobile
+	user.Token = member.Token
 	jsonU, _ := json.Marshal(user)
-	err = redisClient.Set(conf.GlobalConfig.RedisPrefix+user.Mobile, jsonU, exprire).Err()
+	err = redisClient.Set(conf.GlobalConfig.RedisPrefix+user.Token, jsonU, exprire).Err()
 	if err != nil {
 		ctx.Application().Logger().Errorf("User.Login保存会员信息错误：[%s]", err)
 	}
@@ -204,27 +190,13 @@ func Login(ctx iris.Context) {
 */
 func Logout(ctx iris.Context) {
 	var (
-		err                error
-		token, keys, jsonU string
-		user               = new(models.LoginUser)
+		err  error
+		user = new(models.LoginUser)
 	)
 
-	// 参数
-	token = ctx.URLParam("token")
-	if tool.IsEmpty(token) {
-		ctx.Application().Logger().Errorf("User.Logout参数错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
-
-	// 解密
-	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
-	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
-	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		ctx.Application().Logger().Errorf("User.Logout解密错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
+	//通过token获取redis保存的用户
+	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	user, _ = tool.GetUserByToken(token)
 
 	// redis 去除
 	err = redisClient.Del(conf.GlobalConfig.RedisPrefix + user.Mobile).Err()
@@ -238,33 +210,17 @@ func Logout(ctx iris.Context) {
 	return
 }
 
-// 用户信息
+/**
+用户信息
+*/
 func Profile(ctx iris.Context) {
 	var (
-		err                error
-		token, keys, jsonU string
-		user               = new(models.LoginUser)
+		user = new(models.LoginUser)
 	)
 
-	// 参数
-	token = ctx.URLParam("token")
-	if tool.IsEmpty(token) {
-		ctx.Application().Logger().Errorf("User.UserInfo参数错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
-
-	// 解密
-	keys = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
-	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
-	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		ctx.Application().Logger().Errorf("User.UserInfo解密错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
-
-	// 处理信息
-	user.Password = ""
+	//通过token获取redis保存的用户
+	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	user, _ = tool.GetUserByToken(token)
 	response.Ok(ctx, response.OptionSuccess, user)
 	return
 }
@@ -274,13 +230,13 @@ func Profile(ctx iris.Context) {
 */
 func FindUser(ctx iris.Context) {
 	var (
-		err               error
-		has               bool
-		code, ip, t, keys string
-		times             = 1
-		columns           []string
-		user              = new(models.LoginUser)
-		member            = new(models.Member)
+		err         error
+		has         bool
+		code, ip, t string
+		times       = 1
+		columns     []string
+		user        = new(models.LoginUser)
+		member      = new(models.Member)
 	)
 
 	// 恶意处理
@@ -304,7 +260,7 @@ func FindUser(ctx iris.Context) {
 	}
 
 	// 验证码比对 短信验证码最好
-	code, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + captchaKey).Result()
+	code, err = redisClient.Get(conf.GlobalConfig.CaptchaKey).Result()
 	if code != strings.ToUpper(user.Code) || err != nil {
 		ctx.Application().Logger().Errorf("User.FindUser验证码对比错误：[%s]", err)
 		response.Failur(ctx, response.CaptchaFailur, nil)
@@ -345,9 +301,7 @@ func FindUser(ctx iris.Context) {
 	}
 
 	// 合法，可以更改
-	keys = key
-	member.Salt = encrypt.AESEncrypt(keys, conf.GlobalConfig.JWTSalt)
-	member.Password = encrypt.AESEncrypt(user.Password, keys)
+	member.Password = encrypt.AESEncrypt(user.Password, conf.GlobalConfig.JWTSalt)
 	columns = append(columns, "password", "salt")
 	_, err = services.NewMemberService().Update(member, columns)
 	if err != nil {
@@ -382,31 +336,23 @@ func City(ctx iris.Context) {
 // 收货地址列表
 func UserAddress(ctx iris.Context) {
 	var (
-		err               error
-		token, key, jsonU string
-		user              = new(models.LoginUser)
-		md                = new(models.MemberDetail)
+		err  error
+		user = new(models.LoginUser)
+		md   = new(models.MemberDetail)
 	)
 
-	// 参数
-	token = ctx.URLParam("uid")
-	if tool.IsEmpty(token) {
-		ctx.Application().Logger().Errorf("User.UserAddress参数错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
+	//通过token获取redis保存的用户
+	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	user, _ = tool.GetUserByToken(token)
 
-	// 解密
-	key = encrypt.AESDecrypt(token, conf.GlobalConfig.JWTSalt)
-	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + key).Result()
-	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		ctx.Application().Logger().Errorf("User.UserAddress解密错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
-
-	// 会员地址
+	// 会员地址列表
 	md, err = services.NewMemberService().Get(user.Id)
+	if err != nil {
+		ctx.Application().Logger().Errorf("User.UserAddress查询错误：[%s]", err)
+		response.Failur(ctx, response.OptionFailur, nil)
+		return
+	}
+
 	response.Ok(ctx, response.OptionSuccess, md.List)
 	return
 }
@@ -418,7 +364,6 @@ func SaveAddress(ctx iris.Context) {
 	var (
 		err     error
 		effect  int64
-		jsonU   string
 		user    = new(models.LoginUser)
 		address = new(models.Address)
 		ad      = new(models.AddressDetail)
@@ -430,14 +375,9 @@ func SaveAddress(ctx iris.Context) {
 		return
 	}
 
-	// 解密
-	key = encrypt.AESDecrypt(ad.Token, conf.GlobalConfig.JWTSalt)
-	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + key).Result()
-	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		ctx.Application().Logger().Errorf("User.SaveAddress解密错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
+	//通过token获取redis保存的用户
+	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	user, _ = tool.GetUserByToken(token)
 
 	// 获取会员 mid
 	address = ad.Address

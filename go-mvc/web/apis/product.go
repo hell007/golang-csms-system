@@ -1,18 +1,16 @@
 package apis
 
 import (
-	"encoding/json"
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/utils/tool"
 	"strconv"
 	"time"
 
-	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/conf"
 	models "go-mvc/framework/models/goods"
 	"go-mvc/framework/models/member"
 	morder "go-mvc/framework/models/order"
 	"go-mvc/framework/services"
-	"go-mvc/framework/utils/encrypt"
 	"go-mvc/framework/utils/idgen"
 	"go-mvc/framework/utils/response"
 )
@@ -51,7 +49,6 @@ func SaveProduct(ctx iris.Context) {
 	var (
 		err    error
 		effect int64
-		jsonU  string
 		form   = new(models.ProductForm)
 		user   = new(member.LoginUser)
 		order  = new(morder.Order)
@@ -65,14 +62,9 @@ func SaveProduct(ctx iris.Context) {
 		return
 	}
 
-	// 解密
-	keys = encrypt.AESDecrypt(form.Token, conf.GlobalConfig.JWTSalt)
-	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + keys).Result()
-	if err = json.Unmarshal([]byte(jsonU), &user); err != nil {
-		ctx.Application().Logger().Error("Product.SaveProduct解密错误：user不存在")
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
+	//通过token获取redis保存的用户
+	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	user, _ = tool.GetUserByToken(token)
 
 	// 数据
 	goods = form.Goods

@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"fmt"
+	"go-mvc/framework/utils/tool"
 	"log"
 	"strings"
 	"sync"
@@ -118,7 +119,7 @@ func (m *Jwts) CheckJWT(ctx context.Context) error {
 	}
 
 	// If the token is empty...
-	if token == "" {
+	if tool.IsEmpty(token) {
 		// Check if it was required
 		if m.Config.CredentialsOptional {
 			m.logf("  No credentials found (CredentialsOptional=true)")

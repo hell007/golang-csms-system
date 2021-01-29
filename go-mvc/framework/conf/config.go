@@ -1,7 +1,6 @@
 package conf
 
 import (
-	"fmt"
 	"github.com/kataras/golog"
 	"go-mvc/framework/utils/files"
 	"gopkg.in/yaml.v2"
@@ -53,7 +52,15 @@ type Config struct {
 	JWTTimeout int    `yaml:"JWT.Timeout"`
 
 	// Auth
-	AuthIgnores []string `yaml:"Auth.Ignores"`
+	AuthIgnoresWeb []string `yaml:"Auth.Ignores.Web"`
+	AuthIgnoresApp []string `yaml:"Auth.Ignores.App"`
+	AuthVerifyApp  []string `yaml:"Auth.Verify.App"`
+	AuthToken      string   `yaml:"Auth.Token"`
+
+	// Captcha
+	CaptchaVerify  bool   `yaml:"Captcha.Verify"`
+	CaptchaKey     string `yaml:"Captcha.Key"`
+	CaptchaExprire int    `yaml:"Captcha.Exprire"`
 
 	// Upload
 	UploadUrl     string   `yaml:"Upload.Url"`
@@ -114,7 +121,7 @@ func GetUploadFile() string {
 
 func init() {
 	GlobalConfig.getConf()
-	fmt.Println("framework conf-->", "配置文件已经加载...")
+	golog.Info("配置文件已经加载完成...")
 	//fmt.Println("RedisPrefix===", GlobalConfig.RedisPrefix)
 	//fmt.Println("UploadStyle===", GlobalConfig.UploadStyle[0])
 }

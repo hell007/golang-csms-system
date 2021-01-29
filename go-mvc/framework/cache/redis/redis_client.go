@@ -23,9 +23,15 @@ func init() {
 			Password: conf.GlobalConfig.RedisClusterPassword,
 			Addrs:    conf.GlobalConfig.RedisClusterAddrs,
 		})
+
 		//Ping
 		ping, err := redisClusterClient.Ping().Result()
-		golog.Infof("Redis Ping %s %s", ping, err)
+		if err != nil {
+			golog.Warnf("Redis Ping %s %s", ping, err)
+			golog.Warn("Redis集群服务未启动，拒绝连接，连接失败...")
+		}
+		golog.Info("Redis集群服务已启动...")
+
 
 	} else {
 		//Redis客户端，由零个或多个基础连接组成的池。它对于多个goroutine的并发使用是安全的。
@@ -35,8 +41,13 @@ func init() {
 			Password: conf.GlobalConfig.RedisSinglePassword, // no password set
 			DB:       conf.GlobalConfig.RedisSingleDb,       // use default DB
 		})
+
 		//Ping
 		pong, err := client.Ping().Result()
-		golog.Infof("Redis Ping %s %s", pong, err)
+		if err != nil {
+			golog.Warnf("Redis Ping %s %s", pong, err)
+			golog.Warn("Redis服务未启动，拒绝连接，连接失败...")
+		}
+		golog.Info("Redis服务已启动...")
 	}
 }
