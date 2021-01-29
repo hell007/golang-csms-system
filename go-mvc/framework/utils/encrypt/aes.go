@@ -6,6 +6,7 @@ import (
 	"crypto/cipher"
 	"encoding/base64"
 	"github.com/kataras/golog"
+	"strings"
 )
 
 /**
@@ -13,23 +14,19 @@ AES加密解密
 使用CBC模式+PKCS7 填充方式实现AES的加密和解密
 参考地址 https://segmentfault.com/a/1190000016748637
 */
-//const key = "ARRSWdczx13213EDDSWQ!!@W"
 
 // 校验密码
 func CheckPWD(password, enPassword, key string) bool {
-	var (
-		de string
-	)
-	de = AESDecrypt(enPassword, key)
-	golog.Infof("解密值=：[%s]", de)
-	if password == de {
+	pwd := AESDecrypt(enPassword, key)
+	golog.Infof("解密值=：[%s]", pwd)
+	if strings.Compare(password, pwd)== 0 {
 		return true
 	}
 	return false
 }
 
 // 加密
-func AESEncrypt(orig string, key string) string {
+func AESEncrypt(orig, key string) string {
 	// 转成字节数组
 	origData := []byte(orig)
 	k := []byte(key)
@@ -53,7 +50,7 @@ func AESEncrypt(orig string, key string) string {
 }
 
 // 解密
-func AESDecrypt(cryted string, key string) string {
+func AESDecrypt(cryted, key string) string {
 	// 转成字节数组
 	crytedByte, err := base64.StdEncoding.DecodeString(cryted)
 	if err != nil {
