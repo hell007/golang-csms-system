@@ -1,5 +1,0 @@
-Now listening on: http://0.0.0.0:7000
-Application started. Press CTRL+C to shut down.
-[ERRO] 2021/01/28 15:49 User.Login保存会员信息错误：[dial tcp [::1]:6379: connectex: No connection could be made because the target machine actively refused it.]
-[ERRO] 2021/01/28 16:10 User.Login保存会员信息错误：[dial tcp [::1]:6379: connectex: No connection could be made because the target machine actively refused it.]
-[ERRO] 2021/01/28 16:10 User.Login保存会员信息错误：[dial tcp [::1]:6379: connectex: No connection could be made because the target machine actively refused it.]

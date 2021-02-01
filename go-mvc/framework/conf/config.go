@@ -42,9 +42,19 @@ type Config struct {
 	RedisClusterState    bool     `yaml:"Redis.Cluster.State"`
 
 	// Logs
-	LogsLevel  string `yaml:"Logs.Level"`
-	LogsPrefix string `yaml:"Logs.Prefix"`
-	LogsOutput string `yaml:"Logs.Output"`
+	LogsWebPath              string `yaml:"Logs.WebPath"`
+	LogsAppPath              string `yaml:"Logs.AppPath"`
+	LogsType                 string `yaml:"Logs.Type"`
+	LogsFileNameDateFormat   string `yaml:"Logs.LogsFileNameDateFormat"`
+	LogsTimestampFormat      string `yaml:"Logs.LogsTimestampFormat"`
+	LogsLevel                string `yaml:"Logs.Level"`
+	LogsOut                  bool   `yaml:"Logs.Out"`
+	LogsMaxAge               int    `yaml:"Logs.MaxAge"`
+	LogsRotationTime         int    `yaml:"Logs.RotationTime"`
+	LogsJSONPrettyPrint      bool   `yaml:"Logs.JSONPrettyPrint"`
+	LogsJSONDataKey          string `yaml:"Logs.JSONDataKey"`
+	LogsEnableRecordFileInfo bool   `yaml:"Logs.EnableRecordFileInfo"`
+	LogsFileInfoField        string `yaml:"Logs.FileInfoField"`
 
 	// jwt
 	JWTSecret  string `yaml:"JWT.Secret"`
@@ -96,11 +106,10 @@ func (cfg *Config) getConf() *Config {
 */
 func GetConfigPath() string {
 	var ConfigPath string
-	sysType := runtime.GOOS
-	if sysType == "darwin" {
-		ConfigPath = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/framework/conf/"
-	} else if sysType == "windows" {
+	if isWindow() {
 		ConfigPath = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/framework/conf/"
+	} else {
+		ConfigPath = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/framework/conf/"
 	}
 	return ConfigPath
 }
@@ -110,18 +119,19 @@ func GetConfigPath() string {
 */
 func GetUploadFile() string {
 	var UploadFile string
-	sysType := runtime.GOOS
-	if sysType == "darwin" {
-		UploadFile = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/uploads/"
-	} else if sysType == "windows" {
+	if isWindow() {
 		UploadFile = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/uploads/"
+	} else {
+		UploadFile = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/uploads/"
 	}
 	return UploadFile
+}
+
+func isWindow() bool {
+	return runtime.GOOS == "windows"
 }
 
 func init() {
 	GlobalConfig.getConf()
 	golog.Info("配置文件已经加载完成...")
-	//fmt.Println("RedisPrefix===", GlobalConfig.RedisPrefix)
-	//fmt.Println("UploadStyle===", GlobalConfig.UploadStyle[0])
 }

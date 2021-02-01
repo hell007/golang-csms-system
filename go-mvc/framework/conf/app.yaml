@@ -31,9 +31,18 @@ Redis.Cluster.Addrs: ['localhost:2181','localhost:2182']
 Redis.Cluster.Password:
 Redis.Cluster.State: false
 #Logs
-Logs.Level: error
-Logs.Prefix:
-Logs.Output: logs/
+Logs.WebPath: D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/csms/logs/ #后台日志路径
+Logs.AppPath: D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/web/logs/ #app日志路径
+Logs.Type: JSON #日志类型 json|text
+Logs.TimestampFormat: 2006-01-02 15:04:05 #日志中日期时间格式
+Logs.Level: error #日志级别 ...
+Logs.Out: true #控制台打印日志
+Logs.MaxAge: 168  #日志最长保存多久 7 * 24 * time.Hour
+Logs.RotationTime: 24 #日志默认多长时间轮转一次 24 * time.Hour
+Logs.JSONPrettyPrint: true #json日志是否美化输出
+Logs.JSONDataKey: #json日志条目中 数据字段都会作为该字段的嵌入字段
+Logs.EnableRecordFileInfo: true #是否开启记录文件名和行号
+Logs.FileInfoField:  call #文件名和行号字段名
 #Jwt
 JWT.Secret: JIE-- #加盐
 JWT.Salt: JIESWdczx13213EDDSWQ!!@W
@@ -65,3 +74,6 @@ Upload.Editor: ['images/goods/','images/article/']
 #time
 Timeformat: 2006-01-02 15:04:05
 TimeformatShort: 2006-01-02
+
+
+
