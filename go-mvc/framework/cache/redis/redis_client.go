@@ -3,8 +3,8 @@ package redis
 import (
 	"github.com/go-redis/redis"
 	"github.com/kataras/golog"
-
 	"go-mvc/framework/conf"
+	"go-mvc/framework/logs"
 )
 
 //redis单机客户端
@@ -13,8 +13,8 @@ var client *redis.Client
 //redis集群客户端
 var redisClusterClient *redis.ClusterClient
 
-// redis 初始化
-func init() {
+// redis启动
+func Start() {
 
 	//判断是否为集群配置
 	if conf.GlobalConfig.RedisClusterState {
@@ -27,11 +27,11 @@ func init() {
 		//Ping
 		ping, err := redisClusterClient.Ping().Result()
 		if err != nil {
-			golog.Warnf("Redis Ping %s %s", ping, err)
-			golog.Warn("Redis集群服务未启动，拒绝连接，连接失败...")
+			golog.Error("Redis Ping %s %s", ping, err)
+			logs.GetLogger().Error(nil, "Redis集群服务未启动，拒绝连接，连接失败...")
+			return
 		}
-		golog.Info("Redis集群服务已启动...")
-
+		logs.GetLogger().Info(nil, "Redis集群服务已启动...")
 
 	} else {
 		//Redis客户端，由零个或多个基础连接组成的池。它对于多个goroutine的并发使用是安全的。
@@ -45,9 +45,10 @@ func init() {
 		//Ping
 		pong, err := client.Ping().Result()
 		if err != nil {
-			golog.Warnf("Redis Ping %s %s", pong, err)
-			golog.Warn("Redis服务未启动，拒绝连接，连接失败...")
+			golog.Error("Redis Ping %s %s", pong, err)
+			logs.GetLogger().Error(nil, "Redis服务未启动，拒绝连接，连接失败...")
+			return
 		}
-		golog.Info("Redis服务已启动...")
+		logs.GetLogger().Info(nil, "Redis服务已启动...")
 	}
 }

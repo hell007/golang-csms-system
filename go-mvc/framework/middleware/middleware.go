@@ -1,12 +1,11 @@
 package middleware
 
 import (
+	"github.com/kataras/iris/v12/context"
 	"go-mvc/framework/conf"
 	"go-mvc/framework/utils/response"
 	"go-mvc/framework/utils/tool"
 	"strings"
-
-	"github.com/kataras/iris/v12/context"
 
 	"go-mvc/framework/middleware/casbin"
 	"go-mvc/framework/middleware/jwt"

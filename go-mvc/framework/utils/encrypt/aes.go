@@ -19,7 +19,7 @@ AES加密解密
 func CheckPWD(password, enPassword, key string) bool {
 	pwd := AESDecrypt(enPassword, key)
 	golog.Infof("解密值=：[%s]", pwd)
-	if strings.Compare(password, pwd)== 0 {
+	if strings.Compare(password, pwd) == 0 {
 		return true
 	}
 	return false

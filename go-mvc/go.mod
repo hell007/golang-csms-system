@@ -24,6 +24,8 @@ require (
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kataras/golog v0.0.9
 	github.com/kataras/iris/v12 v12.0.1
+	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
+	github.com/lestrrat-go/strftime v1.0.4 // indirect
 	github.com/lib/pq v1.0.0
 	github.com/llgcode/draw2d v0.0.0-20190810100245-79e59b6b8fbc
 	github.com/mattn/go-colorable v0.1.4 // indirect
@@ -31,9 +33,11 @@ require (
 	github.com/nats-io/nats-server/v2 v2.1.2 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/oliamb/cutter v0.2.2
+	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/sergi/go-diff v1.0.0 // indirect
+	github.com/sirupsen/logrus v1.2.0
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/tealeg/xlsx v1.0.5
 	github.com/valyala/fasthttp v1.6.0 // indirect

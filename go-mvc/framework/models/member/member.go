@@ -6,7 +6,7 @@ type Member struct {
 	Id         int       `json:"id,omitempty" xorm:"not null pk autoincr comment('会员id') INT(10)"`
 	Name       string    `json:"name,omitempty" xorm:"not null comment('真实姓名') VARCHAR(20)"`
 	Password   string    `json:"password,omitempty" xorm:"not null comment('密码') CHAR(32)"`
-	Token       string    `json:"token,omitempty" xorm:" comment('token') VARCHAR(64)"`
+	Token      string    `json:"token,omitempty" xorm:" comment('token') VARCHAR(64)"`
 	Mobile     string    `json:"mobile,omitempty" xorm:"not null comment('手机号码') unique VARCHAR(15)"`
 	Gender     string    `json:"gender,omitempty" xorm:"not null default '保密' comment('性别') ENUM('保密','女','男')"`
 	Ip         string    `json:"ip,omitempty" xorm:"not null comment('登录ip') VARCHAR(20)"`

@@ -5,7 +5,6 @@ import (
 	"testing"
 )
 
-
 func TestIsEmpty(t *testing.T) {
 	//c := 1
 	//c := ""

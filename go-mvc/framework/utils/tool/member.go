@@ -13,9 +13,9 @@ import (
 */
 func GetUserByToken(token string) (*models.LoginUser, error) {
 	var (
-		err         error
-		jsonU string
-		member      = new(models.LoginUser)
+		err    error
+		jsonU  string
+		member = new(models.LoginUser)
 	)
 
 	jsonU, err = redisClient.Get(conf.GlobalConfig.RedisPrefix + token).Result()
