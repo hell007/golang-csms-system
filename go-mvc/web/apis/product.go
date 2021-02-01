@@ -2,6 +2,7 @@ package apis
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	"go-mvc/framework/utils/tool"
 	"strconv"
 	"time"
@@ -28,7 +29,7 @@ func ProductDetail(ctx iris.Context) {
 	// 参数
 	id, err = ctx.URLParamInt("id")
 	if err != nil {
-		ctx.Application().Logger().Errorf("Product.ProductList参数错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -36,7 +37,7 @@ func ProductDetail(ctx iris.Context) {
 	// 查询
 	product, err = services.NewGoodsService().GetProduct(id)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Product.ProductList查询产品详情错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询产品详情错误")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -57,7 +58,7 @@ func SaveProduct(ctx iris.Context) {
 
 	// 参数
 	if err = ctx.ReadJSON(&form); err != nil {
-		ctx.Application().Logger().Errorf("Product.SaveProduct参数错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -84,7 +85,7 @@ func SaveProduct(ctx iris.Context) {
 
 		effect, err = services.NewOrderService().Create(order, goods)
 		if effect <= 0 && err != nil {
-			ctx.Application().Logger().Errorf("Product.SaveProduct提交订单错误：[%s]", err)
+			logs.GetLogger().Error(logs.D{"err": err}, "提交订单错误")
 			response.Failur(ctx, response.OptionFailur, nil)
 			return
 		}

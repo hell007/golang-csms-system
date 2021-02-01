@@ -2,6 +2,7 @@ package apis
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 
 	models "go-mvc/framework/models/goods"
 	"go-mvc/framework/services"
@@ -26,7 +27,7 @@ func Search(ctx iris.Context) {
 	val = ctx.URLParam("key")
 	p, err = page.NewPagination(ctx)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Search.Search参数错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -34,7 +35,7 @@ func Search(ctx iris.Context) {
 	// 热销
 	list, total, err = services.NewGoodsService().GetGoods("key", val, p)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Search.Search搜索商品错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "搜索商品错误")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}

@@ -2,6 +2,7 @@ package apis
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	"go-mvc/framework/utils/tool"
 	"time"
 
@@ -18,19 +19,19 @@ import (
 */
 func OrderList(ctx iris.Context) {
 	var (
-		err                error
-		state              int
-		p                  *page.Pagination
-		res                *page.Result
-		list               []models.Orders
-		user               = new(members.LoginUser)
-		total              int64
+		err   error
+		state int
+		p     *page.Pagination
+		res   *page.Result
+		list  []models.Orders
+		user  = new(members.LoginUser)
+		total int64
 	)
 
 	// 分页设置
 	p, err = page.NewPagination(ctx)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderList参数错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -43,7 +44,7 @@ func OrderList(ctx iris.Context) {
 	state, _ = ctx.URLParamInt("state")
 	list, total, err = services.NewOrderService().GetOrderListByMid(user.Id, state, p)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderList查询用户订单错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询用户订单错误")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -71,7 +72,7 @@ func OrderDetail(ctx iris.Context) {
 	// 参数处理
 	ordersn = ctx.URLParam("id")
 	if err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderDetail参数错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -79,7 +80,7 @@ func OrderDetail(ctx iris.Context) {
 	// 查询
 	orderDetail, err = services.NewOrderService().Get(ordersn)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Order.OrderDetail查询订单详情错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询订单详情错误")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -100,8 +101,8 @@ func SaveOrder(ctx iris.Context) {
 	)
 
 	if err = ctx.ReadJSON(&order); err != nil {
-		ctx.Application().Logger().Errorf("Order.SaveOrder读取订单参数错误：[%s]", err)
-		response.Failur(ctx, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
+		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
@@ -111,7 +112,7 @@ func SaveOrder(ctx iris.Context) {
 		columns = append(columns, "order_state")
 		effect, err = services.NewOrderService().Update(order, columns)
 		if effect < 0 || err != nil {
-			ctx.Application().Logger().Errorf("Order.SaveOrder更新订单状态错误：[%s]", err)
+			logs.GetLogger().Error(logs.D{"err": err}, "更新订单状态错误")
 			response.Failur(ctx, response.OptionFailur, nil)
 			return
 		}

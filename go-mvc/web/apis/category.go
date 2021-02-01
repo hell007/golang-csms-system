@@ -2,6 +2,7 @@ package apis
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	"strconv"
 
 	"go-mvc/framework/services"
@@ -15,7 +16,7 @@ import (
 func CategoryList(ctx iris.Context) {
 	categoryList, err := services.NewCategoryService().List(0)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Category.CategoryList查询商品分类错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询商品分类错误")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}
@@ -38,14 +39,14 @@ func CategoryGoods(ctx iris.Context) {
 	p, err = page.NewPagination(ctx)
 	id, err = ctx.URLParamInt("id")
 	if err != nil {
-		ctx.Application().Logger().Errorf("Category.CategoryGoods参数错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	list, total, err := services.NewGoodsService().GetGoods("category", strconv.Itoa(id), p)
 	if err != nil {
-		ctx.Application().Logger().Errorf("Category.CategoryGoods查询商品错误：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询商品错误")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
 	}

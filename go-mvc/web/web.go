@@ -1,14 +1,11 @@
 package main
 
 import (
-	"io"
-	"os"
-	"time"
-
 	"go-mvc/framework/bootstrap"
+	"go-mvc/framework/cache/redis"
 	"go-mvc/framework/conf"
+	"go-mvc/framework/logs"
 	"go-mvc/framework/middleware/identity"
-	"go-mvc/framework/utils/files"
 	"go-mvc/web/routes"
 )
 
@@ -34,12 +31,11 @@ func main() {
 	app.HandleDir("/assets", StaticAssets)
 	app.HandleDir("/uploads", Uploads)
 
-	// 日志设置 同时写文件日志与控制台日志
-	logFile := time.Now().Format(conf.GlobalConfig.TimeformatShort) + ".log"
-	f, _ := files.CreateFile(conf.GlobalConfig.LogsOutput + logFile)
-	defer f.Close()
-	app.Logger().SetOutput(io.MultiWriter(f, os.Stdout))
-	app.Logger().SetLevel(conf.GlobalConfig.LogsLevel)
+	// logs开启
+	logs.Start(conf.GlobalConfig.LogsAppPath)
+
+	// cache开启
+	redis.Start()
 
 	//监听端口
 	app.Listen(":7000")

@@ -57,9 +57,9 @@ type Logger struct {
 }
 
 // logs日志启动
-func Start() {
+func Start(p string) {
 	logger, err := New(&Option{
-		LogPath:              conf.GlobalConfig.LogsAppPath,
+		LogPath:              p,
 		LogType:              conf.GlobalConfig.LogsType,
 		FileNameDateFormat:   "%Y%m%d",
 		TimestampFormat:      conf.GlobalConfig.Timeformat,
