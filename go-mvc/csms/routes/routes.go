@@ -23,13 +23,12 @@ func Configure(b *bootstrap.Bootstrapper) {
 	home.Get("/", func(ctx iris.Context) {
 		ctx.View("index.html")
 	})
-	home.Get("/test", hero.Handler(controllers.HomeList()))
+	home.Get("/test", hero.Handler(controllers.HomeIndex()))
 
 	// test resfull api
 	test := main.Party("/test")
 	{
-		test.Get("/list", hero.Handler(controllers.TestList))
-		test.Get("/getLog", hero.Handler(controllers.GetLog))
+		test.Get("/getLog", hero.Handler(controllers.TestLog))
 	}
 
 	//-------mvc 路由模式------

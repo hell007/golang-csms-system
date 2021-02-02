@@ -11,7 +11,7 @@ import (
 	"go-mvc/framework/utils/response"
 )
 
-var keys = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat) //24
+var keys = conf.Global.JWTSecret + time.Now().Format(conf.Global.Timeformat) //24
 
 func Test(ctx iris.Context) {
 	response.Ok(ctx, response.OptionSuccess, true)

@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+var (
+	SysTimeLocation, _ = time.LoadLocation("Asia/Chongqing") // 中国时区
+	Global Config
+)
+
 type Config struct {
 	// 设置
 	Charset string `yaml:"Charset"`
@@ -73,23 +78,25 @@ type Config struct {
 	CaptchaExprire int    `yaml:"Captcha.Exprire"`
 
 	// Upload
-	UploadUrl     string   `yaml:"Upload.Url"`
-	UploadStyle   []string `yaml:"Upload.Style"`
-	UploadPicPath []string `yaml:"Upload.PicPath"`
-	UploadEditor  []string `yaml:"Upload.Editor"`
+	UploadUrl       string   `yaml:"Upload.Url"`
+	UploadStyle     []string `yaml:"Upload.Style"`
+	UploadPicPath   []string `yaml:"Upload.PicPath"`
+	UploadEditor    []string `yaml:"Upload.Editor"`
 
 	// time
 	Timeformat      string `yaml:"Timeformat"`
 	TimeformatShort string `yaml:"TimeformatShort"`
-}
 
-var SysTimeLocation, _ = time.LoadLocation("Asia/Chongqing") // 中国时区
-var GlobalConfig Config
+	// dir
+	Directory     string `yaml:"Directory"`
+	ConfigWindows string `yaml:"Config.Windows"`
+	ConfigLinux   string `yaml:"Config.Linux"`
+}
 
 /**
 获取yaml配置文件
 */
-func (cfg *Config) getConf() *Config {
+func (cfg *Config) setting() *Config {
 	yamlFile, err := files.LoadFile(GetConfigPath() + "app.yaml")
 	if err != nil {
 		golog.Errorf("LoadFile cfg config error!! %s", err)
@@ -101,30 +108,15 @@ func (cfg *Config) getConf() *Config {
 	return cfg
 }
 
-/**
-获取配置路径
-*/
+// 配置目录
 func GetConfigPath() string {
-	var ConfigPath string
+	var dir string
 	if isWindow() {
-		ConfigPath = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/framework/conf/"
+		dir = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/framework/conf/"
 	} else {
-		ConfigPath = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/framework/conf/"
+		dir = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/framework/conf/"
 	}
-	return ConfigPath
-}
-
-/**
-返回上传文件路径
-*/
-func GetUploadFile() string {
-	var UploadFile string
-	if isWindow() {
-		UploadFile = "D:/Dev/cygwin/work/golang/golang-csms-system/go-mvc/uploads/"
-	} else {
-		UploadFile = "/Users/wzh/Development/git/go/golang-csms-system/go-mvc/uploads/"
-	}
-	return UploadFile
+	return dir
 }
 
 func isWindow() bool {
@@ -132,6 +124,13 @@ func isWindow() bool {
 }
 
 func init() {
-	GlobalConfig.getConf()
+	Global.setting()
+
+	//设置应用前缀config
+	if isWindow() {
+		Global.Directory = Global.ConfigWindows
+	} else {
+		Global.Directory = Global.ConfigLinux
+	}
 	golog.Info("配置文件已经加载完成...")
 }

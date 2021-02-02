@@ -24,12 +24,12 @@ var (
 */
 func GetConnURL() (url string) {
 	url = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s",
-		conf.GlobalConfig.MysqlMasterUser,
-		conf.GlobalConfig.MysqlMasterPassword,
-		conf.GlobalConfig.MysqlMasterHost,
-		conf.GlobalConfig.MysqlMasterPort,
-		conf.GlobalConfig.MysqlMasterDatabase,
-		conf.GlobalConfig.Charset)
+		conf.Global.MysqlMasterUser,
+		conf.Global.MysqlMasterPassword,
+		conf.Global.MysqlMasterHost,
+		conf.Global.MysqlMasterPort,
+		conf.Global.MysqlMasterDatabase,
+		conf.Global.Charset)
 	return
 }
 
@@ -37,7 +37,7 @@ func GetConnURL() (url string) {
 创建xorm Engine
 */
 func newEngine() *xorm.Engine {
-	engine, err := xorm.NewEngine(conf.GlobalConfig.MysqlDialect, GetConnURL())
+	engine, err := xorm.NewEngine(conf.Global.MysqlDialect, GetConnURL())
 	if err != nil {
 		golog.Fatalf("db.Engine, %s", err)
 		return nil
@@ -45,8 +45,8 @@ func newEngine() *xorm.Engine {
 	//defer engine.Close()
 
 	// Debug模式，打印全部的SQL语句，帮助对比，看ORM与SQL执行的对照关系
-	engine.ShowSQL(conf.GlobalConfig.MysqlShowSql)
-	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, conf.GlobalConfig.MysqlPrefix)
+	engine.ShowSQL(conf.Global.MysqlShowSql)
+	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, conf.Global.MysqlPrefix)
 	engine.SetTableMapper(tbMapper)
 	engine.SetTZLocation(conf.SysTimeLocation)
 	// 性能优化的时候才考虑，加上本机的SQL缓存

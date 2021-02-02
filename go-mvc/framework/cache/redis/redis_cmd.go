@@ -8,7 +8,7 @@ import (
 
 //set
 func Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd {
-	if conf.GlobalConfig.RedisClusterState {
+	if conf.Global.RedisClusterState {
 		return redisClusterClient.Set(key, value, expiration)
 	} else {
 		return client.Set(key, value, expiration)
@@ -17,7 +17,7 @@ func Set(key string, value interface{}, expiration time.Duration) *redis.StatusC
 
 //get
 func Get(key string) *redis.StringCmd {
-	if conf.GlobalConfig.RedisClusterState {
+	if conf.Global.RedisClusterState {
 		return redisClusterClient.Get(key)
 	} else {
 		return client.Get(key)
@@ -26,7 +26,7 @@ func Get(key string) *redis.StringCmd {
 
 //del
 func Del(key string) *redis.IntCmd {
-	if conf.GlobalConfig.RedisClusterState {
+	if conf.Global.RedisClusterState {
 		return redisClusterClient.Del(key)
 	} else {
 		return client.Del(key)
@@ -35,7 +35,7 @@ func Del(key string) *redis.IntCmd {
 
 //incr
 func Incr(key string) *redis.IntCmd {
-	if conf.GlobalConfig.RedisClusterState {
+	if conf.Global.RedisClusterState {
 		return redisClusterClient.Incr(key)
 	} else {
 		return client.Incr(key)
@@ -44,7 +44,7 @@ func Incr(key string) *redis.IntCmd {
 
 //订阅
 func Subscribe(channels ...string) *redis.PubSub {
-	if conf.GlobalConfig.RedisClusterState {
+	if conf.Global.RedisClusterState {
 		return redisClusterClient.Subscribe(channels...)
 	} else {
 		return client.Subscribe(channels...)
@@ -53,7 +53,7 @@ func Subscribe(channels ...string) *redis.PubSub {
 
 //发布
 func Publish(channel string, message interface{}) *redis.IntCmd {
-	if conf.GlobalConfig.RedisClusterState {
+	if conf.Global.RedisClusterState {
 		return redisClusterClient.Publish(channel, message)
 	} else {
 		return client.Publish(channel, message)

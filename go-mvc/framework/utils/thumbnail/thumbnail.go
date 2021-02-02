@@ -81,20 +81,20 @@ func ThumbnailSave(filename string, width uint, height uint, flag int) string {
 
 	switch flag {
 	case 1, 2, 3: //  uploads/gooods/
-		filePath = conf.GetUploadFile() + conf.GlobalConfig.UploadPicPath[0]
+		filePath = conf.Global.UploadPicPath[0]
 	case 4: // uploads/images/goods/
-		filePath = conf.GetUploadFile() + conf.GlobalConfig.UploadEditor[0]
+		filePath = conf.Global.UploadEditor[0]
 	case 5: // uploads/artilce/
-		filePath = conf.GetUploadFile() + conf.GlobalConfig.UploadPicPath[1]
+		filePath = conf.Global.UploadPicPath[1]
 	case 6: // uploads/images/artilce/
-		filePath = conf.GetUploadFile() + conf.GlobalConfig.UploadEditor[1]
+		filePath = conf.Global.UploadEditor[1]
 	case 7: // uploads/ads/
-		filePath = conf.GetUploadFile() + conf.GlobalConfig.UploadPicPath[2]
+		filePath = conf.Global.UploadPicPath[2]
 	default:
 		filePath = ""
 	}
 
-	img, info, err1 := LoadImage(filePath + filename)
+	img, info, err1 := LoadImage(conf.Global.Directory + filePath + filename)
 	if err1 != nil {
 		log.Fatal(err1)
 	}

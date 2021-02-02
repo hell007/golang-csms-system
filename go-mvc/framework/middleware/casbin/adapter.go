@@ -115,7 +115,7 @@ func (a *Adapter) close() {
 }
 
 func (a *Adapter) createTable() {
-	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, conf.GlobalConfig.MysqlPrefix)
+	tbMapper := core.NewPrefixMapper(core.SnakeMapper{}, conf.Global.MysqlPrefix)
 	a.engine.SetTableMapper(tbMapper)
 	err := a.engine.Sync2(new(models.CasbinRule))
 	if err != nil {

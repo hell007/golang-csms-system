@@ -43,11 +43,11 @@ func ParseName(fileName string, flag int) string {
 
 	switch flag {
 	case 1:
-		fileNamePre = conf.GlobalConfig.UploadStyle[0]
+		fileNamePre = conf.Global.UploadStyle[0]
 	case 2:
-		fileNamePre = conf.GlobalConfig.UploadStyle[1]
+		fileNamePre = conf.Global.UploadStyle[1]
 	case 3:
-		fileNamePre = conf.GlobalConfig.UploadStyle[2]
+		fileNamePre = conf.Global.UploadStyle[2]
 	default: //0
 		fileNamePre = ""
 	}

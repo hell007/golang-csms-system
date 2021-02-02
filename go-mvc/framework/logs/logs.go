@@ -63,17 +63,17 @@ func Start(p string) {
 	once.Do(func() {
 		logger, err := New(&Option{
 			LogPath:              p,
-			LogType:              conf.GlobalConfig.LogsType,
+			LogType:              conf.Global.LogsType,
 			FileNameDateFormat:   "%Y%m%d",
-			TimestampFormat:      conf.GlobalConfig.Timeformat,
-			LogsOut:              conf.GlobalConfig.LogsOut,
-			LogLevel:             conf.GlobalConfig.LogsLevel,
-			MaxAge:               time.Duration(conf.GlobalConfig.LogsMaxAge) * time.Hour,
-			RotationTime:         time.Duration(conf.GlobalConfig.LogsRotationTime) * time.Hour,
-			JSONPrettyPrint:      conf.GlobalConfig.LogsJSONPrettyPrint,
-			JSONDataKey:          conf.GlobalConfig.LogsJSONDataKey,
-			EnableRecordFileInfo: conf.GlobalConfig.LogsEnableRecordFileInfo,
-			FileInfoField:        conf.GlobalConfig.LogsFileInfoField,
+			TimestampFormat:      conf.Global.Timeformat,
+			LogsOut:              conf.Global.LogsOut,
+			LogLevel:             conf.Global.LogsLevel,
+			MaxAge:               time.Duration(conf.Global.LogsMaxAge) * time.Hour,
+			RotationTime:         time.Duration(conf.Global.LogsRotationTime) * time.Hour,
+			JSONPrettyPrint:      conf.Global.LogsJSONPrettyPrint,
+			JSONDataKey:          conf.Global.LogsJSONDataKey,
+			EnableRecordFileInfo: conf.Global.LogsEnableRecordFileInfo,
+			FileInfoField:        conf.Global.LogsFileInfoField,
 		})
 
 		if err != nil {

@@ -161,7 +161,7 @@ func (c *ProductController) PostUpload() {
 
 	// 源图
 	fileName := thumbnail.ParseName(info.Filename, 0)
-	filePath, err1 := files.MakeFilePath(conf.GetUploadFile()+conf.GlobalConfig.UploadEditor[0], fileName)
+	filePath, err1 := files.MakeFilePath(conf.Global.Directory+conf.Global.UploadEditor[0], fileName)
 	if err1 != nil {
 		logs.GetLogger().Error(logs.D{"err": err1}, "创建目录出错")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
@@ -181,7 +181,7 @@ func (c *ProductController) PostUpload() {
 	_, _ = io.Copy(out, file)
 
 	res.Error = 0
-	res.Url = conf.GlobalConfig.UploadUrl + conf.GlobalConfig.UploadEditor[0] + fileName
+	res.Url = conf.Global.UploadUrl + conf.Global.UploadEditor[0] + fileName
 	_, _ = c.Ctx.JSON(res)
 	return
 }

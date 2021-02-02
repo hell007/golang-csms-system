@@ -58,7 +58,7 @@ func (c *UserController) PostLogin() {
 	}
 
 	// 验证密码
-	ckPassword = encrypt.CheckPWD(user.Password, ut.Password, conf.GlobalConfig.JWTSalt)
+	ckPassword = encrypt.CheckPWD(user.Password, ut.Password, conf.Global.JWTSalt)
 	if !ckPassword {
 		logs.GetLogger().Error(nil, "密码不正确")
 		response.Failur(c.Ctx, response.PasswordFailur, nil)

@@ -21,16 +21,16 @@ import (
 )
 
 //24
-var key = conf.GlobalConfig.JWTSecret + time.Now().Format(conf.GlobalConfig.Timeformat)
+var key = conf.Global.JWTSecret + time.Now().Format(conf.Global.Timeformat)
 
 //5分钟
-var captchatime = time.Duration(conf.GlobalConfig.CaptchaExprire) * time.Second
+var captchatime = time.Duration(conf.Global.CaptchaExprire) * time.Second
 
 //2小时
 var locktime = 2 * time.Hour
 
 //1小时
-var exprire = time.Duration(conf.GlobalConfig.RedisExprire) * time.Second
+var exprire = time.Duration(conf.Global.RedisExprire) * time.Hour
 
 /**
 会员注册
@@ -65,7 +65,7 @@ func Register(ctx iris.Context) {
 	member.Ip = ip
 
 	// 数据处理
-	member.Password = encrypt.AESEncrypt(member.Password, conf.GlobalConfig.JWTSalt)
+	member.Password = encrypt.AESEncrypt(member.Password, conf.Global.JWTSalt)
 	member.CreateTime = time.Now()
 	member.Status = 1
 
@@ -89,7 +89,7 @@ func Captcha(ctx iris.Context) {
 	code, img := cp.OutPut()
 
 	// 保存code 60s
-	err := redisClient.Set(conf.GlobalConfig.CaptchaKey, code, captchatime).Err()
+	err := redisClient.Set(conf.Global.CaptchaKey, code, captchatime).Err()
 	if err != nil {
 		logs.GetLogger().Error(logs.D{"err": err}, "验证码缓存错误")
 	}
@@ -120,8 +120,8 @@ func Login(ctx iris.Context) {
 	}
 
 	// 如果开启验证码校验，进行验证码校对
-	if conf.GlobalConfig.CaptchaVerify {
-		code, err = redisClient.Get(conf.GlobalConfig.CaptchaKey).Result()
+	if conf.Global.CaptchaVerify {
+		code, err = redisClient.Get(conf.Global.CaptchaKey).Result()
 		if code != strings.ToUpper(user.Code) || err != nil {
 			logs.GetLogger().Error(logs.D{"err": err}, "验证码对比错误")
 			response.Failur(ctx, response.CaptchaFailur, nil)
@@ -145,7 +145,7 @@ func Login(ctx iris.Context) {
 	}
 
 	// 存在，验证密码
-	equal = encrypt.CheckPWD(user.Password, member.Password, conf.GlobalConfig.JWTSalt)
+	equal = encrypt.CheckPWD(user.Password, member.Password, conf.Global.JWTSalt)
 	if !equal {
 		logs.GetLogger().Error(nil, "用户存在，登录的密码不正确")
 		response.Failur(ctx, response.LoginFailur, nil)
@@ -162,7 +162,7 @@ func Login(ctx iris.Context) {
 	// 合法会员，登录时间,密码,token更新
 	member.LoginTime = time.Now()
 	member.Token = encrypt.AESEncrypt(user.Mobile, key)
-	member.Password = encrypt.AESEncrypt(user.Password, conf.GlobalConfig.JWTSalt)
+	member.Password = encrypt.AESEncrypt(user.Password, conf.Global.JWTSalt)
 	columns = append(columns, "login_time", "token", "password")
 	_, err = services.NewMemberService().Update(member, columns)
 	if err != nil {
@@ -176,7 +176,7 @@ func Login(ctx iris.Context) {
 	user.Mobile = member.Mobile
 	user.Token = member.Token
 	jsonU, _ := json.Marshal(user)
-	err = redisClient.Set(conf.GlobalConfig.RedisPrefix+user.Token, jsonU, exprire).Err()
+	err = redisClient.Set(conf.Global.RedisPrefix+user.Token, jsonU, exprire).Err()
 	if err != nil {
 		logs.GetLogger().Error(logs.D{"err": err}, "缓存会员信息出错")
 	}
@@ -196,11 +196,11 @@ func Logout(ctx iris.Context) {
 	)
 
 	//通过token获取redis保存的用户
-	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	token := ctx.GetHeader(conf.Global.AuthToken)
 	user, _ = tool.GetUserByToken(token)
 
 	// redis 去除
-	err = redisClient.Del(conf.GlobalConfig.RedisPrefix + user.Mobile).Err()
+	err = redisClient.Del(conf.Global.RedisPrefix + user.Mobile).Err()
 	if err != nil {
 		logs.GetLogger().Error(logs.D{"err": err}, "删除缓存用户信息出错")
 		response.Failur(ctx, response.OptionFailur, nil)
@@ -220,7 +220,7 @@ func Profile(ctx iris.Context) {
 	)
 
 	//通过token获取redis保存的用户
-	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	token := ctx.GetHeader(conf.Global.AuthToken)
 	user, _ = tool.GetUserByToken(token)
 	response.Ok(ctx, response.OptionSuccess, user)
 	return
@@ -242,7 +242,7 @@ func FindUser(ctx iris.Context) {
 
 	// 恶意处理
 	ip = ips.ClientIP(ctx.Request())
-	t, _ = redisClient.Get(conf.GlobalConfig.RedisPrefix + ip).Result()
+	t, _ = redisClient.Get(conf.Global.RedisPrefix + ip).Result()
 	if t != "" {
 		times, _ = strconv.Atoi(t)
 	}
@@ -261,7 +261,7 @@ func FindUser(ctx iris.Context) {
 	}
 
 	// 验证码比对 短信验证码最好
-	code, err = redisClient.Get(conf.GlobalConfig.CaptchaKey).Result()
+	code, err = redisClient.Get(conf.Global.CaptchaKey).Result()
 	if code != strings.ToUpper(user.Code) || err != nil {
 		logs.GetLogger().Error(logs.D{"err": err}, "验证码对比错误")
 		response.Failur(ctx, response.CaptchaFailur, nil)
@@ -279,7 +279,7 @@ func FindUser(ctx iris.Context) {
 	// 不存在，或者手机号不正确
 	if !has {
 		times++
-		redisClient.Set(conf.GlobalConfig.RedisPrefix+ip, times, locktime)
+		redisClient.Set(conf.Global.RedisPrefix+ip, times, locktime)
 		logs.GetLogger().Error(nil, "用户不存在，或者登录的手机号不正确")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
@@ -288,7 +288,7 @@ func FindUser(ctx iris.Context) {
 	// 存在，姓名比对
 	if user.Name != member.Name {
 		times++
-		redisClient.Set(conf.GlobalConfig.RedisPrefix+ip, times, locktime) //两小时
+		redisClient.Set(conf.Global.RedisPrefix+ip, times, locktime) //两小时
 		logs.GetLogger().Error(nil, "用户不存在，姓名不正确")
 		response.Failur(ctx, response.OptionFailur, nil)
 		return
@@ -302,7 +302,7 @@ func FindUser(ctx iris.Context) {
 	}
 
 	// 合法，可以更改
-	member.Password = encrypt.AESEncrypt(user.Password, conf.GlobalConfig.JWTSalt)
+	member.Password = encrypt.AESEncrypt(user.Password, conf.Global.JWTSalt)
 	columns = append(columns, "password", "salt")
 	_, err = services.NewMemberService().Update(member, columns)
 	if err != nil {
@@ -349,7 +349,7 @@ func UserAddress(ctx iris.Context) {
 	)
 
 	//通过token获取redis保存的用户
-	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	token := ctx.GetHeader(conf.Global.AuthToken)
 	user, _ = tool.GetUserByToken(token)
 
 	// 会员地址列表
@@ -383,7 +383,7 @@ func SaveAddress(ctx iris.Context) {
 	}
 
 	//通过token获取redis保存的用户
-	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	token := ctx.GetHeader(conf.Global.AuthToken)
 	user, _ = tool.GetUserByToken(token)
 
 	// 获取会员 mid

@@ -33,7 +33,7 @@ func (c *TestController) PostUpload2() {
 	}
 
 	// 路径
-	fileDir := conf.GetUploadFile()
+	fileDir := conf.Global.Directory + "uploads/"
 
 	// 获取返回的上传路径
 	for _, v := range uploadfiles {

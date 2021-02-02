@@ -44,7 +44,7 @@ func CheckRootExit() bool {
 func CreateRoot() {
 	newRoot := system.User{
 		Username:   username,
-		Password:   encrypt.AESEncrypt(password, conf.GlobalConfig.JWTSalt),
+		Password:   encrypt.AESEncrypt(password, conf.Global.JWTSalt),
 		RoleId:     1,
 		Status:     1,
 		Email:      "root@sina.com",

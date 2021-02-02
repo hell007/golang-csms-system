@@ -21,10 +21,10 @@ var (
 func Start() {
 	once.Do(func() {
 		//判断是否为集群配置
-		if conf.GlobalConfig.RedisClusterState {
+		if conf.Global.RedisClusterState {
 			redisClusterClient = redis.NewClusterClient(&redis.ClusterOptions{
-				Password: conf.GlobalConfig.RedisClusterPassword,
-				Addrs:    conf.GlobalConfig.RedisClusterAddrs,
+				Password: conf.Global.RedisClusterPassword,
+				Addrs:    conf.Global.RedisClusterAddrs,
 			})
 			//Ping
 			ping, err := redisClusterClient.Ping().Result()
@@ -36,9 +36,9 @@ func Start() {
 			logs.GetLogger().Info(logs.D{"err": err}, "Redis集群服务已启动...")
 		} else {
 			client = redis.NewClient(&redis.Options{
-				Addr:     conf.GlobalConfig.RedisSingleAddr,
-				Password: conf.GlobalConfig.RedisSinglePassword, // no password set
-				DB:       conf.GlobalConfig.RedisSingleDb,       // use default DB
+				Addr:     conf.Global.RedisSingleAddr,
+				Password: conf.Global.RedisSinglePassword, // no password set
+				DB:       conf.Global.RedisSingleDb,       // use default DB
 			})
 			//Ping
 			pong, err := client.Ping().Result()

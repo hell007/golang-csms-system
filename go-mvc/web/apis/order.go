@@ -37,7 +37,7 @@ func OrderList(ctx iris.Context) {
 	}
 
 	//通过token获取redis保存的用户
-	token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+	token := ctx.GetHeader(conf.Global.AuthToken)
 	user, _ = tool.GetUserByToken(token)
 
 	// 查询

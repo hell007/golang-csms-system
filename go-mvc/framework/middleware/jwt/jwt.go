@@ -78,7 +78,7 @@ func ConfigJWT() {
 		//这个方法将验证jwt的token
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 			//自己加密的秘钥或者说盐值
-			return []byte(conf.GlobalConfig.JWTSecret), nil
+			return []byte(conf.Global.JWTSecret), nil
 		},
 		//设置后，中间件会验证令牌是否使用特定的签名算法进行签名
 		//如果签名方法不是常量，则可以使用ValidationKeyGetter回调来实现其他检查
@@ -203,10 +203,10 @@ func GenerateToken(ut *models.UserToken) (string, error) {
 	}
 
 	claims.IssuedAt = time.Now().Unix()
-	claims.SetExpiredAt(time.Now().Add(time.Second * time.Duration(conf.GlobalConfig.JWTTimeout)).Unix())
+	claims.SetExpiredAt(time.Now().Add(time.Hour * time.Duration(conf.Global.JWTTimeout)).Unix())
 
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenClaims.SignedString([]byte(conf.GlobalConfig.JWTSecret))
+	token, err := tokenClaims.SignedString([]byte(conf.Global.JWTSecret))
 
 	return token, err
 }
@@ -215,7 +215,7 @@ func GenerateToken(ut *models.UserToken) (string, error) {
 func RefreshToken(signedToken string) (string, error) {
 
 	token, err := jwt.ParseWithClaims(signedToken, &JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(conf.GlobalConfig.JWTSecret), nil
+		return []byte(conf.Global.JWTSecret), nil
 	})
 
 	if err != nil {
@@ -237,7 +237,7 @@ func RefreshToken(signedToken string) (string, error) {
 	claims.ExpiresAt = time.Now().Unix() + (claims.ExpiresAt - claims.IssuedAt)
 
 	newToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	refreshToken, err := newToken.SignedString([]byte(conf.GlobalConfig.JWTSecret))
+	refreshToken, err := newToken.SignedString([]byte(conf.Global.JWTSecret))
 
 	return refreshToken, err
 }

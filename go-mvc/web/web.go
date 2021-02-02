@@ -32,7 +32,7 @@ func main() {
 	app.HandleDir("/uploads", Uploads)
 
 	// logs开启
-	logs.Start(conf.GlobalConfig.LogsAppPath)
+	logs.Start(conf.Global.Directory + conf.Global.LogsAppPath)
 
 	// cache开启
 	redis.Start()

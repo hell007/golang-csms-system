@@ -16,7 +16,7 @@ func ServeHTTP(ctx context.Context) {
 	path := ctx.Path()
 
 	// 静态资源、login接口、首页等...不需要验证
-	if checkURL(path, conf.GlobalConfig.AuthIgnoresWeb) {
+	if checkURL(path, conf.Global.AuthIgnoresWeb) {
 		ctx.Next()
 		return
 	}
@@ -45,15 +45,15 @@ func ServeAPIS(ctx context.Context) {
 	path := ctx.Path()
 
 	// 静态资源、login接口、首页等...不需要验证
-	if checkURL(path, conf.GlobalConfig.AuthIgnoresApp) {
+	if checkURL(path, conf.Global.AuthIgnoresApp) {
 		ctx.Next()
 		return
 	}
 
 	// token验证
-	if VerifyUrl(path, conf.GlobalConfig.AuthVerifyApp) {
+	if VerifyUrl(path, conf.Global.AuthVerifyApp) {
 
-		token := ctx.GetHeader(conf.GlobalConfig.AuthToken)
+		token := ctx.GetHeader(conf.Global.AuthToken)
 		if tool.IsEmpty(token) {
 			response.Unauthorized(ctx, response.TokenParseFailurAndEmpty, nil)
 			return

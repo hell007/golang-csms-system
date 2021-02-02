@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	waterMarkPath = conf.GetUploadFile() + "/common/water.png"
+	waterMarkPath = conf.Global.Directory + "uploads/common/water.png"
 )
 
 // 加水印

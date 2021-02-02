@@ -38,7 +38,7 @@ func main() {
 	app.HandleDir("/uploads", Uploads)
 
 	// 日志设置
-	logs.Start(conf.GlobalConfig.LogsWebPath)
+	logs.Start(conf.Global.Directory + conf.Global.LogsWebPath)
 
 	//监听端口
 	app.Listen(":9000")

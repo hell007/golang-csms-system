@@ -76,7 +76,7 @@ func singleAdapter() *Adapter {
 	}
 
 	url := db.GetConnURL()
-	adt = NewAdapter(conf.GlobalConfig.MysqlDialect, url, true)
+	adt = NewAdapter(conf.Global.MysqlDialect, url, true)
 	return adt
 }
 
