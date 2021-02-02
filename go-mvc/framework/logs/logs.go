@@ -12,10 +12,12 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
 var (
+	once          sync.Once
 	logger        *Logger
 	fileInfoField string // 文件名和行号 显示字段
 )
@@ -58,27 +60,29 @@ type Logger struct {
 
 // logs日志启动
 func Start(p string) {
-	logger, err := New(&Option{
-		LogPath:              p,
-		LogType:              conf.GlobalConfig.LogsType,
-		FileNameDateFormat:   "%Y%m%d",
-		TimestampFormat:      conf.GlobalConfig.Timeformat,
-		LogsOut:              conf.GlobalConfig.LogsOut,
-		LogLevel:             conf.GlobalConfig.LogsLevel,
-		MaxAge:               time.Duration(conf.GlobalConfig.LogsMaxAge) * time.Hour,
-		RotationTime:         time.Duration(conf.GlobalConfig.LogsRotationTime) * time.Hour,
-		JSONPrettyPrint:      conf.GlobalConfig.LogsJSONPrettyPrint,
-		JSONDataKey:          conf.GlobalConfig.LogsJSONDataKey,
-		EnableRecordFileInfo: conf.GlobalConfig.LogsEnableRecordFileInfo,
-		FileInfoField:        conf.GlobalConfig.LogsFileInfoField,
+	once.Do(func() {
+		logger, err := New(&Option{
+			LogPath:              p,
+			LogType:              conf.GlobalConfig.LogsType,
+			FileNameDateFormat:   "%Y%m%d",
+			TimestampFormat:      conf.GlobalConfig.Timeformat,
+			LogsOut:              conf.GlobalConfig.LogsOut,
+			LogLevel:             conf.GlobalConfig.LogsLevel,
+			MaxAge:               time.Duration(conf.GlobalConfig.LogsMaxAge) * time.Hour,
+			RotationTime:         time.Duration(conf.GlobalConfig.LogsRotationTime) * time.Hour,
+			JSONPrettyPrint:      conf.GlobalConfig.LogsJSONPrettyPrint,
+			JSONDataKey:          conf.GlobalConfig.LogsJSONDataKey,
+			EnableRecordFileInfo: conf.GlobalConfig.LogsEnableRecordFileInfo,
+			FileInfoField:        conf.GlobalConfig.LogsFileInfoField,
+		})
+
+		if err != nil {
+			StderrFatalf("error: %s", err)
+			return
+		}
+
+		logger.Info(nil, "logs日志记录已启动...")
 	})
-
-	if err != nil {
-		StderrFatalf("error: %s", err)
-		return
-	}
-
-	logger.Info(nil, "logs日志记录已启动...")
 }
 
 //全局获取logger实例
@@ -106,7 +110,7 @@ func newLogger(option *Option) (*logrus.Logger, error) {
 		logrusLogger.SetOutput(ioutil.Discard)
 	}
 
-	level,_ := logrus.ParseLevel(option.LogLevel)
+	level, _ := logrus.ParseLevel(option.LogLevel)
 	logrusLogger.Level = level
 
 	switch option.LogType {
