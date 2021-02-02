@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	models "go-mvc/framework/models/goods"
 	"go-mvc/framework/services"
 	"go-mvc/framework/utils/response"
@@ -15,13 +16,12 @@ type SkuController struct {
 func (c *SkuController) PostVal() {
 	var (
 		err error
-		//effect int64
 		skuValList = make([]models.GoodsSkuVal, 0)
 	)
 
 	if err = c.Ctx.ReadJSON(&skuValList); err != nil {
-		c.Ctx.Application().Logger().Errorf("Sku PostVal Json：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
+		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 

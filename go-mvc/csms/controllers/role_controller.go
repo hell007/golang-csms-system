@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	"strconv"
 	"strings"
 
@@ -39,8 +40,8 @@ func (c *RoleController) GetList() {
 	status, _ = c.Ctx.URLParamInt("status")
 	list, total, err = c.Service.List(rolename, status, p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Role GetList 查询：[%s]", err)
-		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
+		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -54,7 +55,7 @@ func (c *RoleController) GetList() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Role GetList 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -76,7 +77,7 @@ func (c *RoleController) GetItem() {
 	// 查询
 	role, err = c.Service.Get(id)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Role GetItem 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -86,7 +87,7 @@ func (c *RoleController) GetItem() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Role GetItem 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -100,7 +101,7 @@ func (c *RoleController) PostSave() {
 	)
 
 	if err = c.Ctx.ReadJSON(&role); err != nil {
-		c.Ctx.Application().Logger().Errorf("Role PostSave Json：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -112,7 +113,7 @@ func (c *RoleController) PostSave() {
 	}
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Role PostSave 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "保存失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -153,7 +154,7 @@ func (c *RoleController) GetDelete() {
 	effect, err = c.Service.Delete(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Role PostDelete 删除：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "删除失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -163,7 +164,7 @@ func (c *RoleController) GetDelete() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Role PostDelete 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -201,7 +202,7 @@ func (c *RoleController) GetClose() {
 	effect, err = c.Service.Close(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Role GetClose 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "close是吧")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -211,7 +212,7 @@ func (c *RoleController) GetClose() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Role GetClose 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }

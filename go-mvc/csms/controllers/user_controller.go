@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"go-mvc/framework/logs"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/kataras/golog"
 	"github.com/kataras/iris/v12"
 
 	"go-mvc/framework/conf"
@@ -36,7 +36,7 @@ func (c *UserController) PostLogin() {
 	)
 
 	if err = c.Ctx.ReadJSON(&user); err != nil {
-		c.Ctx.Application().Logger().Errorf("用户[%s]登录失败：[%s]", user.Username, err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -45,13 +45,14 @@ func (c *UserController) PostLogin() {
 	has, err := c.Service.GetUserByName(user.Username, ut)
 
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("用户[%s]登录失败：%s", user.Username, err)
+		logs.GetLogger().Error(logs.D{"user": user.Username, "err": err}, "登录失败")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.LoginFailur, nil)
 		return
 	}
 
 	// 用户名不正确
 	if !has {
+		logs.GetLogger().Error(nil, "用户名不正确")
 		response.Failur(c.Ctx, response.UsernameFailur, nil)
 		return
 	}
@@ -59,6 +60,7 @@ func (c *UserController) PostLogin() {
 	// 验证密码
 	ckPassword = encrypt.CheckPWD(user.Password, ut.Password, conf.GlobalConfig.JWTSalt)
 	if !ckPassword {
+		logs.GetLogger().Error(nil, "密码不正确")
 		response.Failur(c.Ctx, response.PasswordFailur, nil)
 		return
 	}
@@ -66,7 +68,7 @@ func (c *UserController) PostLogin() {
 	// 用户存在，生成token
 	token, err = jwt.GenerateToken(ut)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("用户[%s]登录成功，token生成：[%s]", user.Username, err)
+		logs.GetLogger().Error(logs.D{"err": err}, "token生成失败")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.TokenCreateFailur, nil)
 		return
 	}
@@ -80,7 +82,7 @@ func (c *UserController) PostLogin() {
 	columns = append(columns, "ip", "login_time")
 	_, err = c.Service.Update(user, columns)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("用户[%s]更新登录信息：[%s]", user.Username, err)
+		logs.GetLogger().Error(logs.D{"err": err}, "更新登录信息出错")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.TokenCreateFailur, nil)
 		return
 	}
@@ -106,12 +108,14 @@ func (c *UserController) GetTest() {
 
 	oldtoken, err = jwt.FromAuthHeader(c.Ctx)
 	if err != nil {
+		logs.GetLogger().Error(logs.D{"err": err}, response.TokenParseFailur)
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.TokenParseFailur, nil)
 		return
 	}
 
 	token, err = jwt.RefreshToken(oldtoken)
 	if err != nil {
+		logs.GetLogger().Error(logs.D{"err": err}, response.TokenParseFailur)
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.TokenRefreshFailur, nil)
 		return
 	}
@@ -143,8 +147,7 @@ func (c *UserController) GetList() {
 	status, _ = c.Ctx.URLParamInt("status")
 	list, total, err = c.Service.List(username, status, p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("UserController GetList 查询：[%s]", err)
-		golog.Error("UserController GetList：" + err.Error())
+		logs.GetLogger().Error(logs.D{"err": err}, "查询出错")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
 		return
 	}
@@ -159,7 +162,7 @@ func (c *UserController) GetList() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("UserController GetList 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -182,8 +185,7 @@ func (c *UserController) GetItem() {
 	// 查询
 	user, has, err = c.Service.Get(id)
 	if !has {
-		c.Ctx.Application().Logger().Errorf("UserController GetItem 查询：[%s]", err)
-		golog.Error("UserController GetItem：" + err.Error())
+		logs.GetLogger().Error(logs.D{"err": err}, "查询出错")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -193,7 +195,7 @@ func (c *UserController) GetItem() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("UserController GetItem 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -207,7 +209,7 @@ func (c *UserController) PostSave() {
 	)
 
 	if err = c.Ctx.ReadJSON(&user); err != nil {
-		c.Ctx.Application().Logger().Errorf("UserController PostSave Json：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
 	}
@@ -220,7 +222,7 @@ func (c *UserController) PostSave() {
 	}
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("UserController PostSave 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "保存出错")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -259,9 +261,8 @@ func (c *UserController) GetDelete() {
 	}
 
 	effect, err = c.Service.Delete(ids)
-
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("UserController GetDelete 删除：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "删除出错")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -271,7 +272,7 @@ func (c *UserController) GetDelete() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("UserController GetDelete 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -308,7 +309,7 @@ func (c *UserController) GetClose() {
 	effect, err = c.Service.Close(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("UserController GetClose 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.OptionFailur)
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -318,7 +319,7 @@ func (c *UserController) GetClose() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("UserController GetClose 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }

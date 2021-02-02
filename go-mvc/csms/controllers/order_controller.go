@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"go-mvc/framework/logs"
 	"strconv"
 	"strings"
 	"time"
@@ -42,8 +43,8 @@ func (c *OrderController) GetList() {
 	list, total, err = c.Service.List(name, orderState, p)
 
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetList 查询：[%s]", err)
-		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
+		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -58,7 +59,7 @@ func (c *OrderController) GetList() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Order GetList 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -80,7 +81,7 @@ func (c *OrderController) GetItem() {
 	// 查询
 	orderDetail, err = c.Service.Get(ordersn)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetItem 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -90,7 +91,7 @@ func (c *OrderController) GetItem() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Order GetItem 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -105,8 +106,8 @@ func (c *OrderController) PostSave() {
 	)
 
 	if err = c.Ctx.ReadJSON(&order); err != nil {
-		c.Ctx.Application().Logger().Errorf("Order PostSave Json：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
+		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
@@ -118,7 +119,7 @@ func (c *OrderController) PostSave() {
 	}
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Order PostSave 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "保存失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -160,7 +161,7 @@ func (c *OrderController) GetDelete() {
 	effect, err = c.Service.Delete(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetDelete 删除：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "删除失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -170,7 +171,7 @@ func (c *OrderController) GetDelete() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Order GetDelete 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -207,7 +208,7 @@ func (c *OrderController) GetClose() {
 
 	effect, err = c.Service.Close(ids)
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Order GetClose 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "关闭失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -217,7 +218,7 @@ func (c *OrderController) GetClose() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Order GetClose 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }

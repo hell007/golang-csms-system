@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	"strconv"
 	"strings"
 
@@ -36,7 +37,7 @@ func (c *RuleController) GetList() {
 	// 查询
 	list, total, err = c.Service.List(p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule GetList 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
 		return
 	}
@@ -51,7 +52,7 @@ func (c *RuleController) GetList() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Rule GetList 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -65,7 +66,7 @@ func (c *RuleController) PostCreate() {
 
 	// 读取
 	if err = c.Ctx.ReadJSON(&rule); err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule PostCreate Json：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -73,7 +74,7 @@ func (c *RuleController) PostCreate() {
 	e := casbin.GetEnforcer()
 	ok, err := e.AddPolicy(rule.V0, rule.V1, rule.V2, rule.V3, rule.V4, rule.V5)
 	if !ok || err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule PostCreate 添加：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "添加失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 	}
 
@@ -88,14 +89,14 @@ func (c *RuleController) PostSave() {
 
 	// 读取
 	if err := c.Ctx.ReadJSON(&rule); err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule PostSave Json：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	effect, err2 := c.Service.Update(&rule, nil)
 	if effect < 0 || err2 != nil {
-		c.Ctx.Application().Logger().Errorf("Rule PostSave 操作：[%s]", err2)
+		logs.GetLogger().Error(logs.D{"err": err2}, "操作失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -137,7 +138,7 @@ func (c *RuleController) GetDelete() {
 	effect, err = c.Service.Delete(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule PostDelete 删除：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "删除失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -147,7 +148,7 @@ func (c *RuleController) GetDelete() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Rule PostDelete 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -157,8 +158,8 @@ func (c *RuleController) PostRelationuserrole() {
 	groupDef := new(casbin.GroupDefine)
 
 	if err := c.Ctx.ReadJSON(groupDef); err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule PostRelationuserrole Json：[%s]", err)
-		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
+		response.Error(c.Ctx, iris.StatusInternalServerError, response.ParseParamsFailur, nil)
 		return
 	}
 
@@ -175,7 +176,7 @@ func (c *RuleController) PostRelationuserrole() {
 	}
 
 	if !ok {
-		c.Ctx.Application().Logger().Errorf("Rule PostRelationuserrole 操作：[%s]", "给目标用户添加角色出错")
+		logs.GetLogger().Error(nil, "给目标用户添加角色出错")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -188,7 +189,7 @@ func (c *RuleController) GetRoleuserlist() {
 	rKey := c.Ctx.URLParam("rKey")
 	p, err := page.NewPagination(c.Ctx)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule GetRoleuserlist 参数: [%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -197,7 +198,7 @@ func (c *RuleController) GetRoleuserlist() {
 	e := casbin.GetEnforcer()
 	users, err := e.GetUsersForRole(rKey)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule GetRoleuserlist 获取用户角色名称: [%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "获取用户角色名称出错")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -216,7 +217,7 @@ func (c *RuleController) GetRoleuserlist() {
 	// 根据角色id查询用户
 	list, total, err := services.NewUserService().GetUsersByRids(rids, p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule GetRoleuserlist 获取角色关联的用户表：, [%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "获取角色关联的用户表出错")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -234,15 +235,14 @@ func (c *RuleController) GetRoleuserlist() {
 func (c *RuleController) GetMenus() {
 	rid, err := c.Ctx.URLParamInt64("rid")
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Rule GetMenus 参数：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	menus, err2 := services.NewMenuService().GetMenusByRoleid(rid)
-
 	if err2 != nil {
-		c.Ctx.Application().Logger().Errorf("Rule GetMenus 查询：[%s]", err2)
+		logs.GetLogger().Error(logs.D{"err": err2}, "查询失败")
 		response.Failur(c.Ctx, response.OptionFailur, err2)
 		return
 	}

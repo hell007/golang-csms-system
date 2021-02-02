@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	"strconv"
 	"strings"
 	"time"
@@ -42,7 +43,7 @@ func (c *MemberController) GetList() {
 	status, _ = c.Ctx.URLParamInt("status")
 	list, total, err = c.Service.List(name, status, p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Member GetList 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
 		return
 	}
@@ -57,7 +58,7 @@ func (c *MemberController) GetList() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Member GetList 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -79,7 +80,7 @@ func (c *MemberController) GetItem() {
 	// 查询
 	memberDetail, err = c.Service.Get(id)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Member GetItem 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -89,7 +90,7 @@ func (c *MemberController) GetItem() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Member GetItem 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -103,7 +104,7 @@ func (c *MemberController) PostSave() {
 	)
 
 	if err = c.Ctx.ReadJSON(&member); err != nil {
-		c.Ctx.Application().Logger().Errorf("Member PostSave Json：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
 	}
@@ -117,7 +118,7 @@ func (c *MemberController) PostSave() {
 	}
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Member PostSave 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "操作失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -159,7 +160,7 @@ func (c *MemberController) GetDelete() {
 	effect, err = c.Service.Delete(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Member GetDelete 删除：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "删除失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -169,7 +170,7 @@ func (c *MemberController) GetDelete() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Member GetDelete 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -206,7 +207,7 @@ func (c *MemberController) GetClose() {
 	effect, err = c.Service.Close(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Member GetClose 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "关闭失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -216,7 +217,7 @@ func (c *MemberController) GetClose() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Member GetClose 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }

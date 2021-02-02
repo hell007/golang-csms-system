@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	"io"
 	"os"
 	"strconv"
@@ -23,8 +24,9 @@ func (c *GalleryController) PostUpload() {
 	file, info, err := c.Ctx.FormFile("file")
 	id := c.Ctx.FormValue("id")
 	gid := c.Ctx.FormValue("gid")
+
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Gallery PostUpload 参数：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -34,14 +36,14 @@ func (c *GalleryController) PostUpload() {
 	fileName := thumbnail.ParseName(info.Filename, 3)
 	filePath, err1 := files.MakeFilePath(conf.GetUploadFile()+conf.GlobalConfig.UploadPicPath[0], fileName)
 	if err1 != nil {
-		c.Ctx.Application().Logger().Errorf("Gallery PostUpload 目录：[%s]", err1)
+		logs.GetLogger().Error(logs.D{"err": err1}, "图片创建目录出错")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
 		return
 	}
 
 	out, err2 := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
 	if err2 != nil {
-		c.Ctx.Application().Logger().Errorf("Gallery PostUpload 保存图片：[%s]", err2)
+		logs.GetLogger().Error(logs.D{"err": err2}, "图片生成出错")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
 		return
 	}
@@ -63,7 +65,7 @@ func (c *GalleryController) PostUpload() {
 
 	effect, err3 := services.NewGalleryService().Create(gallery)
 	if effect < 0 || err3 != nil {
-		c.Ctx.Application().Logger().Errorf("Gallery PostUpload 添加：[%s]", err3)
+		logs.GetLogger().Error(logs.D{"err": err3}, "图片添加入库失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -80,14 +82,14 @@ func (c *GalleryController) PostDelete() {
 	)
 
 	if err = c.Ctx.ReadJSON(&gallery); err != nil {
-		c.Ctx.Application().Logger().Errorf("Gallery PostDelete Json：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
+		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
 	effect, err = services.NewGalleryService().Delete(gallery.GalleryId)
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Gallery PostDelete 删除：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "删除图片集失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}

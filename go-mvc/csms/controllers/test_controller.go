@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"errors"
 	"github.com/kataras/golog"
 	"github.com/kataras/iris/v12"
 	"go-mvc/framework/conf"
+	"go-mvc/framework/logs"
 	models "go-mvc/framework/models/common"
-	"go-mvc/framework/models/system"
 	"go-mvc/framework/services"
 	"go-mvc/framework/utils/response"
 	"go-mvc/framework/utils/thumbnail"
@@ -14,46 +15,6 @@ import (
 type TestController struct {
 	Ctx     iris.Context
 	Service services.UserService
-}
-
-func TestList(ctx iris.Context) {
-	var (
-		err  error
-		has  bool
-		id   int
-		user = new(system.User)
-	)
-
-	// 参数处理
-	id, err = ctx.URLParamInt("id")
-	if err != nil {
-		ctx.Application().Logger().Errorf("TestController.Test参数错误：[%s]", err)
-		response.Error(ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
-		return
-	}
-
-	// 查询
-	user, has, err = services.NewUserService().Get(id)
-	if !has {
-		ctx.Application().Logger().Errorf("TestController.GetItem查询错误：[%s]", err)
-		golog.Error("UserController GetItem：" + err.Error())
-		response.Failur(ctx, response.OptionFailur, nil)
-		return
-	}
-
-	response.Ok(ctx, response.OptionSuccess, user)
-	return
-}
-
-func GetLog(ctx iris.Context) {
-	id, err := ctx.URLParamInt("id")
-	if err != nil {
-		ctx.Application().Logger().Errorf("test参数错误：[%s]", "test")
-		response.Failur(ctx, response.OptionFailur, id)
-		return
-	}
-	response.Ok(ctx, response.OptionSuccess, id)
-	return
 }
 
 // 图片上传
@@ -81,4 +42,12 @@ func (c *TestController) PostUpload2() {
 	}
 
 	response.Ok(c.Ctx, response.OptionSuccess, paths)
+}
+
+//本应用写日志的三种方式
+func TestLog(ctx iris.Context) {
+	err := errors.New("出错了")
+	golog.Println("golog日志")
+	ctx.Application().Logger().Error("%s", err, "ctx调用golog日志")
+	logs.GetLogger().Error(logs.D{"err": err}, "logrus日志")
 }

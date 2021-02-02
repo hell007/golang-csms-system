@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 	"strconv"
 	"strings"
 
@@ -27,10 +28,16 @@ func (c *PermissionController) GetList() {
 
 	// 查询
 	level, _ = c.Ctx.URLParamInt("level")
+	if level < 0 {
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
+		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
+		return
+	}
+
 	list, err = c.Service.List(level)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Permission GetList 查询：[%s]", err)
-		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
+		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
 
@@ -58,7 +65,7 @@ func (c *PermissionController) GetItem() {
 	// 查询
 	menu, err = c.Service.Get(id)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Permission GetItem 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -68,7 +75,7 @@ func (c *PermissionController) GetItem() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Permission GetItem 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -82,8 +89,8 @@ func (c *PermissionController) PostSave() {
 	)
 
 	if err = c.Ctx.ReadJSON(&menu); err != nil {
-		c.Ctx.Application().Logger().Errorf("Permission PostSave Json：[%s]", err)
-		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
+		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
 
@@ -94,7 +101,7 @@ func (c *PermissionController) PostSave() {
 	}
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Permission PostSave 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "保存失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -135,7 +142,7 @@ func (c *PermissionController) GetDelete() {
 
 	effect, err = c.Service.Delete(ids)
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Permission PostDelete 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "删除失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -145,7 +152,7 @@ func (c *PermissionController) GetDelete() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Permission PostDelete 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -183,7 +190,7 @@ func (c *PermissionController) GetClose() {
 	effect, err = c.Service.Close(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Permission GetClose 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "close失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -193,7 +200,7 @@ func (c *PermissionController) GetClose() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Permission GetClose 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }

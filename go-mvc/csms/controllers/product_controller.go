@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/kataras/iris/v12"
 	"go-mvc/framework/conf"
+	"go-mvc/framework/logs"
 	"go-mvc/framework/models/common"
 	models "go-mvc/framework/models/goods"
 	"go-mvc/framework/services"
@@ -51,7 +52,7 @@ func (c *ProductController) GetList() {
 
 	list, total, err = c.Service.List(name, category, isOnSale, isFirst, isHot, p)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Product GetList 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
 		return
 	}
@@ -67,7 +68,7 @@ func (c *ProductController) GetList() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Product GetList 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -92,7 +93,7 @@ func (c *ProductController) GetItem() {
 	// 查询
 	goods, galleryList, _, skuValList, err = c.Service.Get(id)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Product GetItem 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -106,7 +107,7 @@ func (c *ProductController) GetItem() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Product GetItem 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -120,7 +121,7 @@ func (c *ProductController) PostSave() {
 	)
 
 	if err = c.Ctx.ReadJSON(&goods); err != nil {
-		c.Ctx.Application().Logger().Errorf("Product PostSave Json：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
 	}
@@ -134,7 +135,7 @@ func (c *ProductController) PostSave() {
 	}
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Product PostSave 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "保存失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -152,7 +153,7 @@ func (c *ProductController) PostUpload() {
 	// 图片表单上传
 	file, info, err := c.Ctx.FormFile("imgFile")
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("Product PostUpload 参数：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -162,14 +163,14 @@ func (c *ProductController) PostUpload() {
 	fileName := thumbnail.ParseName(info.Filename, 0)
 	filePath, err1 := files.MakeFilePath(conf.GetUploadFile()+conf.GlobalConfig.UploadEditor[0], fileName)
 	if err1 != nil {
-		c.Ctx.Application().Logger().Errorf("Product PostUpload 目录：[%s]", err1)
+		logs.GetLogger().Error(logs.D{"err": err1}, "创建目录出错")
 		response.Error(c.Ctx, iris.StatusInternalServerError, response.OptionFailur, nil)
 		return
 	}
 
 	out, err2 := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
 	if err2 != nil {
-		c.Ctx.Application().Logger().Errorf("Product PostUpload 源图：[%s]", err2)
+		logs.GetLogger().Error(logs.D{"err": err2}, "生成图片出错")
 		res.Error = 1
 		res.Message = err2.Error()
 		_, _ = c.Ctx.JSON(res)
@@ -218,7 +219,7 @@ func (c *ProductController) GetDelete() {
 	effect, err = c.Service.Delete(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Product GetDelete 删除：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "删除失败")
 		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
 	}
@@ -228,7 +229,7 @@ func (c *ProductController) GetDelete() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Product GetDelete 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -266,7 +267,7 @@ func (c *ProductController) GetClose() {
 	effect, err = c.Service.Close(ids)
 
 	if effect <= 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("Product GetClose 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "close失败")
 		response.Error(c.Ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
 	}
@@ -276,7 +277,7 @@ func (c *ProductController) GetClose() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("Product GetClose 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }

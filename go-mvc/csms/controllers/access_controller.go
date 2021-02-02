@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/logs"
 
 	models "go-mvc/framework/models/system"
 	"go-mvc/framework/services"
@@ -31,7 +32,7 @@ func (c *AccessController) GetList() {
 	// 查询
 	list, err = c.Service.List(rid)
 	if err != nil {
-		c.Ctx.Application().Logger().Errorf("AccessController GetList 查询：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "查询失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}
@@ -46,7 +47,7 @@ func (c *AccessController) GetList() {
 
 	// 参数错误
 FAIL:
-	c.Ctx.Application().Logger().Errorf("AccessController GetList 参数：[%s]", err)
+	logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 	response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 	return
 }
@@ -60,7 +61,7 @@ func (c *AccessController) PostSave() {
 	)
 
 	if err = c.Ctx.ReadJSON(&rms); err != nil {
-		c.Ctx.Application().Logger().Errorf("AccessController PostSave Json：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(c.Ctx, iris.StatusBadRequest, response.ParseParamsFailur, nil)
 		return
 	}
@@ -68,7 +69,7 @@ func (c *AccessController) PostSave() {
 	effect, err = c.Service.Create(rms.Rid, &rms)
 
 	if effect < 0 || err != nil {
-		c.Ctx.Application().Logger().Errorf("AccessController PostSave 操作：[%s]", err)
+		logs.GetLogger().Error(logs.D{"err": err}, "保存失败")
 		response.Failur(c.Ctx, response.OptionFailur, nil)
 		return
 	}

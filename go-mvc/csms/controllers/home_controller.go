@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-	"github.com/kataras/golog"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 	//"../../framework/models"
@@ -14,9 +12,7 @@ import (
 //	//Service services.UserService
 //}
 
-func HomeList() mvc.Result {
-	//datalist := c.Service.GetAll()
-	// set the model and render the view template.
+func HomeIndex() mvc.Result {
 	return mvc.View{
 		Name: "home/index.html",
 		Data: iris.Map{
@@ -24,10 +20,4 @@ func HomeList() mvc.Result {
 		},
 		Layout: "layout.html",
 	}
-}
-
-func HomeTest(ctx iris.Context) {
-	fmt.Println("home test")
-	golog.Println("fuck fuck fuck")
-	ctx.Application().Logger().Error("求你可以写入日志了！")
 }
