@@ -71,7 +71,7 @@ func Register(ctx iris.Context) {
 	if err != nil {
 		for _, err2 := range err.(validator.ValidationErrors) {
 			logs.GetLogger().Error(nil, "validator验证出错")
-			response.Failur(ctx, response.RegisteFailur, err2.Translate(trans))
+			response.Failur(ctx, err2.Translate(trans), nil)
 			return
 		}
 	}
