@@ -20,7 +20,7 @@ func GetUserByToken(token string) (*models.LoginUser, error) {
 
 	jsonU, err = redisClient.Get(conf.Global.RedisPrefix + token).Result()
 	if err = json.Unmarshal([]byte(jsonU), &member); err != nil {
-		return member, errors.New("会员获取失败")
+		return member, errors.New("从缓存获取会员失败")
 	}
 
 	return member, nil
