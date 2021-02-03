@@ -2,7 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-playground/locales/zh"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
+	translations "github.com/go-playground/validator/v10/translations/zh"
+	"reflect"
 )
 
 /**
@@ -41,35 +45,67 @@ ltecsfield=Other.Field: 必须小于等于 struct Other 中 Field 的值
 
 type Users struct {
 	Id       string `json:"id"`
-	Name     string `json:"name" validate:"required,CustomValidationErrors"` //包含自定义函数
-	Phone    string `json:"phone" validate:"required,len=11"`
-	Passwd   string `json:"passwd" validate:"required,max=20,min=6"`
-	Repasswd string `json:"repasswd" validate:"required,max=20,min=6,eqfield=Passwd"`
-	Code     string `json:"code" validate:"required,len=6"`
+	Name     string `json:"name" validate:"required,CustomValidationErrors" label:"用户名"` //包含自定义函数
+	Phone    string `json:"phone" validate:"required,len=11" label:"手机号"`
+	Passwd   string `json:"passwd" validate:"required,max=20,min=6" label:"密码"`
+	Repasswd string `json:"repasswd" validate:"required,max=20,min=6,eqfield=Passwd" label:"确认密码"`
+	Code     string `json:"code" validate:"required,len=6" label:"验证码"`
 }
 
+//验证函数
 func CustomValidationErrors(fl validator.FieldLevel) bool {
 	return fl.Field().String() != "admin"
+}
+
+//标记函数
+func CustomTranslationError1(ut ut.Translator) error {
+	return ut.Add("CustomValidationErrors", "{0}为{1}的用户已存在", true)
+}
+
+//标记函数
+func CustomTranslationError2(ut ut.Translator, fe validator.FieldError) string {
+	t, _ := ut.T("CustomValidationErrors", fe.Field(), fmt.Sprintf("%v", fe.Value()))
+	return t
 }
 
 func main() {
 
 	users := &Users{
-		Name:     "test", //"admin" //自定义验证
+		Name:     "admin", //"admin" //自定义验证
 		Phone:    "13837462388",
 		Passwd:   "123456789",
 		Repasswd: "123456789",
 		Code:     "708090",
 	}
+
+	uni := ut.New(zh.New())
+	trans, _ := uni.GetTranslator("zh")
 	validate := validator.New()
+
+	//注册一个函数，获取struct tag里自定义的label作为字段名
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := fld.Tag.Get("label")
+		return name
+	})
 
 	//注册自定义函数
 	_ = validate.RegisterValidation("CustomValidationErrors", CustomValidationErrors)
 
-	err := validate.Struct(users)
+	//根据提供的标记注册翻译
+	_ = validate.RegisterTranslation("CustomValidationErrors", trans, CustomTranslationError1, CustomTranslationError2)
+
+	//验证器注册翻译器
+	err := translations.RegisterDefaultTranslations(validate, trans)
 	if err != nil {
-		for _, err := range err.(validator.ValidationErrors) {
-			fmt.Println(err)
+		fmt.Println(err)
+	}
+
+	err2 := validate.Struct(users)
+	if err2 != nil {
+		for _, err3 := range err2.(validator.ValidationErrors) {
+			//Key: 'Users.Name' Error:Field validation for 'Name' failed on the 'required' tag
+			//用户名为必填字段
+			fmt.Println(err3.Translate(trans))
 			return
 		}
 	}
