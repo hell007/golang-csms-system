@@ -2,10 +2,15 @@ package apis
 
 import (
 	"encoding/json"
+	"github.com/go-playground/locales/zh"
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
+	translations "github.com/go-playground/validator/v10/translations/zh"
 	"github.com/kataras/iris/v12"
 	"go-mvc/framework/logs"
 	"go-mvc/framework/utils/tool"
 	"image/png"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -49,6 +54,26 @@ func Register(ctx iris.Context) {
 		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(ctx, iris.StatusBadRequest, response.RegisteFailur, nil)
 		return
+	}
+
+	//字段验证
+	uni := ut.New(zh.New())
+	trans, _ := uni.GetTranslator("zh")
+	validate := validator.New()
+	//注册一个函数，获取struct tag里自定义的label作为字段名
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := fld.Tag.Get("label")
+		return name
+	})
+	//验证器注册翻译器
+	_ = translations.RegisterDefaultTranslations(validate, trans)
+	err = validate.Struct(member)
+	if err != nil {
+		for _, err2 := range err.(validator.ValidationErrors) {
+			logs.GetLogger().Error(nil, "validator验证出错")
+			response.Failur(ctx, response.RegisteFailur, err2.Translate(trans))
+			return
+		}
 	}
 
 	// 是否已存在
