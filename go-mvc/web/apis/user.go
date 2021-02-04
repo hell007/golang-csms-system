@@ -203,7 +203,7 @@ func Login(ctx iris.Context) {
 	jsonU, _ := json.Marshal(user)
 	err = redisClient.Set(conf.Global.RedisPrefix+user.Token, jsonU, exprire).Err()
 	if err != nil {
-		logs.GetLogger().Error(logs.D{"err": err}, "缓存会员信息出错")
+		logs.GetLogger().Error(logs.D{"err": err}, "缓存添加会员出错")
 	}
 
 	// 返回user.token 保存
