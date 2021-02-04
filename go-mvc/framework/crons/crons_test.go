@@ -27,7 +27,7 @@ func TestNewCronManager(t *testing.T) {
 	taskFunc := func() {
 		fmt.Println("tast2:添加函数作为定时任务")
 	}
-	if err := cronManager.AddByFunc("2000", "0 */1 * * * ?", taskFunc); err != nil {
+	if err := cronManager.AddByFunc("2000", "0 33,34,35 * * * ?", taskFunc); err != nil {
 		fmt.Printf("添加函数定时任务出错:%s", err)
 		os.Exit(-1)
 	}
