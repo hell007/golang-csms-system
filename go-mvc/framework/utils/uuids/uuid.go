@@ -13,7 +13,7 @@ func UUid32() string {
 }
 
 // 根据雪花算法生成id
-func SnowId() string {
-	worker, _ := NewWorker(1)
-	return strconv.FormatInt(worker.GetId(), 10)
+func SnowId() (string, error) {
+	worker, err := NewWorker(1)
+	return strconv.FormatInt(worker.GetId(), 10), err
 }

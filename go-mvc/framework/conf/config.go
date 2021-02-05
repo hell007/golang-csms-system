@@ -10,7 +10,7 @@ import (
 
 var (
 	SysTimeLocation, _ = time.LoadLocation("Asia/Chongqing") // 中国时区
-	Global Config
+	Global             Config
 )
 
 type Config struct {
@@ -78,10 +78,10 @@ type Config struct {
 	CaptchaExprire int    `yaml:"Captcha.Exprire"`
 
 	// Upload
-	UploadUrl       string   `yaml:"Upload.Url"`
-	UploadStyle     []string `yaml:"Upload.Style"`
-	UploadPicPath   []string `yaml:"Upload.PicPath"`
-	UploadEditor    []string `yaml:"Upload.Editor"`
+	UploadUrl     string   `yaml:"Upload.Url"`
+	UploadStyle   []string `yaml:"Upload.Style"`
+	UploadPicPath []string `yaml:"Upload.PicPath"`
+	UploadEditor  []string `yaml:"Upload.Editor"`
 
 	// time
 	Timeformat      string `yaml:"Timeformat"`

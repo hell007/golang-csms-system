@@ -30,8 +30,8 @@ func TestSnowFlake(t *testing.T) {
 	defer close(ch)
 
 	m := make(map[int64]int)
-	for i := 0; i < count; i++  {
-		id := <- ch
+	for i := 0; i < count; i++ {
+		id := <-ch
 		// 如果 map 中存在为 id 的 key, 说明生成的 snowflake ID 有重复
 		_, ok := m[id]
 		if ok {
@@ -51,12 +51,11 @@ func TestGetId(t *testing.T) {
 	id := worker.GetId()
 	fmt.Println("id==", id, len(strconv.FormatInt(id, 10)))
 
-
 	t2 := time.Now().Unix()
 	fmt.Println("now==>", t2)
 
 	var timeUnix int64 = 1525705533
-	fmt.Println("1525705533==>", time.Unix(timeUnix,0))
+	fmt.Println("1525705533==>", time.Unix(timeUnix, 0))
 
 	t3 := time.Date(2021, 1, 1, 1, 0, 0, 0, time.Local).Unix()
 	fmt.Println("t3==>", t3)

@@ -13,8 +13,8 @@ const (
 
 	// msg define
 	Success                  = "恭喜, 成功"
-	OptionSuccess     string = "恭喜, 操作成功"
-	OptionFailur      string = "抱歉, 操作失败"
+	OptionSuccess     string = "恭喜您, 操作成功"
+	OptionFailur      string = "服务器比较繁忙，请稍后重试"
 	ParseParamsFailur string = "解析参数失败"
 
 	RegisteSuccess  string = "恭喜, 注册用户成功"

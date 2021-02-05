@@ -5,7 +5,6 @@ import (
 	"go-mvc/framework/logs"
 	"go-mvc/framework/utils/tool"
 	"go-mvc/framework/utils/uuids"
-	"strconv"
 	"time"
 
 	"go-mvc/framework/conf"
@@ -13,7 +12,6 @@ import (
 	"go-mvc/framework/models/member"
 	morder "go-mvc/framework/models/order"
 	"go-mvc/framework/services"
-	"go-mvc/framework/utils/idgen"
 	"go-mvc/framework/utils/response"
 )
 
@@ -51,6 +49,7 @@ func SaveProduct(ctx iris.Context) {
 	var (
 		err    error
 		effect int64
+		osn    string
 		form   = new(models.ProductForm)
 		user   = new(member.LoginUser)
 		order  = new(morder.Order)
@@ -73,10 +72,18 @@ func SaveProduct(ctx iris.Context) {
 	order = form.Order
 	order.Mid = user.Id
 
+	// 雪花算法生成订单号
+	osn, err = uuids.SnowId()
+	if err != nil {
+		logs.GetLogger().Error(logs.D{"err": err}, "生成订单号错误")
+		response.Failur(ctx, response.OptionFailur, nil)
+		return
+	}
+
 	switch form.Type { //区分订单还是购物车
 	case 1: //订单
 		order.OrderState = 0
-		order.Ordersn =  uuids.SnowId()
+		order.Ordersn = osn
 		order.CreateTime = time.Now()
 		order.TotalPrice = "0"
 		order.ShipPrice = "0"
