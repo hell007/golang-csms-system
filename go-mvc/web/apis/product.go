@@ -4,6 +4,7 @@ import (
 	"github.com/kataras/iris/v12"
 	"go-mvc/framework/logs"
 	"go-mvc/framework/utils/tool"
+	"go-mvc/framework/utils/uuids"
 	"strconv"
 	"time"
 
@@ -72,10 +73,10 @@ func SaveProduct(ctx iris.Context) {
 	order = form.Order
 	order.Mid = user.Id
 
-	switch form.Code { //区分订单还是购物车
+	switch form.Type { //区分订单还是购物车
 	case 1: //订单
 		order.OrderState = 0
-		order.Ordersn = strconv.FormatInt(idgen.GenerateOrdersn(), 10)
+		order.Ordersn =  uuids.SnowId()
 		order.CreateTime = time.Now()
 		order.TotalPrice = "0"
 		order.ShipPrice = "0"

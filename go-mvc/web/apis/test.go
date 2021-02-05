@@ -7,7 +7,6 @@ import (
 
 	redisClient "go-mvc/framework/cache/redis"
 	"go-mvc/framework/conf"
-	"go-mvc/framework/utils/idgen"
 	"go-mvc/framework/utils/response"
 )
 
@@ -34,20 +33,11 @@ func V2(ctx iris.Context) {
 }
 
 func V3(ctx iris.Context) {
-	var (
-		err error
-	)
+	//110108012 + 13888888888
+	var ordersn string
 
-	// 淘宝18位 14位 + 15/16 + 17/18
-	// 利用redis生成订单号策略
-	// 失效日期需要永久
-	// 开始值自定义
 
-	// 15位
-	idgen.GenerateOrdersn()
 
-	fmt.Println("====", )
-
-	response.Ok(ctx, response.OptionSuccess, err)
+	response.Ok(ctx, response.OptionSuccess, ordersn)
 	return
 }

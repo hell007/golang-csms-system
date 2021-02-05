@@ -3,7 +3,6 @@ package routes
 import (
 	"github.com/kataras/iris/v12"
 	"go-mvc/framework/bootstrap"
-	"go-mvc/framework/middleware"
 	"go-mvc/framework/middleware/cors"
 	"go-mvc/web/apis"
 )
@@ -12,7 +11,7 @@ func Configure(b *bootstrap.Bootstrapper) {
 
 	/* 定义路由 */
 	main := b.Party("/", cors.Mycors()).AllowMethods(iris.MethodOptions)
-	main.Use(middleware.ServeAPIS)
+	//main.Use(middleware.ServeAPIS)
 
 	// 首页
 	page := main.Party("/")
@@ -26,12 +25,12 @@ func Configure(b *bootstrap.Bootstrapper) {
 
 	// 测试路由
 
-	//test := api.Party("/test", func(ctx iris.Context) {
-	//	ctx.Next()
-	//})
-	//{
-	//	test.Get("/v1", apis.V1)
-	//}
+	test := api.Party("/test", func(ctx iris.Context) {
+		ctx.Next()
+	})
+	{
+		test.Get("/v3", apis.V3)
+	}
 
 	// 首页路由
 	home := api.Party("/home")
