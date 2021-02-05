@@ -123,11 +123,8 @@ export default defineComponent({
     const state = reactive(stateObj);
 
     const getUser = async () => {
-      let query = {
-        token: getToken()
-      };
 
-      fetchGet(URIS.user.profile, query)
+      fetchGet(URIS.user.profile, {})
         .then(function(res) {
           let data = res.data.data;
           const ok = res.data.state;

@@ -85,9 +85,8 @@ export default defineComponent({
         overlay: true,
         loadingType: 'spinner'
       });
-      let query = { uid: getToken() };
       try {
-        let res = await store.dispatch('user/getUserAddressList', query);
+        let res = await store.dispatch('user/getUserAddressList', {});
         let data = res.data.data;
         const ok = res.data.state;
         const message = res.data.msg;

@@ -149,7 +149,7 @@ export default defineComponent({
         return app.$toast('请正确输入手机号！');
       }
 
-      if (utils.isEmpty(state.form.code) || utils.isEmpty(state.form.password)) {
+      if (utils.isEmpty(state.form.password)) {
         return app.$toast('请正确输入必填信息！');
       }
 
