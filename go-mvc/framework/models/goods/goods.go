@@ -41,8 +41,7 @@ type Product struct {
 }
 
 type ProductForm struct {
-	Code  int                 `json:"code"`
-	Token string              `json:"token"`
+	Type  int                 `json:"code"`// 1.订单 2.购物车
 	Order *morder.Order       `json:"order"`
 	Goods []morder.OrderGoods `json:"goods"`
 }

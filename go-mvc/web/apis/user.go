@@ -398,10 +398,9 @@ func SaveAddress(ctx iris.Context) {
 		effect  int64
 		user    = new(models.LoginUser)
 		address = new(models.Address)
-		ad      = new(models.AddressDetail)
 	)
 
-	if err = ctx.ReadJSON(&ad); err != nil {
+	if err = ctx.ReadJSON(&address); err != nil {
 		logs.GetLogger().Error(logs.D{"err": err}, response.ParseParamsFailur)
 		response.Error(ctx, iris.StatusBadRequest, response.OptionFailur, nil)
 		return
@@ -412,7 +411,6 @@ func SaveAddress(ctx iris.Context) {
 	user, _ = tool.GetUserByToken(token)
 
 	// 获取会员 mid
-	address = ad.Address
 	address.Mid = user.Id
 
 	if address.Id > 0 {

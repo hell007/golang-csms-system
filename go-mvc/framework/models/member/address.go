@@ -10,11 +10,7 @@ type Address struct {
 	City      string `json:"city,omitempty" xorm:"not null comment('市') VARCHAR(20)"`
 	District  string `json:"district,omitempty" xorm:"not null comment('区县') VARCHAR(20)"`
 	Address   string `json:"address,omitempty" xorm:"not null comment('详细地址') VARCHAR(100)"`
+	Tag       string `json:"tag,omitempty" xorm:"comment('标识') VARCHAR(20)"`
 	State     int    `json:"state,omitempty" xorm:"not null default 1 comment('状态(1：默认，2：非)') TINYINT(3)"`
 	Mid       int    `json:"mid,omitempty" xorm:"not null comment('会员id') INT(10)"`
-}
-
-type AddressDetail struct {
-	Address *Address `json:"address"`
-	Token   string   `json:"token" `
 }
