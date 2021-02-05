@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-xorm/xorm"
+	"go-mvc/framework/utils/uuids"
 
 	members "go-mvc/framework/models/member"
 	models "go-mvc/framework/models/order"
-	"go-mvc/framework/utils/idgen"
 	"go-mvc/framework/utils/page"
 )
 
@@ -189,7 +189,7 @@ func (d *OrderDao) Create(order *models.Order, goods []models.OrderGoods) (int64
 
 	// 设置新增成功返回的主键id
 	for k, _ := range goods {
-		goods[k].Id = idgen.GenerateUuid()
+		goods[k].Id = uuids.UUid32()
 		goods[k].OrderId = order.Id
 	}
 

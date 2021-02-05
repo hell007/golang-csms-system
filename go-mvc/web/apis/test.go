@@ -3,6 +3,7 @@ package apis
 import (
 	"fmt"
 	"github.com/kataras/iris/v12"
+	"go-mvc/framework/utils/uuids"
 	"time"
 
 	redisClient "go-mvc/framework/cache/redis"
@@ -36,7 +37,7 @@ func V3(ctx iris.Context) {
 	//110108012 + 13888888888
 	var ordersn string
 
-
+	ordersn, _ = uuids.SnowId()
 
 	response.Ok(ctx, response.OptionSuccess, ordersn)
 	return
