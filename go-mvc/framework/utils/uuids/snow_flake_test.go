@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strconv"
 	"testing"
-	"time"
 )
 
 func TestSnowFlake(t *testing.T) {
@@ -51,12 +50,18 @@ func TestGetId(t *testing.T) {
 	id := worker.GetId()
 	fmt.Println("id==", id, len(strconv.FormatInt(id, 10)))
 
-	t2 := time.Now().Unix()
-	fmt.Println("now==>", t2)
+	worker2, _ := NewWorker(2)
+	id2 := worker2.GetId()
+	fmt.Println("id2==", id2, len(strconv.FormatInt(id2, 10)))
 
-	var timeUnix int64 = 1525705533
-	fmt.Println("1525705533==>", time.Unix(timeUnix, 0))
+	fmt.Println("id2-id==>",id2-id)
 
-	t3 := time.Date(2021, 1, 1, 1, 0, 0, 0, time.Local).Unix()
-	fmt.Println("t3==>", t3)
+	//t2 := time.Now().Unix()
+	//fmt.Println("now==>", t2)
+	//
+	//var timeUnix int64 = 1525705533
+	//fmt.Println("1525705533==>", time.Unix(timeUnix, 0))
+	//
+	//t3 := time.Date(2021, 1, 1, 1, 0, 0, 0, time.Local).Unix()
+	//fmt.Println("t3==>", t3)
 }

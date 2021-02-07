@@ -35,7 +35,7 @@ Logs.WebPath: csms/logs/ #后台日志路径
 Logs.AppPath: web/logs/ #app日志路径
 Logs.Type: JSON #日志类型 json|text
 Logs.TimestampFormat: 2006-01-02 15:04:05 #日志中日期时间格式
-Logs.Level: error #日志级别 ...
+Logs.Level: info #日志级别 ...
 Logs.Out: true #控制台打印日志
 Logs.MaxAge: 168  #日志最长保存多久 7 * 24 * time.Hour
 Logs.RotationTime: 24 #日志默认多长时间轮转一次 24 * time.Hour

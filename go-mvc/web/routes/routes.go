@@ -3,8 +3,10 @@ package routes
 import (
 	"github.com/kataras/iris/v12"
 	"go-mvc/framework/bootstrap"
+	"go-mvc/framework/middleware"
 	"go-mvc/framework/middleware/cors"
 	"go-mvc/web/apis"
+	"time"
 )
 
 func Configure(b *bootstrap.Bootstrapper) {
@@ -12,6 +14,8 @@ func Configure(b *bootstrap.Bootstrapper) {
 	/* 定义路由 */
 	main := b.Party("/", cors.Mycors()).AllowMethods(iris.MethodOptions)
 	//main.Use(middleware.ServeAPIS)
+	main.Use(middleware.RateLimit(100*time.Second, 10))
+	//main.Use(middleware.Limit)
 
 	// 首页
 	page := main.Party("/")

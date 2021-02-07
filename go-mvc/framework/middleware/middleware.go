@@ -1,11 +1,16 @@
 package middleware
 
 import (
+	"fmt"
+	"github.com/juju/ratelimit"
+	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"go-mvc/framework/conf"
+	"go-mvc/framework/utils/ratelimiter"
 	"go-mvc/framework/utils/response"
 	"go-mvc/framework/utils/tool"
 	"strings"
+	"time"
 
 	"go-mvc/framework/middleware/casbin"
 	"go-mvc/framework/middleware/jwt"
@@ -66,6 +71,34 @@ func ServeAPIS(ctx context.Context) {
 		}
 	}
 
+	ctx.Next()
+	return
+}
+
+/**
+令牌桶限流
+*/
+func RateLimit(fillInterval time.Duration, cap int64) func(ctx context.Context) {
+	bucket := ratelimit.NewBucket(fillInterval, cap)
+	return func(ctx context.Context) {
+		// 如果取不到令牌就中断本次请求返回 rate limit...
+		if bucket.TakeAvailable(1) < 1 {
+			response.Error(ctx, iris.StatusBadRequest, response.RateLimiterFailur, nil)
+			return
+		}
+		ctx.Next()
+	}
+}
+
+// 此方法有问题
+func Limit(ctx context.Context) {
+	limiter := ratelimiter.TokenBucket{}
+	limiter.Set(100, 10)
+	fmt.Println("b==",limiter.Allow())
+	if !limiter.Allow() {
+		response.Error(ctx, iris.StatusBadRequest, response.RateLimiterFailur, nil)
+		return
+	}
 	ctx.Next()
 	return
 }

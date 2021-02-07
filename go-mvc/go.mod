@@ -23,6 +23,7 @@ require (
 	github.com/imkira/go-interpol v1.1.0 // indirect
 	github.com/iris-contrib/middleware/cors v0.0.0-20191111233249-6e1f5f92190e
 	github.com/juju/errors v0.0.0-20181118221551-089d3ea4e4d5
+	github.com/juju/ratelimit v1.0.1
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kataras/golog v0.0.9
 	github.com/kataras/iris/v12 v12.0.1
