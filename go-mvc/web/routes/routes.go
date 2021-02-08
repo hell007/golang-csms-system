@@ -10,12 +10,14 @@ import (
 )
 
 func Configure(b *bootstrap.Bootstrapper) {
-
-	/* 定义路由 */
+	// 定义路由跨域、请求方法
 	main := b.Party("/", cors.Mycors()).AllowMethods(iris.MethodOptions)
+
+	// token拦截
 	//main.Use(middleware.ServeAPIS)
-	main.Use(middleware.RateLimit(100*time.Second, 10))
-	//main.Use(middleware.Limit)
+
+	// 限流拦截
+	main.Use(middleware.RateLimit(100*time.Microsecond, 10))
 
 	// 首页
 	page := main.Party("/")
@@ -28,7 +30,6 @@ func Configure(b *bootstrap.Bootstrapper) {
 	api := main.Party("/api")
 
 	// 测试路由
-
 	test := api.Party("/test", func(ctx iris.Context) {
 		ctx.Next()
 	})
