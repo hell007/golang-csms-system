@@ -195,7 +195,84 @@ export default {
           type: 'error'
         })
       })
-    }
+    },
+    watermark(settings) {
+      let maskDiv = document.getElementById("mask_div");
+      let main = document.querySelector(".xa-frame__main");
+      let container = document.querySelector("#xa-content");
+      if(maskDiv){
+        container.removeChild(maskDiv);
+      }
+
+      //默认设置
+      var defaultSettings = {
+        text: settings,
+        x: 30, //水印起始位置x轴坐标
+        y: 30, //水印起始位置Y轴坐标
+        rows: 10, //水印行数
+        cols: 0, //水印列数
+        x_space: 170, //水印x轴间隔
+        y_space: 120, //水印y轴间隔
+        color: '#C8C9CC', //水印字体颜色
+        alpha: 0.3, //水印透明度
+        fontsize: '15px', //水印字体大小
+        font: '微软雅黑', //水印字体
+        width: 160, //水印宽度
+        height: 50, //水印高度
+        angle: 20 //水印倾斜度数
+      };
+
+      // 求行数列数
+      var w = Math.ceil(defaultSettings.width*Math.cos(2*Math.PI/360*defaultSettings.angle) + defaultSettings.height*Math.sin(2*Math.PI/360*defaultSettings.angle));
+      var h = Math.ceil(defaultSettings.height*Math.cos(2*Math.PI/360*defaultSettings.angle) + defaultSettings.width*Math.sin(2*Math.PI/360*defaultSettings.angle));
+      var page_width = container.clientWidth;
+      var page_height = Math.max(main.scrollHeight, main.clientHeight);
+
+      defaultSettings.cols = Math.ceil(page_width / (w+defaultSettings.x_space));
+      //defaultSettings.rows = Math.ceil(page_height / (h+defaultSettings.y_space))+1;
+      //console.log('w, h, col, row',page_width, page_height, defaultSettings.cols, defaultSettings.rows)
+
+      // 渲染div
+      var x;
+      var y;
+      let oTemp = document.createElement("div");
+      oTemp.id='mask_div';
+      for (var i = 0; i < defaultSettings.rows; i++) {
+        y = defaultSettings.y + (defaultSettings.y_space + defaultSettings.height) * i;
+        for (var j = 0; j < defaultSettings.cols; j++) {
+          x = defaultSettings.x + (defaultSettings.width + defaultSettings.x_space) * j;
+
+          var mask_div = document.createElement('div');
+          mask_div.id = 'mask_div_' + i + j;
+          mask_div.innerHTML='<div>'+defaultSettings.text+'</div>';
+
+          //设置水印div倾斜显示
+          mask_div.style.webkitTransform = "rotate(-" + defaultSettings.angle + "deg)";
+          mask_div.style.MozTransform = "rotate(-" + defaultSettings.angle + "deg)";
+          mask_div.style.msTransform = "rotate(-" + defaultSettings.angle + "deg)";
+          mask_div.style.OTransform = "rotate(-" + defaultSettings.angle + "deg)";
+          mask_div.style.transform = "rotate(-" + defaultSettings.angle + "deg)";
+          mask_div.style.visibility = "";
+          mask_div.style.position = "absolute";
+          mask_div.style.left = x + 'px';
+          mask_div.style.top = y + 'px';
+          mask_div.style.overflow = "hidden";
+          mask_div.style.zIndex = "5";
+          //让水印不遮挡页面的点击事件
+          mask_div.style.pointerEvents = 'none';
+          mask_div.style.opacity = defaultSettings.alpha;
+          mask_div.style.fontSize = defaultSettings.fontsize;
+          mask_div.style.fontFamily = defaultSettings.font;
+          mask_div.style.color = defaultSettings.color;
+          mask_div.style.textAlign = "center";
+          mask_div.style.width = defaultSettings.width + 'px';
+          mask_div.style.height = defaultSettings.height + 'px';
+          mask_div.style.display = "block";
+          oTemp.appendChild(mask_div);
+        };
+      };
+      container.appendChild(oTemp);
+    },
   },
   //实时计算属性
   computed: {
