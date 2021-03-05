@@ -74,12 +74,14 @@
           删除
         </el-button>
       </div>
-      <div class="xa-pull-right">       
+      <div class="xa-pull-right">
         <el-button 
           size="small" 
           type="primary" 
           icon="el-icon-plus">
-          <router-link to="/unit1/form">新增</router-link>
+          <router-link to="/unit/form">
+            新增
+          </router-link>
         </el-button>
         <el-button 
           size="small"
@@ -121,7 +123,7 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="roleName"
+          prop="Role.roleName"
           label="角色"
           width="100"
           align="center">
@@ -167,21 +169,14 @@
           label="创建时间"
           width="180"
           align="center">
-          <template slot-scope="scope">
-            {{scope.row.createTime | parseTime}}
-          </template>
         </el-table-column>
         <el-table-column
           prop="loginTime"
           label="登录时间"
           width="180"
           align="center">
-          <template slot-scope="scope">
-            {{scope.row.loginTime | parseTime}}
-          </template>
         </el-table-column>
         <el-table-column
-          fixed="right"
           label="操作"
           width="65"
           align="center"
@@ -200,12 +195,6 @@
                   <i class="el-icon-edit" 
                     @click="handleEdit(scope.row.id)">
                     编辑
-                  </i>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <i class="el-icon-view" 
-                    @click="handleView(scope.row.id)">
-                    查看
                   </i>
                 </el-dropdown-item>
                 <el-dropdown-item>
@@ -274,8 +263,8 @@ export default {
   data() {
     return {
       p:'permission:list', //测试无意义
-      list: [],
-      total: 0,
+      list: null,
+      total: null,
       loading: true,
       tip: false,
       listQuery: {
@@ -301,23 +290,22 @@ export default {
   computed: {},
   watch: {},
   methods: {
-    ...mapActions(['getUnitList', 'deleteUnit']),
+    ...mapActions(['getUserList', 'deleteUser', 'closeUser', 'batchDeleteUser']),
     //获取list数据，传入筛选对象
     getList() {
       const self = this
       self.loading = true
-      self.getUnitList(self.listQuery).then(response => {
+      self.getUserList(self.listQuery).then(response => {
         logger('info', response)
-        const status = response.data.state
+        const status = response.data.success
         const res = response.data.data
-        const message = response.data.msg
         if (status) {
           self.list = res.rows
           self.total = res.count
         } else {
           self.$notify({
             title: '失败',
-            message: message,
+            message: response.data.message,
             type: 'error'
           })
         } 
@@ -344,34 +332,30 @@ export default {
     handleEdit(id) {
       //路由跳转
       // 字符串
-      this.$router.push('/unit1/form?id='+id);
+      this.$router.push('/unit/form?id='+id);
       // 对象
       //this.$router.push({ path: '/user/form'})
       // 命名的路由
       //this.$router.push({ name: '/user/form', params: { id: id }})
     },
-    handleView(id) {
-      this.$router.push('/unit1/detail?id='+id);
-    },
     //删除
     handleDelete(row) {
       const self = this
-      self.deleteUnit(row).then(response => {
+      self.deleteUser(row).then(response => {
         logger('info',response)
-        const status = response.data.state
+        const status = response.data.success
         const res = response.data.data
-        const message = response.data.msg
         if (status) {
           self.$notify({
             title: '成功',
-            message: message,
+            message: response.data.message,
             type: 'success',
             duration: 2000
           })
         } else {
           this.$notify({
             title: '失败',
-            message: message,
+            message: response.data.message,
             type: 'error'
           })
         }
@@ -387,21 +371,20 @@ export default {
       const self = this 
       if (self.mulSelection.length === 0) return
 
-      self.deleteUnit(self.mulSelection).then(response => {
-        const status = response.data.state
+      self.batchDeleteUser(self.mulSelection).then(response => {
+        const status = response.data.success
         const res = response.data.data
-        const message = response.data.msg
         if (status) {
           self.$notify({
             title: '成功',
-            message: message,
+            message: response.data.message,
             type: 'success',
             duration: 2000
           })
         } else {
           this.$notify({
             title: '失败',
-            message: message,
+            message: response.data.message,
             type: 'error'
           })
         }
@@ -410,6 +393,26 @@ export default {
     handleStatus() {
       const self = this 
       if (self.mulSelection.length === 0) return
+
+      self.closeUser(self.mulSelection).then(response => {
+        const status = response.data.success
+        const res = response.data.data
+        if (status) {
+          self.$notify({
+            title: '成功',
+            message: response.data.message,
+            type: 'success',
+            duration: 2000
+          })
+          self.getList() // 刷新
+        } else {
+          this.$notify({
+            title: '失败',
+            message: response.data.message,
+            type: 'error'
+          })
+        }
+      })
     },
     //导出xlsx
     handleDownload() {
@@ -428,7 +431,7 @@ export default {
   },
   beforeCreate: noop,
   created() {
-    this.getList()
+    //this.getList()
   },
   beforeMount: noop,
   mounted: noop,

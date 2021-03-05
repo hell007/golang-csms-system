@@ -3,83 +3,15 @@
  * @time 2017-10-17
  * @author 1048523306@qq.com
  */
+
 import UUID from 'uuid';
-import moment from 'moment';
 
-moment.locale('zh-cn');
-
-// noop
+//noop
 export function noop() {}
 
-// uuid
+//uuid
 export function uuid() {
   return UUID.v1().toString().replace(/-/g, '');
-}
-
-// 格式化时间 
-export function formatDate(datetime, type) {
-  return moment(datetime).format(type);
-}
-
-// 获取年(years)、月(months)、日(days)、周(weeks)的上n个时间
-export function lastDate(number, mdate, type) {
-  return moment().subtract(number, mdate).format(type)
-}
-
-// 获取当前 年(YYYY) 月(MM) 日(DD) 
-export function getDate(type) {
-  return parseInt(moment().format(type))
-}
-
-// 延时请求模拟
-export function delay(time) {
-  return new Promise(function(resolve, reject) {
-    window.setTimeout(function() {
-      resolve(time)
-    }, time)
-  })
-}
-
-// 随机数
-export function random(low, high) {
-  if (arguments.length === 1) {
-    high = low
-    low = 0
-  }
-  return Math.floor(low + Math.random() * (high - low))
-}
-
-export function randomOne(arr) {
-  return arr[random(0, arr.length)]
-}
-
-export function kebabCase(s) {
-  return s.replace(/[A-Z]/g, function($0) {
-    return '-' + $0.toLowerCase()
-  })
-}
-
-export function forIn(obj, fn) {
-  obj = obj || {}
-  for (var key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      fn.call(obj, obj[key], key, obj)
-    }
-  }
-}
-
-// 判断空
-export function isEmpty(obj) {
-  //typeof
-  if (typeof obj == 'undefined' || obj == null || obj == '') {
-    return true
-  } else if (typeof obj == 'object' && Object.keys(obj).length == 0) {
-    return true
-  } else if (typeof obj == 'array' && obj.length == 0) {
-    return true
-  } else {
-    return false
-  }
 }
 
 //logger
@@ -91,7 +23,8 @@ export function logger(type, text) {
   console && console[type] && console[type]('node front: ', text)
 }
 
-/* 将时间戳转换为datetime
+/**
+ * 将时间戳转换为datetime
  * [parseTime description]
  * @param  {String} time    [时间戳]
  * @param  {String} cFormat [转换格式]
@@ -140,11 +73,35 @@ export function parseTime(time, cFormat) {
 }
 
 
-// 时间格式(2014-02-02 14:10:00)转换成时间戳   
+/**
+ * 时间格式(2014-02-02 14:10:00)转换成时间戳
+ * [formatTimestamp description]
+ * @param  {[type]} datetime 
+ * @return {[type]}     
+ */
 export function formatTimestamp(datetime) {
   var arr = datetime.replace(/:/g, "-").replace(/ /g, "-").split("-");
   var timestamp = new Date(Date.UTC(arr[0], arr[1] - 1, arr[2], arr[3] - 8, arr[4], arr[5]));
   return timestamp.getTime();
+}
+
+
+/**
+ * 将json里面的目标字段转化为datetime
+ * [formatJsonTime description]
+ * @param  {Array} filterVal []
+ * @param  {String} target    [目标]
+ * @param  {Object} jsonData  [json]
+ * @return {String}           [datetime]
+ */
+export function formatJsonTime(filterVal, target, jsonData) {
+  return jsonData.map(v => filterVal.map(j => {
+    if (j === target) {
+      return parseTime(v[j])
+    } else {
+      return v[j]
+    }
+  }))
 }
 
 
@@ -565,11 +522,6 @@ export function uniquelizeArray(a) {
   return r;
 }
 
-// 去重
-export function unique(arr = []) {
-  return arr.reduce((t, v) => t.includes(v) ? t : [...t, v], []);
-}
-
 // 交集
 export function intersectArray(a, b) {
   return a.concat(b.filter(function(v) {
@@ -584,32 +536,9 @@ export function unionArray(a, b) {
   })
 }
 
-// 差集
+//差集
 export function minusArray(a, b) {
   return a.filter(function(v) {
     return b.indexOf(v) === -1
   })
-}
-
-// 差集
-export function difference(arr = [], oarr = []) {
-  return arr.reduce((t, v) => (!oarr.includes(v) && t.push(v), t), []);
-}
-
-// 数组最大值
-export function max(arr = []) {
-  return arr.reduce((t, v) => t > v ? t : v);
-}
-
-// 数组最小值
-export function min(arr = []) {
-  return arr.reduce((t, v) => t < v ? t : v);
-}
-
-// 数字千分化
-export function thousandNum(num = 0) {
-  const str = (+num).toString().split(".");
-  const int = nums => nums.split("").reverse().reduceRight((t, v, i) => t + (i % 3 ? v : `${v},`), "").replace(/^,|,$/g, "");
-  const dec = nums => nums.split("").reduce((t, v, i) => t + ((i + 1) % 3 ? v : `${v},`), "").replace(/^,|,$/g, "");
-  return str.length > 1 ? `${int(str[0])}.${dec(str[1])}` : int(str[0]);
 }

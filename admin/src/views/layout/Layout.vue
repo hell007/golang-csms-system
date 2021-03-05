@@ -19,64 +19,54 @@
           class="xa-icon"
           :class="{'xa-icon-menu-collapse': !menu.collapsed, 'xa-icon-menu-expand': menu.collapsed}"></i>
       </el-button>
-      
+
       <ul class="xa-header-nav">
-        <li class="xa-header-nav__item xa-header-nav__user">
+        <li class="xa-header-nav__item xa-header-nav__message">
+          <a href="###">
+            <el-badge is-dot v-if="message.new">
+              <i class="xa-icon xa-icon-message-o"></i>
+            </el-badge>
+            <i v-else class="xa-icon xa-icon-message-o"></i>
+          </a>
+        </li>
+        <li class="xa-header-nav__item xa-header-nav__qrcode">
           <el-dropdown>
+            <span class="el-dropdown-link">
+              <i class="xa-icon xa-icon-qrcode"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown" class="xa-qrcode-drop">
+              <el-dropdown-item>
+                <img class="xa-qrcode-drop__img" :src="qrcode" />
+                扫描公众号二维码访问web前台
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </li>
+        <li class="xa-header-nav__item xa-header-nav__user">
+          <el-dropdown @command="userCommand">
             <span class="el-dropdown-link">
               <img
                 class="xa-header-nav__user-avatar"
-                src="../../assets/project/images/avatar.jpg"
-              />
-              <span class="xa-header-nav__user-role">{{user.username}}</span>
+                src="../../assets/images/avatar.jpg" />
+              <span>{{ user.username }}</span>
+              <i class="el-icon-caret-bottom el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <div class="xa-header-nav__box">
-                <div class="xa-clearfix dropdown-hd">
-                  <span class="xa-pull-left">账户信息</span>
-                  <span class="xa-pull-right xa-text-primary">账户设置</span>
-                </div>
-                <ul class="xa-clearfix dropdown-bd">
-                  <li>角色：{{user.rolename}}</li>
-                  <li>本次登录：{{user.loginTime}}</li>
-                  <li>登录地区：广东省深圳市 (IP：183.14.135.1)</li>
-                </ul>
-              </div>
+              <el-dropdown-item>修改密码</el-dropdown-item>
+              <el-dropdown-item divided command="signout">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </li>
-        <!-- <li class="xa-header-nav__item xa-header-nav__icon">
-          <el-dropdown>
-            <span class="el-dropdown-link">
-              <i class="xa-icon xa-icon-menu"></i>
-            </span>
+        <li class="xa-header-nav__item xa-header-nav__switch-platform">
+          <el-dropdown trigger="click">
+            <el-button class="xa-header-nav__switch-platform-btn" plain>
+              切换平台
+              <i class="el-icon-menu"></i>
+            </el-button>
             <el-dropdown-menu slot="dropdown">
-              <div class="xa-header-nav__box">
-                <div class="xa-clearfix dropdown-hd">
-                  <span class="xa-pull-left">常用菜单</span>
-                  <span class="xa-pull-right xa-text-primary">菜单管理</span>
-                </div>
-                <div class="xa-clearfix dropdown-bd">
-                  <a href="#" class="dropdown-link">商品列表</a>
-                  <a href="#" class="dropdown-link">添加商品</a>
-                  <a href="#" class="dropdown-link">订单管理</a>
-                  <a href="#" class="dropdown-link">商品列表</a>
-                  <a href="#" class="dropdown-link">添加商品</a>
-                  <a href="#" class="dropdown-link">订单管理</a>
-                </div>
-              </div>
+              <el-dropdown-item>web</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-        </li> -->
-        <li class="xa-header-nav__item xa-header-nav__icon">
-          <el-badge :value="22" v-if="message.new">
-            <i class="xa-icon xa-icon-message"></i>
-          </el-badge>
-          <i v-else class="xa-icon xa-icon-message"></i>
-        </li>
-        <li class="xa-header-nav__item xa-header-nav__icon" 
-          @click="handleSignout">
-          <i class="xa-icon xa-icon-exit"></i>
         </li>
       </ul>
     </div>
@@ -94,10 +84,9 @@
           text-color="#bfcbd9"
           active-text-color="#20a0ff">
 
-          <template v-for="menu, index in menus">
+          <template v-for="menu, index in permission_routers">
             <el-submenu
-              v-if="!menu.hidden && menu.dropdown"
-              :key="`menu-${index}`"
+              v-if="!menu.hidden && menu.noDropdown"
               :index="`menu-${index}`">
               <template slot="title">
                 <i :class="menu.icon"></i>
@@ -105,19 +94,18 @@
               </template>
               <el-menu-item
                 v-for="subMenu, subIndex in menu.children"
-                :key="`submenu-${subIndex}`"
-                :index="`menu-${index}-${subIndex}`">
+                :index="`submenu-${subIndex}`">
                 <router-link
                   class="xa-sidebar__link"
                   :to="`${subMenu.path}`" >
                   <i :class="subMenu.icon"></i>
-                  {{subMenu.name }}
+                  {{subMenu.name}}
                 </router-link>
               </el-menu-item>
             </el-submenu>
             
             <!-- 首页 -->
-            <el-menu-item v-if="!menu.dropdown && !menu.hidden" 
+            <el-menu-item v-if="!menu.noDropdown && !menu.hidden" 
               :index="`menu-${index}`">
               <router-link
                 class="xa-sidebar__link"
@@ -139,9 +127,18 @@
     <div class="xa-frame__main" element-loading-text="加载中">
       <div class="xa-content">
         <!-- 面包屑 -->
-        <levelbar />
+        <Levelbar></Levelbar>
         <!-- vue -->
-        <el-view />
+        <transition name="fade" mode="out-in">
+          <keep-alive>
+            <router-view v-if="$route.meta.keepAlive" :key="`page-${key}`">
+            </router-view>
+          </keep-alive>
+        </transition>
+        <transition name="fade" mode="out-in">
+          <router-view v-if="!$route.meta.keepAlive" :key="`page-${key}`">
+          </router-view>
+        </transition>
       </div>
     </div>
     
@@ -154,30 +151,38 @@ import {
   mapActions,
   mapGetters
 } from 'vuex'
-import levelbar from './components/Levelbar'
-import elView from './View'
+
+import { Levelbar } from './components' //./index.js
+
+import  qrcode from '@/assets/images/qrcode.png'
 
 export default {
   name: 'layout',
   components: { 
-    levelbar,
-    elView
+    Levelbar
   },
   data() {
     return {
       menus: [],
       menu: {
-        active: 'menu-0',
+        active: '0',
         collapsed: window.innerWidth < 1440
       },
       message: {
         new: true
       },
-      platformDialogOpen: false
+      platformDialogOpen: false,
+      qrcode: qrcode
     }
   },
   methods: {
     ...mapActions(['LoginOut']),
+    userCommand(command) {
+      const self = this
+      if (command === 'signout') {
+        self.handleSignout()
+      }
+    },
     handleSignout() {
       const self = this 
       self.LoginOut().then(response => {
@@ -195,84 +200,7 @@ export default {
           type: 'error'
         })
       })
-    },
-    watermark(settings) {
-      let maskDiv = document.getElementById("mask_div");
-      let main = document.querySelector(".xa-frame__main");
-      let container = document.querySelector("#xa-content");
-      if(maskDiv){
-        container.removeChild(maskDiv);
-      }
-
-      //默认设置
-      var defaultSettings = {
-        text: settings,
-        x: 30, //水印起始位置x轴坐标
-        y: 30, //水印起始位置Y轴坐标
-        rows: 10, //水印行数
-        cols: 0, //水印列数
-        x_space: 170, //水印x轴间隔
-        y_space: 120, //水印y轴间隔
-        color: '#C8C9CC', //水印字体颜色
-        alpha: 0.3, //水印透明度
-        fontsize: '15px', //水印字体大小
-        font: '微软雅黑', //水印字体
-        width: 160, //水印宽度
-        height: 50, //水印高度
-        angle: 20 //水印倾斜度数
-      };
-
-      // 求行数列数
-      var w = Math.ceil(defaultSettings.width*Math.cos(2*Math.PI/360*defaultSettings.angle) + defaultSettings.height*Math.sin(2*Math.PI/360*defaultSettings.angle));
-      var h = Math.ceil(defaultSettings.height*Math.cos(2*Math.PI/360*defaultSettings.angle) + defaultSettings.width*Math.sin(2*Math.PI/360*defaultSettings.angle));
-      var page_width = container.clientWidth;
-      var page_height = Math.max(main.scrollHeight, main.clientHeight);
-
-      defaultSettings.cols = Math.ceil(page_width / (w+defaultSettings.x_space));
-      //defaultSettings.rows = Math.ceil(page_height / (h+defaultSettings.y_space))+1;
-      //console.log('w, h, col, row',page_width, page_height, defaultSettings.cols, defaultSettings.rows)
-
-      // 渲染div
-      var x;
-      var y;
-      let oTemp = document.createElement("div");
-      oTemp.id='mask_div';
-      for (var i = 0; i < defaultSettings.rows; i++) {
-        y = defaultSettings.y + (defaultSettings.y_space + defaultSettings.height) * i;
-        for (var j = 0; j < defaultSettings.cols; j++) {
-          x = defaultSettings.x + (defaultSettings.width + defaultSettings.x_space) * j;
-
-          var mask_div = document.createElement('div');
-          mask_div.id = 'mask_div_' + i + j;
-          mask_div.innerHTML='<div>'+defaultSettings.text+'</div>';
-
-          //设置水印div倾斜显示
-          mask_div.style.webkitTransform = "rotate(-" + defaultSettings.angle + "deg)";
-          mask_div.style.MozTransform = "rotate(-" + defaultSettings.angle + "deg)";
-          mask_div.style.msTransform = "rotate(-" + defaultSettings.angle + "deg)";
-          mask_div.style.OTransform = "rotate(-" + defaultSettings.angle + "deg)";
-          mask_div.style.transform = "rotate(-" + defaultSettings.angle + "deg)";
-          mask_div.style.visibility = "";
-          mask_div.style.position = "absolute";
-          mask_div.style.left = x + 'px';
-          mask_div.style.top = y + 'px';
-          mask_div.style.overflow = "hidden";
-          mask_div.style.zIndex = "5";
-          //让水印不遮挡页面的点击事件
-          mask_div.style.pointerEvents = 'none';
-          mask_div.style.opacity = defaultSettings.alpha;
-          mask_div.style.fontSize = defaultSettings.fontsize;
-          mask_div.style.fontFamily = defaultSettings.font;
-          mask_div.style.color = defaultSettings.color;
-          mask_div.style.textAlign = "center";
-          mask_div.style.width = defaultSettings.width + 'px';
-          mask_div.style.height = defaultSettings.height + 'px';
-          mask_div.style.display = "block";
-          oTemp.appendChild(mask_div);
-        };
-      };
-      container.appendChild(oTemp);
-    },
+    }
   },
   //实时计算属性
   computed: {
@@ -280,11 +208,12 @@ export default {
     ...mapGetters([
       'permission_routers',
       'user'
-    ])
+    ]),
+    key() {
+      return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date()
+    }
   },
   created: function() {
-    this.menus = this.permission_routers
-    //console.log('menus===',this.menus)
     //console.log('mapGetters===', this.user)
     //console.log('mapGetters', this.permission_routers)
   }

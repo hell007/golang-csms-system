@@ -13,6 +13,9 @@
         </el-form-item>
         <el-form-item label="手机号">
           <span>{{form.mobile}}</span>
+        </el-form-item>        
+        <el-form-item label="邮箱">
+          <span>{{form.email}}</span>
         </el-form-item>
         <el-form-item label="状态">
           <span v-for="item in options.status">
@@ -130,10 +133,12 @@
 </template>
 
 <script>
-import {fetchGet, fetchPost} from '@/api'
+import {
+  mapActions
+} from 'vuex'
 
 export default {
-  name: 'member-form',
+  name: 'memberform',
   components: {},
   data() {
     return {
@@ -177,11 +182,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getMember', 'saveMember']),
     getItem() {
       const self = this
-      fetchGet('/member/item', {
-        id: self.form.id
-      }).then(response => {
+      self.getMember(self.form.id).then(response => {
         const status = response.data.state
         const res = response.data.data
         if (status) {
@@ -195,12 +199,6 @@ export default {
           })
         } 
         self.loading = false
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     handleSubmit() {
@@ -215,7 +213,7 @@ export default {
             type: 'warning'
           })
           .then(function(action) { 
-            fetchPost('/member/save', self.form).then(response => {
+            self.saveMember(form).then(response => {
               const status = response.data.state
               const res = response.data.data
               const message = response.data.msg
@@ -234,14 +232,10 @@ export default {
                 })
               } 
               self.dialog.processing = false
-            }).catch(ex => {
-              self.$notify({
-                title: '请求错误',
-                message: ex,
-                type: 'error'
-              })
             })
           })
+          .catch(function(action) {})
+
         } else {
           self.$alert('请正确输入！', '提示', {
             confirmButtonText: '确定'

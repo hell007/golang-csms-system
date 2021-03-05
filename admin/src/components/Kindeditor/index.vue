@@ -13,8 +13,6 @@ import '../../../node_modules/kindeditor/kindeditor-all.js'
 import '../../../node_modules/kindeditor/lang/zh-CN.js'
 import '../../../node_modules/kindeditor/themes/default/default.css'
 
-//跨域上传解决方案
-//https://blog.csdn.net/lanseguhui/article/details/101375903
 export default {
   name: 'kindeditor',
   props: ['options', 'value'],
@@ -22,24 +20,7 @@ export default {
     return {
       editor: null,
       hasInit: false,
-      localValue: '',
-      items: [
-        'source', '|', 
-        'undo', 'redo', '|', 
-        //'preview', 
-        //'print', 
-        'template', 'code', 'cut', 'copy', 'paste', 'plainpaste', 'wordpaste', '|', 
-        'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 
-        //'fullscreen', 
-        '/',
-        'formatblock', 'fontname', 'fontsize', '|', 
-        'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 
-        'image', 'multiimage', 'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 
-        //'baidumap', 
-        'pagebreak',
-        'anchor', 'link', 'unlink', '|',
-        'about'
-      ]
+      localValue: ''
     }
   },
   watch: {
@@ -57,8 +38,6 @@ export default {
           uploadJson: '',
           width: '100%',
           height: '200',
-          items: this.items,
-          emoticonsPath: './img/emoticons/',//表情路径
           afterCreate() {
             self.hasInit = true
           },

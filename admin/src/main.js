@@ -1,25 +1,23 @@
 import Vue from 'vue'
+import Element from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 import store from './store'
+import * as filters from './filters' // 全局filter
 import './auth' // 权限
-import './mock' // 该项目所有请求使用mockjs模拟
+// import './mock' // 该项目所有请求使用mockjs模拟
 
-// 组件
-import Element from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+//加载模块
 Vue.use(Element)
 
-// 全局filter及其使用
-import * as filters from './filters' 
+//Vue filter介绍及其使用
 Object.keys(filters).forEach(key => {
 	Vue.filter(key, filters[key])
 })
 
 //全局
 Vue.config.productionTip = false
-
-window.drag = new Vue();
 
 new Vue({
 	router,

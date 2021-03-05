@@ -44,9 +44,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="上架" prop="isOnSale" >
-            <el-radio-group 
-              v-model="goods.isOnSale"
-              size="small">
+            <el-radio-group v-model="goods.isOnSale">
               <el-radio-button
                 v-for="item, index in options.sales"
                 :key="`sales-${item.value}`"
@@ -54,9 +52,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="主推" prop="isFirst" >
-            <el-radio-group 
-              v-model="goods.isFirst"
-              size="small">
+            <el-radio-group v-model="goods.isFirst">
               <el-radio-button
                 v-for="item, index in options.firsts"
                 :key="`first-${item.value}`"
@@ -64,9 +60,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="热门" prop="isHot" >
-            <el-radio-group 
-              v-model="goods.isHot"
-              size="small">
+            <el-radio-group v-model="goods.isHot">
               <el-radio-button
                 v-for="item, index in options.hots"
                 :key="`hot-${item.value}`"
@@ -125,9 +119,9 @@
           </el-form-item>
           <el-form-item label="图文详情" prop="contents">
             <div class="p-form__rich">
-              <kindeditor
+              <Kindeditor
                 :options="options.editor"
-                v-model="goods.contents" />
+                v-model="goods.contents"></Kindeditor>
             </div>
           </el-form-item>
           <el-form-item>
@@ -222,15 +216,28 @@
 </template>
 
 <script>
-import {fetchGet, fetchPost} from '@/api'
-import {uuid} from '@/utils'
-import {URIS} from '@/config'
-import kindeditor from '@/components/kindeditor'
+import {
+  mapActions
+} from 'vuex'
+
+import {
+  uuid
+} from '@/utils'
+
+import {
+  URIS
+} from '@/api/config'
+
+import {
+  validateMobile
+} from '@/utils/validate' //验证规则
+
+import Kindeditor from '@/components/Kindeditor' //富文本编辑器
 
 export default {
-  name: 'goods-form',
+  name: 'goodsform',
   components: {
-    kindeditor
+    Kindeditor
   },
   data() {
     return {
@@ -265,7 +272,7 @@ export default {
           {value: 4, label: '30枝/扎'}
         ],
         editor: {
-          height:'300',
+          height:'500',
           uploadJson: URIS.Kindeditor
         },
       },
@@ -333,27 +340,22 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getCategoryList', 'getGoods', 'saveGoods', 'saveSku', 'saveGallery', 'deleteGallery']),
     getCategorys() {
       const self = this
-      fetchGet('/goods/category/list', {pid:0}).then(response => {  
+      self.getCategoryList({pid:0}).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
         if (status) {
           self.options.categorys = [{id:0, categoryName:'全部'}, ...res]
         }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     //根据id获取数据
     getItem() {
       const self = this
-       fetchGet('/goods/product/item', {id: self.goods.id}).then(response => { 
+      self.getGoods(self.goods.id).then(response => {
         const status = response.data.state
         const res = response.data.data
         const msg = response.data.message
@@ -376,12 +378,6 @@ export default {
             type: 'error'
           })
         } 
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     // 基本信息
@@ -390,8 +386,7 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-
-          fetchPost('/goods/product/save', self.goods).then(response => {
+          self.saveGoods(self.goods).then(response => {
             const status = response.data.state
             const res = response.data.data
             const msg = response.data.message
@@ -410,12 +405,6 @@ export default {
               })
             } 
             self.processing = false
-          }).catch(ex => {
-            self.$notify({
-              title: '请求错误',
-              message: ex,
-              type: 'error'
-            })
           })
         } else {
           self.$alert('请正确输入！', '提示', {
@@ -431,8 +420,7 @@ export default {
       self.skuValList.map(function(item) {
         return item.stock = parseInt(item.stock );
       })
-
-      fetchPost('/goods/sku/val', self.skuValList).then(response => {
+      self.saveSku(self.skuValList).then(response => {
         const status = response.data.state
         const res = response.data.data
         const msg = response.data.message
@@ -456,8 +444,7 @@ export default {
     //图册
     removeGallery(file) {
       const self = this
-
-      fetchPost('/goods/gallery/delete', file).then(response => {
+      self.deleteGallery(file).then(response => {
         const status = response.data.state
         const msg = response.data.message
         if (status) {
@@ -504,8 +491,7 @@ export default {
       formData.append('file', item.file)
       formData.append('gid', self.goods.id)
       formData.append('id', uuid())
-
-      fetchPost('/goods/gallery/upload', formData).then(response => {
+      self.saveGallery(formData).then(response => {
         const status = response.data.state
         const res = response.data.data
         const msg = response.data.message

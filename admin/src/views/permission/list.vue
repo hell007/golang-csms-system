@@ -97,8 +97,10 @@
 
 <script>
 import waves from '@/directive/waves/index'
-import {fetchGet, fetchPost} from '@/api'
-import {getTree} from '@/utils'
+import { mapActions } from 'vuex'
+import {
+  getTree
+} from '@/utils'
 
 export default {
   name: 'permission',
@@ -122,10 +124,14 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getPermissionList', 'deletePermission', 'closePermission']),
+    logArgs(item) {
+      console.log(item)
+    },
     getList() {
       const self = this
       self.loading = true
-      fetchGet('/sys/permission/list').then(response => {
+      self.getPermissionList().then(response => {
         const status = response.data.state
         const res = response.data.data.rows
         const message = response.data.msg
@@ -139,37 +145,7 @@ export default {
           })
         } 
         self.loading = false
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
-    },
-    delete(ids) {
-      const self = this
-      fetchGet('/sys/permission/delete', {
-        id: ids
-      }).then(response => {
-        const status = response.data.state
-        const message = response.data.msg
-        if (status) {
-          self.$notify({
-            title: '成功',
-            message: message,
-            type: 'success',
-            duration: 2000
-          })
-          self.getList()
-        } else {
-          this.$notify({
-            title: '失败',
-            message: message,
-            type: 'error'
-          })
-        }
-      }) 
     },
     handleToggleTree: function(expanded) {
       this.$refs.tree.store._getAllNodes().forEach(function(item) {
@@ -186,8 +162,8 @@ export default {
     //删除
     handleDelete(item) {
       const self = this
-      let ids = []
-      ids.push(item.id)
+      let rows = []
+      rows.push(item.id)
 
       self.$confirm(`确定要删除【${item.name}】?`, '提示', {
         confirmButtonText: '确定',
@@ -195,7 +171,25 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        self.delete(ids)
+        self.deletePermission(rows).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+            self.getList()
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
+        }) 
       })
       .catch(function(action) {})
     },
@@ -211,11 +205,25 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        let ids = []
-        self.checked.map(function(row) {
-          ids.push(row)
+        self.deletePermission(self.checked).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+            self.getList()
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
         })
-        self.delete(ids)
       })
       .catch(function(action) {
         self.$refs.tree.setCheckedKeys([])
@@ -231,12 +239,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-      .then(function(action) { 
-        let ids = []
-        self.checked.map(function(row) {
-          ids.push(row)
-        })
-        fetchGet('/sys/permission/close', {id: ids }).then(response => { 
+      .then(function(action) {  
+        self.closePermission(self.checked).then(response => {
           const status = response.data.state
           const message = response.data.msg
           if (status) {
@@ -254,12 +258,6 @@ export default {
               type: 'error'
             })
           }
-        }).catch(ex => {
-          self.$notify({
-            title: '请求错误',
-            message: ex,
-            type: 'error'
-          })
         })
       })
       .catch(function(action) {})

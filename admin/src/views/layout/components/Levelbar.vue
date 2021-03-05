@@ -16,34 +16,35 @@
 
 <script>
 export default {
-  name:'level-bar',
-  data() {
-    return {
-      levelList: null
-    }
-  },
-  methods: {
-    getBreadcrumb() {
-      let matched = this.$route.matched.filter(item => item.name)
-      const first = matched[0]
-        //如果第一个不包含首页，将首页添加到面包屑
-      if (first && (first.name !== '首页' || first.path !== '')) {
-        matched = [{
-          name: '首页',
-          path: '/'
-        }].concat(matched)
-      }
-      this.levelList = matched
-        //console.log('levelList==',this.levelList)
-    }
-  },
-  watch: {
-    $route() {
+    //创建
+    created() {
       this.getBreadcrumb()
+    },
+    data() {
+      return {
+        levelList: null
+      }
+    },
+    methods: {
+      getBreadcrumb() {
+        //console.log('route==',this.$route)
+        let matched = this.$route.matched.filter(item => item.name)
+        const first = matched[0]
+          //如果第一个不包含首页，将首页添加到面包屑
+        if (first && (first.name !== '首页' || first.path !== '')) {
+          matched = [{
+            name: '首页',
+            path: '/'
+          }].concat(matched)
+        }
+        this.levelList = matched
+          //console.log('levelList==',this.levelList)
+      }
+    },
+    watch: {
+      $route() {
+        this.getBreadcrumb()
+      }
     }
-  },
-  created() {
-    this.getBreadcrumb()
-  }
 }
 </script>

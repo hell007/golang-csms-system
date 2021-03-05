@@ -348,12 +348,18 @@
 </template>
 
 <script>
-import {fetchGet, fetchPost} from '@/api'
-import {URIS} from '@/config'
-import waves from '@/directive/waves/index'
+import {
+  mapActions
+} from 'vuex'
+
+import {
+  URIS
+} from '@/api/config'
+
+import waves from '@/directive/waves/index' // 水波纹指令
 
 export default {
-  name: 'order-form',
+  name: 'orderform',
   directives: {
     waves
   },
@@ -415,10 +421,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getOrder', 'saveOrder']),
     getItem() {
       const self = this
-
-      fetchGet('/order/item', {ordersn: self.order.ordersn}).then(response => { 
+      self.getOrder(self.order.ordersn).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -434,12 +440,6 @@ export default {
             type: 'error'
           })
         } 
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     handleExpress() {
@@ -459,8 +459,7 @@ export default {
             type: 'warning'
           })
           .then(function(action) {
-
-            fetchPost('/order/save', self.form).then(response => {
+            self.saveOrder(order).then(response => {
               const status = response.data.state
               const res = response.data.data
               const message = response.data.msg
@@ -479,12 +478,6 @@ export default {
                 })
               } 
               self.dialog.processing = false
-            }).catch(ex => {
-              self.$notify({
-                title: '请求错误',
-                message: ex,
-                type: 'error'
-              })
             })
           })
           .catch(function(action) {

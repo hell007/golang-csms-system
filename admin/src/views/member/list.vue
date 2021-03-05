@@ -142,6 +142,11 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="email"
+          label="邮箱"
+          align="center">
+        </el-table-column>
+        <el-table-column
           prop="ip"
           label="IP"
           width="120"
@@ -150,7 +155,7 @@
         <el-table-column
           prop="createTime"
           label="创建时间"
-          min-width="180"
+          width="180"
           align="center">
           <template slot-scope="scope">
             {{scope.row.createTime | parseTime}}
@@ -159,7 +164,7 @@
         <el-table-column
           prop="loginTime"
           label="登录时间"
-          min-width="180"
+          width="180"
           align="center">
           <template slot-scope="scope">
             {{scope.row.loginTime | parseTime}}
@@ -167,7 +172,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="90"
+          width="65"
           align="center"
           header-align="center">
           <template slot-scope="scope" v-if="scope.row.roleId != 1">
@@ -216,7 +221,9 @@
 <script>
 import waves from '@/directive/waves/index'
 import Pagination from '../components/pagination'
-import {fetchGet, fetchPost} from '@/api'
+import {
+  mapActions
+} from 'vuex'
 
 export default {
   name: 'member',
@@ -257,11 +264,12 @@ export default {
   },
   computed: {},
   methods: {
+    ...mapActions(['getMemberList', 'deleteMember', 'closeMember']),
     //获取list数据，传入筛选对象
     getList() {
       const self = this
       self.loading = true
-      fetchGet('/member/list', self.listQuery).then(response => {
+      self.getMemberList(self.listQuery).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -276,40 +284,6 @@ export default {
           })
         } 
         self.loading = false
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
-      })
-    },
-    delete(ids) {
-      fetchGet('/member/delete', {
-        id: ids
-      }).then(response => {
-        const status = response.data.state
-        const message = response.data.msg
-        if (status) {
-          self.$notify({
-            title: '成功',
-            message: message,
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: '失败',
-            message: message,
-            type: 'error'
-          })
-        }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     //查询
@@ -334,8 +308,8 @@ export default {
     //删除
     handleDelete(row) {
       const self = this
-      let ids = []
-      ids.push(row.id)
+      let rows = []
+      rows.push(row)
 
       self.$confirm(`确定要删除会员【${row.name}】?`, '提示', {
         confirmButtonText: '确定',
@@ -343,8 +317,27 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        self.delete(ids)
+        self.deleteMember(rows).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
+        })
       })
+      .catch(function(action) {})
+      
     },
     //获取选中的row
     handleSelectionChange(rows) {
@@ -362,12 +355,26 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        let ids = []
-        self.mulSelection.map(function(row) {
-          ids.push(row.id)
+        self.deleteMember(self.mulSelection).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
         })
-        self.delete(ids)
       })
+      .catch(function(action) {})
     },
     handleStatus() {
       const self = this 
@@ -379,14 +386,7 @@ export default {
         type: 'warning'
       })
       .then(function(action) {  
-        let ids = []
-        self.mulSelection.map(function(row) {
-          ids.push(row.id)
-        })
-        
-        fetchGet('/member/close', {
-          id: ids
-        }).then(response => {
+        self.closeMember(self.mulSelection).then(response => {
           const status = response.data.state
           const message = response.data.msg
           if (status) {
@@ -404,14 +404,9 @@ export default {
               type: 'error'
             })
           }
-        }).catch(ex => {
-          self.$notify({
-            title: '请求错误',
-            message: ex,
-            type: 'error'
-          })
         })
       })
+      .catch(function(action) {})
     }
   },
   created() {

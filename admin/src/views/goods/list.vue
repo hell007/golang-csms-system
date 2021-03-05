@@ -265,10 +265,15 @@
 </template>
 
 <script>
-import waves from '@/directive/waves/index'
+import waves from '@/directive/waves/index' // 水波纹指令
 import Pagination from '../components/pagination'
-import {fetchGet, fetchPost} from '@/api'
-import {URIS} from '@/config'
+import {
+  mapActions
+} from 'vuex'
+
+import {
+  URIS
+} from '@/api/config'
 
 export default {
   name: 'goods',
@@ -280,7 +285,7 @@ export default {
   },
   data() {
     return {
-      list: [],
+      list: null,
       total: null,
       loading: true,
       tip: false,
@@ -318,12 +323,12 @@ export default {
   },
   computed: {},
   methods: {
+    ...mapActions(['getGoodsList', 'deleteGoods', 'closeGoods', 'getCategoryList']),
     //获取list数据，传入筛选对象
     getList() {
       const self = this
       self.loading = true
-
-      fetchGet('/goods/product/list', self.listQuery).then(response => {
+      self.getGoodsList(self.listQuery).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -338,57 +343,17 @@ export default {
           })
         } 
         self.loading = false
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     getCategorys() {
       const self = this
-      fetchGet('/goods/category/list', {pid:0}).then(response => {
+      self.getCategoryList({pid:0}).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
         if (status) {
           self.options.categorys = [{id:0, categoryName:'全部'}, ...res]
         }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
-      })
-    },
-    delete(ids) {
-      fetchGet('/goods/product/delete', {
-        id: ids
-      }).then(response => {
-        const status = response.data.state
-        const message = response.data.msg
-        if (status) {
-          self.$notify({
-            title: '成功',
-            message: message,
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: '失败',
-            message: message,
-            type: 'error'
-          })
-        }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     //查询
@@ -419,16 +384,35 @@ export default {
     //删除
     handleDelete(row) {
       const self = this
-      let ids = []
-      ids.push(row.id)
+      let rows = []
+      rows.push(row)
 
       self.$confirm(`确定要删除商品【${row.goodsName}】?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function(action) {
-        self.delete(ids)
       })
+      .then(function(action) {
+        self.deleteGoods(rows).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
+        })
+      })
+      .catch(function(action) {})
     },
     //获取选中的row
     handleSelectionChange(rows) {
@@ -446,12 +430,26 @@ export default {
         type: 'warning'
       })
       .then(function(action) {  
-        let ids = []
-        self.mulSelection.map(function(row) {
-          ids.push(row.id)
+        self.deleteGoods(self.mulSelection).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
         })
-        self.delete(ids)
       })
+      .catch(function(action) {})
     },
     handleStatus() {
       const self = this 
@@ -462,13 +460,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-      .then(function(action) {  
-        let ids = []
-        self.mulSelection.map(function(row) {
-          ids.push(row.id)
-        })
-
-        fetchGet('/goods/product/close', {id: ids}).then(response => {
+      .then(function(action) {   
+        self.closeGoods(self.mulSelection).then(response => {
           const status = response.data.state
           const message = response.data.msg
           if (status) {
@@ -486,14 +479,9 @@ export default {
               type: 'error'
             })
           }
-        }).catch(ex => {
-          self.$notify({
-            title: '请求错误',
-            message: ex,
-            type: 'error'
-          })
         })
       })
+      .catch(function(action) {})
     }
   },
   created() {

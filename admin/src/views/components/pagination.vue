@@ -5,12 +5,12 @@
       background
       @size-change="handleSizeChange" 
       @current-change="handleCurrentChange" 
-      :current-page.sync="listQuery.pageNumber" 
+      :current-page.sync="listQuery.pageNum" 
       :page-sizes="[10,20,30,40,50]" 
       :page-size="listQuery.pageSize" 
       :total="total" 
       layout="total, sizes, prev, pager, next, jumper">
-    </el-pagination>
+      </el-pagination>
   </div>
 </template>
 <script>
@@ -45,7 +45,7 @@ export default {
     },
     //当前页
     handleCurrentChange(val) {
-      this.listQuery.pageNumber = val
+      this.listQuery.pageNum = val
       this.getList()
     }
   }

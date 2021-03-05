@@ -25,23 +25,23 @@ service.interceptors.request.use(config => {
 })
 
 // respone拦截器
-// service.interceptors.response.use(
-//   response => response,
-//   error => {
-//     console.log('error.response=', error.response)
-//     if(error && error.response) {
-//       let status = error.response.status
-//       switch(status) {
-//         case 404:
-//           router.push('/404')
-//           break;
-//         case 500:
-//           router.push('/500')
-//           break;  
-//       }
-//     }
-//     return Promise.reject(error)
-//   }
-// )
+service.interceptors.response.use(
+  response => response,
+  error => {
+    console.log('error.response=', error.response)
+    if(error && error.response) {
+      let status = error.response.status
+      switch(status) {
+        case 404:
+          router.push('/404')
+          break;
+        case 500:
+          router.push('/500')
+          break;  
+      }
+    }
+    return Promise.reject(error)
+  }
+)
 
 export default service

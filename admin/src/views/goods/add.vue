@@ -44,9 +44,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="上架" prop="isOnSale" >
-            <el-radio-group 
-              v-model="goods.isOnSale"
-              size="small">
+            <el-radio-group v-model="goods.isOnSale">
               <el-radio-button
                 v-for="item, index in options.sales"
                 :key="`sales-${item.value}`"
@@ -54,9 +52,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="主推" prop="isFirst" >
-            <el-radio-group 
-              v-model="goods.isFirst"
-              size="small">
+            <el-radio-group v-model="goods.isFirst">
               <el-radio-button
                 v-for="item, index in options.firsts"
                 :key="`first-${item.value}`"
@@ -64,9 +60,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="热门" prop="isHot" >
-            <el-radio-group 
-              v-model="goods.isHot"
-              size="small">
+            <el-radio-group v-model="goods.isHot">
               <el-radio-button
                 v-for="item, index in options.hots"
                 :key="`hot-${item.value}`"
@@ -125,9 +119,9 @@
           </el-form-item>
           <el-form-item label="图文详情" prop="contents">
             <div class="p-form__rich">
-              <kindeditor
+              <Kindeditor
                 :options="options.editor"
-                v-model="goods.contents" />
+                v-model="goods.contents"></Kindeditor>
             </div>
           </el-form-item>
           <el-form-item>
@@ -144,14 +138,24 @@
 </template>
 
 <script>
-import {fetchGet, fetchPost} from '@/api'
-import {URIS} from '@/config'
-import kindeditor from '@/components/kindeditor' //富文本编辑器
+import {
+  mapActions
+} from 'vuex'
+
+import {
+  URIS
+} from '@/api/config'
+
+import {
+  validateMobile
+} from '@/utils/validate' //验证规则
+
+import Kindeditor from '@/components/Kindeditor' //富文本编辑器
 
 export default {
-  name: 'goods-add',
+  name: 'goodsform',
   components: {
-    kindeditor
+    Kindeditor
   },
   data() {
     return {
@@ -187,7 +191,7 @@ export default {
           {value: 4, label: '30枝/扎'}
         ],
         editor: {
-          height:'300',
+          height:'500',
           uploadJson: URIS.Kindeditor
         }
       },
@@ -255,21 +259,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getCategoryList', 'saveGoods']),
     getCategorys() {
       const self = this
-      fetchGet('/goods/category/list', {pid:0}).then(response => {  
+      self.getCategoryList({pid:0}).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
         if (status) {
           self.options.categorys = [{id:0, categoryName:'全部'}, ...res]
         }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     // 基本信息
@@ -278,8 +277,7 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-
-          fetchPost('/goods/product/save', self.goods).then(response => {
+          self.saveGoods(self.goods).then(response => {
             const status = response.data.state
             const res = response.data.data
             const msg = response.data.message

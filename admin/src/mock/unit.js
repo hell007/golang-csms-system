@@ -12,29 +12,21 @@ for (let i = 0; i < count; i++) {
     id: '@increment',
     avatar: 'https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191',
     name: '@first',
-    'sex|1': [1, 2],
-    checkbox:['北京'],
-    'roleName|1': ['管理员', '后端开发', '测试'],
-    'email|1': ['admin@sohu.com', '10000@qq.con'],
+    'sex|1': ['男', '女', '保密'],
     mobile: '@integer(13500000000, 19900000000)',
-    'ip|1': ['127.0.0.1', '192.168.0.1'],
     'status|1': [1, 2],
     'isSuper|1' : [1, 2],
     'roleId|1': [1, 2],
     createTime: '@datetime',// +Mock.Random.date('T'),
-    loginTime: '@datetime',
-    time: '@time',
-    range: '',
-    daterange: '',
     note: '请注意',
-    area: ['云南省', '昆明市', '盘龙区'],
-    'address|1': ['南屏街','小西门'],
+    area: [],
+    'address|': ['南屏街','小西门'],
     ids: '530129201903260000',
     photos: [],
     content:baseContent,
-    unit:'',
   }))
 }
+
 export default {
   getUnitList: config => {
 
@@ -59,10 +51,10 @@ export default {
     //console.log(50,'mock user -> getUserList -> pageList=', pageList)
 
     return {
-      state: true,
+      status: true,
       data: {
         total: mockList.length,
-        rows: pageList
+        items: pageList
       }
     }
   },
@@ -74,7 +66,7 @@ export default {
         user.sex = '男'
         user.mobile = '13888888888'
         return {
-          state: true,
+          status: true,
           data: user
         }
       }
@@ -89,7 +81,7 @@ export default {
         user.sex = '男'
         user.note = '我是更改后的数据'
         return {
-          state: true,
+          status: true,
           data: user
         }
       }
@@ -100,7 +92,7 @@ export default {
     for (const user of List) {
       if (user.id === +id) {
         return {
-          state: true
+          status: true
         }
       }
     }
@@ -108,7 +100,7 @@ export default {
   batchDeleteUnit: (config) => {
     const { ids } = param2Obj(config.url)
     return {
-      state: true
+      status: true
     }
   }
 }

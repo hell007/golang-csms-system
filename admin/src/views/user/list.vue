@@ -111,15 +111,15 @@
           align="center">
         </el-table-column>
         <el-table-column
-          prop="roleName"
+          prop="roleId"
           label="角色"
-          width="120"
+          width="100"
           align="center">
         </el-table-column>
         <el-table-column
           prop="mobile"
           label="手机号"
-          width="120"
+          width="140"
           align="center">
         </el-table-column>
         <el-table-column
@@ -219,12 +219,10 @@
 </template>
 
 <script>
-import waves from '@/directive/waves/index'
+import waves from '@/directive/waves/index' // 水波纹指令
 import Pagination from '../components/pagination'
-import {fetchGet, fetchPost} from '@/api'
 import {
-  mapState,
-  mapGetters
+  mapActions
 } from 'vuex'
 
 export default {
@@ -237,21 +235,20 @@ export default {
   },
   data() {
     return {
-      list: [],
-      total: 0,
+      list: null,
+      total: null,
       loading: true,
       tip: false,
       listQuery: {
         pageNumber: 1,
         pageSize: 10,
         name: '',//字符串不能为null,否则影响查询
-        status: 0
+        status: 1
       },
       mulSelection: [],
       tableKey: 0,
       options: {
         status: [
-          {value: 0, label: '全部'},
           {value: 1, label: '启用'},
           {value: 2, label: '停用'}
         ],
@@ -262,27 +259,20 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapState([
-      'admin'
-    ]),
-    ...mapGetters([
-      'test',
-      'admins'
-    ])
-  },
+  computed: {},
   methods: {
+    ...mapActions(['getUserList', 'deleteUser', 'closeUser', 'batchDeleteUser']),
     //获取list数据，传入筛选对象
     getList() {
       const self = this
       self.loading = true
-      fetchGet('/sys/user/list', self.listQuery).then(response => {
+      self.getUserList(self.listQuery).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
         if (status) {
           self.list = res.rows
-          self.total = res.total
+          self.total = res.count
         } else {
           self.$notify({
             title: '失败',
@@ -291,40 +281,6 @@ export default {
           })
         } 
         self.loading = false
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
-      })
-    },
-    delete(ids) {
-      const self = this
-      fetchGet('/sys/user/delete', {id: ids }).then(response => {
-        const status = response.data.state
-        const message = response.data.msg
-        if (status) {
-          self.$notify({
-            title: '成功',
-            message: message,
-            type: 'success',
-            duration: 2000
-          })
-          self.getList() // 刷新
-        } else {
-          this.$notify({
-            title: '失败',
-            message: message,
-            type: 'error'
-          })
-        }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     //查询
@@ -349,17 +305,37 @@ export default {
     },
     //删除
     handleDelete(row) {
+      const self = this
+      let rows = []
+      rows.push(row)
+
       self.$confirm(`确定要删除管理员【${row.username}】?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
       .then(function(action) {
-        let ids = []
-        ids.push(row.id)
-        self.delete(ids)
+        self.deleteUser(rows).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
+        })
       })
       .catch(function(action) {})
+      
     },
     //获取选中的row
     handleSelectionChange(rows) {
@@ -377,12 +353,26 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        let ids = []
-        self.mulSelection.map(function(row) {
-          ids.push(row.id)
+        self.deleteUser(self.mulSelection).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
         })
-        self.delete(ids)
       })
+      .catch(function(action) {})
     },
     handleStatus() {
       const self = this 
@@ -394,12 +384,7 @@ export default {
         type: 'warning'
       })
       .then(function(action) {  
-        let ids = []
-        self.mulSelection.map(function(row) {
-          ids.push(row.id)
-        })
-
-        fetchGet('/sys/user/close', {id: ids }).then(response => {
+        self.closeUser(self.mulSelection).then(response => {
           const status = response.data.state
           const message = response.data.msg
           if (status) {
@@ -417,12 +402,6 @@ export default {
               type: 'error'
             })
           }
-        }).catch(ex => {
-          self.$notify({
-            title: '请求错误',
-            message: ex,
-            type: 'error'
-          })
         })
       })
       .catch(function(action) {})

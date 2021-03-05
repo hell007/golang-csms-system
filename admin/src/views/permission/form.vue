@@ -66,9 +66,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单栏显示" prop="hidden" >
-          <el-radio-group 
-            v-model="form.hidden" 
-            size="small">
+          <el-radio-group v-model="form.hidden">
             <el-radio-button
               v-for="item, index in options.hidden"
               :key="item.value"
@@ -76,9 +74,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="级别" prop="level" >
-          <el-radio-group 
-            v-model="form.level"
-            size="small">
+          <el-radio-group v-model="form.level">
             <el-radio-button
               v-for="item, index in options.level"
               :key="item.value"
@@ -99,10 +95,16 @@
 </template>
 
 <script>
-import {fetchGet, fetchPost} from '@/api'
+import {
+  mapActions
+} from 'vuex'
+
+import {
+  validateMobile
+} from '@/utils/validate' //验证规则
 
 export default {
-  name: 'permission-form',
+  name: 'permissionform',
   components: {},
   data() {
     return {
@@ -190,28 +192,21 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getPermissions', 'getPermission', 'savePermission']),
     getNodes() {
       const self = this
-      fetchGet('/sys/permission/list', {level:2}).then(response => {
+      self.getPermissions().then(response => {
         const status = response.data.state
         const res = response.data.data.rows
         if (status) {
           self.options.nodes = [{id:0, name:'顶级菜单'}, ...res]
         }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     //根据id获取数据
     getItem() {
       const self = this
-      fetchGet('/sys/permission/item', {
-        id: self.form.id
-      }).then(response => {
+      self.getPermission(self.form.id).then(response => {
         const status = response.data.state
         const res = response.data.data
         const message = response.data.msg
@@ -225,12 +220,6 @@ export default {
           })
         } 
         self.loading = false
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     //表单提交
@@ -239,7 +228,7 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-          fetchPost('/sys/permission/save', self.form).then(response => {
+          self.savePermission(this.form).then(response => {
             const status = response.data.state
             const message = response.data.msg
             if (status) {
@@ -257,12 +246,6 @@ export default {
               })
             } 
             self.processing = false
-          }).catch(ex => {
-            self.$notify({
-              title: '请求错误',
-              message: ex,
-              type: 'error'
-            })
           })
         } else {
           self.$alert('请正确输入！', '提示', {

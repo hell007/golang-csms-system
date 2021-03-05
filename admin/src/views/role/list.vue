@@ -220,12 +220,22 @@
 
 import waves from '@/directive/waves/index'
 import Pagination from '../components/pagination'
-import {fetchGet, fetchPost} from '@/api'
-import {getTree, uuid} from '@/utils'
-import {setPermission} from '@/utils/storage'
+
+import {
+  mapActions
+} from 'vuex'
+
+import {
+  getTree,
+  uuid
+} from '@/utils'
+
+import {
+  setPermission
+} from '@/utils/storage'
 
 export default {
-  name: 'role-list',
+  name: 'rolelist',
   directives: {
     waves
   },
@@ -242,13 +252,12 @@ export default {
         pageNumber: 1,
         pageSize: 10,
         name: '',
-        status: 0
+        status: 1
       },
       mulSelection: [],
       tableKey: 0,
       options: {
         status: [
-          {value: 0, label: '全部'},
           {value: 1, label: '启用'},
           {value: 2, label: '停用'}
         ],
@@ -276,10 +285,11 @@ export default {
   },
   computed: {},
   methods: {
+    ...mapActions(['getRoleList', 'deleteRole', 'closeRole', 'getPermissions', 'getAccessList', 'saveAccess']),
     getList() {
       const self = this
       self.loading = true
-      fetchGet('/sys/role/list', self.listQuery).then(response => {
+      self.getRoleList(self.listQuery).then(response => {
         const status = response.data.state
         const res = response.data.data
         if (status) {
@@ -293,39 +303,6 @@ export default {
           })
         } 
         self.loading = false
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
-      })
-    },
-    delete(ids) {
-      const self = this
-      fetchGet('/sys/role/delete', {id: ids }).then(response => {
-        const status = response.data.state
-        const message = response.data.msg
-        if (status) {
-          self.$notify({
-            title: '成功',
-            message: message,
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: '失败',
-            message: message,
-            type: 'error'
-          })
-        }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     //查询
@@ -350,8 +327,8 @@ export default {
     //删除
     handleDelete(row) {
       const self = this
-      let ids = []
-      ids.push(row.id)
+      let rows = []
+      rows.push(row)
 
       self.$confirm(`确定要删除角色【${row.rolename}】?`, '提示', {
         confirmButtonText: '确定',
@@ -359,7 +336,24 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        self.delete(ids)
+        self.deleteRole(rows).then(response => {
+          const status = response.data.state
+          const message = response.data.msg
+          if (status) {
+            self.$notify({
+              title: '成功',
+              message: message,
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '失败',
+              message: message,
+              type: 'error'
+            })
+          }
+        })
       })
       .catch(function(action) {})
     },
@@ -379,11 +373,7 @@ export default {
         type: 'warning'
       })
       .then(function(action) {
-        let ids = []
-        self.mulSelection.map(function(row) {
-          ids.push(row.id)
-        })
-        fetchGet('/sys/role/close', {id: ids}).then(response => {
+        self.closeRole(self.mulSelection).then(response => {
           const status = response.data.state
           const message = response.data.msg
           if (status) {
@@ -401,19 +391,14 @@ export default {
               type: 'error'
             })
           }
-        }).catch(ex => {
-          self.$notify({
-            title: '请求错误',
-            message: ex,
-            type: 'error'
-          })
         })
       })
+      .catch(function(action) {})  
     },
     // 访问菜单
     handleAcesslist(rid) {
       const self = this
-      fetchGet('/sys/access/list', {rid:rid}).then(response=> {
+      self.getAccessList(rid).then(response=> {
         const status = response.data.state
         const rows = response.data.data.rows
         if (status) {
@@ -426,12 +411,6 @@ export default {
             self.menu.visible = true
           }, 200);
         }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     // 权限菜单
@@ -441,8 +420,7 @@ export default {
         status: 1
       }
       self.form.rid = id
-
-      fetchGet('/sys/permission/list', query).then(response => {
+      self.getPermissions(query).then(response => {
         const status = response.data.state
         const res = response.data.data.rows
         const message = response.data.msg
@@ -456,12 +434,6 @@ export default {
             type: 'error'
           })
         }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     },
     // 清空
@@ -486,7 +458,7 @@ export default {
         })
       }
 
-      fetchPost('/sys/access/save', form).then(res => {
+      self.saveAccess(form).then(res => {
         const status = res.data.state
         const message = res.data.msg
         if (status) {
@@ -503,12 +475,6 @@ export default {
             type: 'error'
           })
         }
-      }).catch(ex => {
-        self.$notify({
-          title: '请求错误',
-          message: ex,
-          type: 'error'
-        })
       })
     }
   },

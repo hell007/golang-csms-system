@@ -8,8 +8,6 @@
   padding-top: $header-height;
   padding-left: $sidebar-width;
   overflow: hidden;
-  min-width: 1200px;
-  background: #fff;
 
   &,
   &__platform,
@@ -131,36 +129,27 @@
 }
 
 .xa-header-nav {
-  float: right;
   @include clearfix();
 
   &__item {
     float: left;
     padding: 0 10px;
-    border-right:1px solid #ddd;
-    cursor:pointer;
-
-    &:last-child {
-      border-right:0;
-    }
   }
 
-  &__icon{
+  &__message,
+  &__qrcode {
     line-height: 20px;
     position: relative;
     font-size: 18px;
-    padding: 17px 20px;
+    padding: 17px 10px;
     vertical-align: middle;
-    
-    .xa-icon-menu,
-    .xa-icon-msg,
-    .xa-icon-home,
-    .xa-icon-exit {
+
+    .xa-icon-message-o,
+    .xa-icon-qrcode {
       font-size: 25px;
-      color:$color-333;
     }
   }
-  
+
   &__user {
     .el-dropdown-link {
       line-height: 60px;
@@ -178,78 +167,8 @@
     border-radius: 50%;
   }
 
-  &__user-role {
-    color:$color-333;
-    padding:0 4px;
+  &__switch-platform {
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
-
-  &__box{
-    width: 500px;
-    padding: 0 20px;
-
-    .dropdown-hd {
-      border-bottom:1px solid #ddd;
-      padding:10px 0;
-      margin-bottom:10px;
-    }
-
-    .dropdown-bd {
-      li {
-        padding:5px 0;
-      }
-    }
-
-    .dropdown-link {
-      float:left;
-      width:33%;
-      text-align:center;
-      padding:5px 0;
-    }
-  }
-}
-
-.xa-sidebar {
-  .el-menu {
-    border-right: 0;
-  }
-
-  &__link {
-    display: block;
-  }
-
-  &__title {
-    display: none;
-
-    @at-root {
-      .el-tooltip__popper & {
-        display: inline;
-      }
-    }
-  }
-
-  &__scrollbar,
-  &__wrap {
-    height: 100%;
-  }
-
-  &__wrap {
-    overflow-x: hidden;
-    overflow-y: scroll;
-  }
-
-  @at-root {
-    .xa-frame--collapsed {
-      .xa-sidebar__scrollbar,
-      .xa-sidebar__wrap {
-        overflow: visible;
-      }
-    }
-  }
-}
-
-.xa-sidebar-toggle {
-  width: 60px;
-  height: 60px;
-  color: $color-silver-lighter;
-  font-size: 18px;
 }

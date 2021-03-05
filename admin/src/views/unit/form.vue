@@ -23,7 +23,6 @@
           </el-upload>
           <div class="p-form__tip">建议上传PNG格式透明背景图片，图片大小80px * 80px</div>
         </el-form-item>
-
         <el-form-item label="姓名" prop="name">
           <el-input class="p-form__input" 
             placeholder="请输入" 
@@ -34,7 +33,6 @@
             </span>
           </el-input>
         </el-form-item>
-
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="form.sex">
             <el-radio
@@ -43,21 +41,6 @@
               :label="item.value">{{item.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
-
-        <el-form-item label="多选框" prop="checkbox">
-          <el-checkbox-group
-            class="p-form__checkbox"
-            v-model="form.checkbox">
-            <el-checkbox
-              v-for="item in options.boxs"
-              :label="item"
-              :key="item">
-              {{item}}
-            </el-checkbox>
-          </el-checkbox-group>
-          <div class="p-form__tip">提示说明文字</div>
-        </el-form-item>
-
         <el-form-item label="角色" prop="roleId">
             <el-select 
               clearable
@@ -70,15 +53,13 @@
                 :value="item.roleId">
               </el-option>
             </el-select>
-        </el-form-item>
-
+          </el-form-item>
         <el-form-item label="手机号" prop="mobile">
           <el-input class="p-form__input" 
             placeholder="请输入" 
             maxlength="11"
             v-model="form.mobile"></el-input>
-        </el-form-item>   
-
+        </el-form-item>        
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
             <el-radio
@@ -87,14 +68,12 @@
               :label="item.value">{{item.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="超级用户" prop="isSuper" >
           <el-radio-group v-model="form.isSuper">
             <el-radio-button label="1">是</el-radio-button>
             <el-radio-button label="2">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="创建时间" prop="createTime" >
           <el-date-picker class="p-form__picker"
             v-model="form.createTime" 
@@ -103,59 +82,6 @@
             placeholder="选择日期时间">
           </el-date-picker>
         </el-form-item>
-
-        <el-form-item label="营业时间">
-          <el-select
-            v-model="form.weeks"
-            style="width:400px"
-            multiple
-            placeholder="请选择">
-            <el-option
-              v-for="item in options.weeks"
-              :key="item.label"
-              :label="item.label"
-              :value="item.value"></el-option>
-          </el-select>
-          <el-time-select
-            style="margin-left:20px;"
-            clearable
-            placeholder="起始时间"
-            v-model="form.startTime1"
-            :picker-options="{
-              start: '08:30',
-              step: '00:15',
-              end: '18:30'
-            }"></el-time-select>
-          <el-time-select
-            style="margin-left:20px;"
-            clearable
-            placeholder="结束时间"
-            v-model="form.endTime1"
-            :picker-options="{
-              start: '08:30',
-              step: '00:15',
-              end: '18:30',
-              minTime: form.startTime1
-            }"></el-time-select>
-        </el-form-item>
-
-        <el-form-item label="日期">
-          <el-date-picker
-            clearable
-            v-model="form.time"
-            type="date"
-            placeholder="选择日期"></el-date-picker>
-        </el-form-item>
-
-        <el-form-item label="日期范围">
-          <el-date-picker
-            v-model="form.daterange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"></el-date-picker>
-        </el-form-item>
-
         <el-form-item label="区域" prop="area">
           <el-cascader
             class="p-form__input"
@@ -164,34 +90,10 @@
             @change="handleArea">
           </el-cascader>
         </el-form-item>
-
         <el-form-item label="详细地址" prop="address">
-          <el-input 
-            class="p-form__input" 
-            type="textarea" 
-            placeholder="请输入"
+          <el-input class="p-form__input" type="textarea" placeholder="请输入"
             v-model="form.address" ></el-input>
         </el-form-item>
-
-        <el-form-item label="商品重量">
-          <el-input
-            clearable
-            class="p-form__input-small"
-            placeholder="请输入"></el-input>
-          <el-select
-            style="margin-left:20px"
-            class="p-form__select-small"
-            clearable
-            v-model="form.unit"
-            placeholder="请选择">
-            <el-option
-              v-for="item in options.units"
-              :key="item.label"
-              :label="item.label"
-              :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-
         <el-form-item label="身份证号" prop="ids">
           <el-input class="p-form__input" 
             placeholder="请输入" 
@@ -202,7 +104,6 @@
             </span>
           </el-input>
         </el-form-item>
-
         <el-form-item label="身份证照片" prop="photos">
           <div class="p-uploader-inline">
             <el-upload
@@ -233,16 +134,15 @@
             <div>背面</div>
           </div>
         </el-form-item>
-
         <!-- 富文本编辑器使用 -->
         <el-form-item label="文章内容" prop="content" >
-          <kindeditor>
+          <Kindeditor 
             v-model="form.content" 
-            :options="options.editor" >
-          </kindeditor>  
+            :width=800 
+            :height=300 
+            ref="editor"></Kindeditor>
         </el-form-item>
       </div>
-
       <hr class="xa-separator" />
       <el-form-item>
         <el-button type="primary"
@@ -268,41 +168,36 @@ import {
   validateMobile
 } from '@/utils/validate' //验证规则
 
-import kindeditor from '@/components/kindeditor' //富文本编辑器
+import Kindeditor from '@/components/Kindeditor' //富文本编辑器
 import axios from 'axios'
 
 export default {
-  name: 'unit-form',
+  name: 'unitform',
   components: {
-    kindeditor
+    Kindeditor
   },
   data() {
     return {
       uploadApi: 'http://127.0.0.1:9000/api/test/upload',
-      areas:'../assets/project/scripts/area.json',
+      areas:'../../assets/project/scripts/area.json',
       processing: false,
       noop: noop,
       form: {
         id: '',
         avatar: '',
         name: '',
-        sex: 1,
-        checkbox: ['北京'],
-        roleId: 1,
+        sex: '1',
+        roleId: '',
         mobile: '',
         content: '',
         status: 1,// int  注意不是字符串
         isSuper: 2,
         createTime:'',
-        time: '',
-        range: '',
-        daterange: '',
         note: '',
         area: [],
         address: '',
         ids: '',
-        photos: [],
-        unit:''
+        photos: []// 上传身份证正反面照片怎么验证? 审核，否则怎么确认。
       },
       options: {
         status: [{
@@ -326,60 +221,6 @@ export default {
           roleId: '2',
           roleName: 'goods'
         }],
-        boxs: [
-          '上海',
-          '北京',
-          '广州',
-          '深圳',
-          '2019',
-          '2018',
-          '2017',
-          '2016'
-        ],
-        units: [
-          {
-            value: '11',
-            label: '克'
-          },
-          {
-            value: '12',
-            label: '千克'
-          }
-        ],
-        weeks: [
-          {
-            value: '1',
-            label: '星期日'
-          },
-          {
-            value: '2',
-            label: '星期一'
-          },
-          {
-            value: '3',
-            label: '星期二'
-          },
-          {
-            value: '4',
-            label: '星期三'
-          },
-          {
-            value: '5',
-            label: '星期四'
-          },
-          {
-            value: '6',
-            label: '星期五'
-          },
-          {
-            value: '7',
-            label: '星期六'
-          }
-        ],
-        editor: {
-          uploadJson:'http://127.0.0.1:9000/api/test/upload',
-          height:300
-        },
         area:[]
       },
       //验证规则
@@ -459,7 +300,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getUnit', 'saveUnit']),
+    ...mapActions(['getRoles', 'getUser', 'saveUser']),
     getAreaData() {
       const self = this
       axios.get(self.areas).then(function(response){
@@ -476,9 +317,9 @@ export default {
     //根据id获取数据
     getItem() {
       const self = this
-      self.getUnit(self.form.id).then(response => {
+      self.getUser(self.form.id).then(response => {
         //console.log('getItem==', response)
-        const status = response.data.state
+        const status = response.data.success
         const res = response.data.data
         if (status) {
           self.form = res
@@ -526,7 +367,7 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           self.processing = true
-          self.saveUnit(this.form).then(response => {
+          self.saveUser(this.form).then(response => {
             //console.log('handleSubmit==', response)
             const status = response.data.success
             const res = response.data.data
@@ -555,19 +396,19 @@ export default {
       })
     },
     handleCancle() {
-      this.$router.push('/unit1/list')
+      this.$router.push('/unit/list')
     }
   },
   beforeCreate: noop,
   created() {
     this.getAreaData()
-  },
-  beforeMount: noop,
-  mounted(){
+
     if (this.isEdit) {
       this.getItem();
     }
   },
+  beforeMount: noop,
+  mounted: noop,
   beforeDestory: noop,
   destoryed: noop
 }

@@ -1,12 +1,13 @@
 @import "global";
+//@import "../vendors/nprogress/0.2.0/nprogress.css";
 
 [v-cloak] {
   display: none !important;
 }
 
 @import "common/element";
+@import "common/page";
 @import "common/frame";
-@import "common/charts";
 
 $space-horizontal: 22px;
 $space-vertical: 22px;
@@ -14,6 +15,7 @@ $space-vertical: 22px;
 .xa-separator {
   border-top-color: $color-border-gray;
 }
+
 
 .xa-dialog {
   .el-dialog {
@@ -52,6 +54,56 @@ $space-vertical: 22px;
     padding-top: 15px;
     border-top: 1px solid $color-border-gray;
   }
+}
+
+.xa-sidebar {
+  .el-menu {
+    border-right: 0;
+  }
+
+  &__link {
+    display: block;
+  }
+
+  &__title {
+    display: none;
+
+    @at-root {
+      .el-tooltip__popper & {
+        display: inline;
+      }
+    }
+  }
+
+  &__scrollbar,
+  &__wrap {
+    height: 100%;
+  }
+
+  &__wrap {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  @at-root {
+    .xa-frame--collapsed {
+      .xa-sidebar__scrollbar,
+      .xa-sidebar__wrap {
+        overflow: visible;
+      }
+    }
+  }
+}
+
+.xa-sidebar-toggle {
+  width: 60px;
+  height: 60px;
+  color: $color-silver-lighter;
+  font-size: 18px;
+}
+
+.xa-header-nav {
+  float: right;
 }
 
 .xa-content {
@@ -140,6 +192,18 @@ $space-vertical: 22px;
   text-align: right;
 }
 
+.xa-position-right {
+  position: absolute;
+  padding-right: 10px;
+  right: 0;
+  top: 0;
+}
+
+.xa-inline-block {
+  display: inline-block;
+  padding-right: 15px;
+}
+
 .xa-text-secondary {
   color: #999;
   font-size: 12px;
@@ -156,6 +220,10 @@ $space-vertical: 22px;
 
 .xa-text-black {
   color: #666;
+}
+
+thead .xa-text-danger {
+  color: #909399;
 }
 
 .xa-text-danger {
@@ -182,6 +250,25 @@ $space-vertical: 22px;
   font-size: 16px;
 }
 
+.xa-tab-label {
+  position: relative;
+
+  &__count {
+    background: #f00;
+    position: absolute;
+    right: 0;
+    top: 2px;
+    border-radius: 50%;
+    line-height: 14px;
+    font-size: 12px;
+    min-width: 14px;
+    color: #fff;
+    text-align: center;
+    transform: translateX(50%) scale(0.9);
+    font-family: Arial;
+  }
+}
+
 .xa-no-entry {
   padding: 50px 10px;
   color: $color-silver;
@@ -198,6 +285,23 @@ $space-vertical: 22px;
     }
   }
 
+}
+
+.xa-product {
+  &__title {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  &__intro {
+    overflow: hidden;
+    line-height: 1.6;
+    padding-top: 5px;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+  }
 }
 
 

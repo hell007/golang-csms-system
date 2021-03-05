@@ -1,5 +1,18 @@
 @import "global";
-@import "./assets/fonts/iconfont.css";
+@import "./assets/iconfont/iconfont.css";
+
+ul {
+  margin-bottom: 0;
+}
+
+.xa-frame {
+  min-width: 1200px;
+  background: #fff;
+}
+
+.el-table__header th {
+  background: #f5f7fa;
+}
 
 .xa-icon {
   font-size: inherit;
@@ -87,6 +100,10 @@
   }
 }
 
+.p-uploadfile {
+  width: 300px;
+}
+
 .p-form {
   .el-form-item {
     margin-bottom: 20px;
@@ -108,21 +125,6 @@
 
   &__input {
     width: 450px;
-
-    &-small {
-      width: 200px;
-    }
-  }
-
-  &__select-small {
-    width: 120px;
-  }
-
-  &__checkbox {
-    width: 450px;
-    padding: 15px 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
   }
 
   &__rich {
@@ -153,40 +155,17 @@
   }
 
   &__s-head {
-    padding: 10px 0 15px;
-    @include flex-row();
-    align-items:center;
-    font-size:16px;
+    padding: 10px 0;
 
     &::before {
       content: "";
       display: inline-block;
       width: 4px;
-      background: $color-primary;
+      background: $color-blue-light;
       height: 1.15em;
       vertical-align: -.25em;
       margin-right: 8px;
     }
-  }
-
-  &__s-icon {
-    width:20px;
-    height:20px;
-    margin-left:20px;
-    line-height:18px;
-    text-align: center;
-    border-radius: 999px;
-    border:1px solid $color-primary;
-    cursor:pointer;
-
-    i {
-      font-size:14px;
-      color:$color-primary;
-    }
-  }
-
-  &__s-body {
-
   }
 
   .el-form-item__content .xa-block {
@@ -198,41 +177,71 @@
   }
 
   &__pic {
-    @include flex-row();
-    align-items: center;
-    flex-wrap: wrap;
+    display: inline-block;
+    padding: 15px;
+    vertical-align: top;
 
     &-wrap {
-      max-width: 25%;
-      margin:0 20px 20px 0;
+      margin-bottom: 30px;
     }
   }
 
   &__avatar {
     display: flex;
+    border: 1px solid #eee;
     align-items: center;
     justify-content: center;
-    //border: 1px solid $color-gray-lighter;
-    background: #fff;
     width: 100px;
     height: 100px;
+  }
 
-    img {
-      max-height: 100%;
-      height: fill-available;
-      height: -webkit-fill-available;
+  &__img {
+    max-height: 100%;
+    height: fill-available;
+    height: -webkit-fill-available;
+  }
+
+  &__details {
+    padding: 10px;
+    background: #f6f6f6;
+    border-radius: 10px;
+
+    .el-form-item {
+      margin-bottom: 0;
+    }
+
+    .el-form-item__content,
+    .el-form-item__label {
+      font-size: 12px;
+      padding-right: 0;
     }
   }
+}
 
-  &__link,
-  &__link:hover {
-    color:$color-primary;
+.p-box {
+  &__head {
+    padding: 10px 0;
+    margin-bottom: 20px;
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      background: $color-blue-light;
+      height: 1.15em;
+      vertical-align: -.25em;
+      margin-right: 8px;
+    }
   }
-  
+}
+
+.p-input-count {
+  padding: 0 10px;
+  font-size: 12px;
 }
 
 .p-table {
-
+  // min-width: 100%;
   &--auto {
     display: inline-block;
     width: auto;
@@ -286,6 +295,11 @@
   }
 }
 
+.p-filter-inline {
+  padding-right: 20px;
+  overflow: hidden;
+}
+
 .p-avatar {
   width: 80px;
   height: 80px;
@@ -315,6 +329,87 @@
   }
 }
 
+.p-table-btns {
+  white-space: nowrap;
+
+  &__btn {
+    font-size: 18px;
+    padding: 0 3px;
+
+    &:not(&--active) {
+      color: #999;
+    }
+  }
+}
+
+.p-table-actions {
+  white-space: nowrap;
+
+  &__btn {
+    color: #409EFF;
+    padding: 2px 5px;
+
+    & + & {
+      margin-left: 0;
+    }
+  }
+}
+
+.p-thead {
+  &__icon {
+    margin-left: 4px;
+  }
+
+  &__tooltip {
+    max-width: 200px;
+  }
+}
+
+.p-edit {
+  padding: 5px 0;
+  height: 42px;
+
+  &__tag,
+  &__input {
+    display: block;
+  }
+
+  &__tag {
+    position: relative;
+    color: rgb(94, 109, 130);
+    border-color: #dcdfe6;
+
+    & .el-icon-close {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
+  }
+
+  &__input {
+    line-height: 30px;
+    border: 0;
+    outline: none;
+  }
+
+  &__val {
+    width: 98px;
+    @include ellipsis();
+  }
+}
+
+.p-checkbox-list {
+  @include clearfix();
+
+  &__item {
+    padding: 0 8px;
+    float: left;
+    min-width: 100px;
+  }
+}
+
 .p-product-info {
   &__num {
     min-width: 6em;
@@ -323,6 +418,72 @@
     font-size: 16px;
   }
 }
+
+.order-info {
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
+
+
+.p-img-preview {
+  display: block;
+  margin: auto;
+  max-height: 500px;
+}
+
+.p-message-list {
+  border: 0;
+  .el-collapse-item__header {
+    height: auto;
+    color: inherit;
+  }
+
+  .el-collapse-item__content {
+    padding-bottom: 0;
+  }
+
+  &__item {
+    &--read:not(.is-active) {
+      color: #ccc;
+    }
+  }
+
+  &__header {
+    @include clearfix()
+  }
+
+  &__title {
+    float: left;
+    padding-left: 20px;
+    width: 750px;
+    @include ellipsis();
+
+    .el-badge__content.is-fixed.is-dot {
+      left: -15px;
+      right: auto;
+      bottom: 0;
+      top: 0;
+      margin: auto;
+      transform: none;
+    }
+  }
+
+  &__time {
+    float: right;
+  }
+
+  &__body {
+    padding: 10px 20px;
+    background: $color-gray-lighter;
+
+    a {
+      color: $color-primary;
+    }
+
+  }
+}
+
 
 .p-tree {
   .el-tree-node__content {
@@ -355,5 +516,104 @@
 
   &__actions {
     padding: 0 10px;
+  }
+}
+
+.p-table-configure {
+  position: relative;
+
+  &__trigger {
+    padding: 10px;
+    margin: -10px;
+    font-size: 18px;
+  }
+
+  &__main {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    right: 20px;
+    background: #fff;
+    left: auto;
+    min-width: 220px;
+  }
+
+  &__head {
+    border-bottom: 1px solid #ddd;
+    padding: 0 10px 10px;
+    position: relative;
+  }
+
+  &__close {
+    position: absolute;
+    right: 10px;
+    top: -10px;
+    bottom: 0;
+    padding: 0 10px;
+  }
+
+  &__list {
+    padding: 10px;
+  }
+
+  &__item {
+    @include clearfix();
+    position: relative;
+    padding-right: 50px;
+    white-space: nowrap;
+
+    &:hover,
+    &:not(.is-disabled):hover {
+      background: none;
+    }
+  }
+
+  &__checkbox {
+    padding: 4px 0;
+  }
+
+  &__actions {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+  }
+
+  &__item:hover &__actions {
+    display: block;
+  }
+
+  &__action {
+    height: 100%;
+    width: 22px;
+  }
+}
+
+
+.p-promotion-block {
+  background: $color-gray-lighter;
+  padding: 10px;
+}
+
+.p-multiple-input {
+  display: inline-block;
+  line-height: 1.5;
+  white-space: nowrap;
+
+  &__text {
+    padding: 0 5px;
+    display: inline-block;
+  }
+
+  &__input {
+    width: 0;
+    min-width: 5em;
+    background: #fff;
+  }
+
+  .el-input__inner {
+    border-radius: 0;
+    display: block;
   }
 }
