@@ -5,12 +5,12 @@ import (
 	"testing"
 )
 
-const pwd = "admin123"
+const pwd = "123456"
 
 //const keys = "0123456789012345" //16
 //const keys = "TESTWdczx13213EDDSWQ!!@W" //24
 //const keys = "TESTECRETARRSWdczx13213EDDSWQ!@W" //32
-const keys = "TESTWdczx13213EDDSWQ!!@W"
+const keys = "JIESWdczx13213EDDSWQ!!@W"
 
 func TestAESDecrypt(t *testing.T) {
 	password := AESEncrypt(pwd, keys)

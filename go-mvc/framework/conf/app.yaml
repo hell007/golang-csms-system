@@ -11,7 +11,7 @@ Mysql.MaxIdleConns: 10 # 连接池的空闲数大小
 Mysql.MaxOpenConns: 10 # 最大打开连接数
 Mysql.ShowSql: true
 Mysql.Master.User: root
-Mysql.Master.Password: admin
+Mysql.Master.Password: admin123456
 Mysql.Master.Host: 127.0.0.1
 Mysql.Master.Port: 3306
 Mysql.Master.Database: csms-system

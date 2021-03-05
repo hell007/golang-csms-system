@@ -8,7 +8,7 @@ import (
 
 	"github.com/casbin/casbin/v2/model"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/kataras/iris/v12/context"
+	"github.com/kataras/iris/v12"
 
 	"go-mvc/framework/conf"
 	"go-mvc/framework/db"
@@ -80,7 +80,7 @@ func singleAdapter() *Adapter {
 	return adt
 }
 
-func CheckPermissions(ctx context.Context) bool {
+func CheckPermissions(ctx iris.Context) bool {
 	ut, ok := jwt.ParseToken(ctx)
 
 	if !ok {

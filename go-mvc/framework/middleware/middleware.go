@@ -3,7 +3,6 @@ package middleware
 import (
 	"github.com/juju/ratelimit"
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/context"
 	"go-mvc/framework/conf"
 	"go-mvc/framework/utils/response"
 	"go-mvc/framework/utils/tool"
@@ -15,7 +14,7 @@ import (
 )
 
 // 后台系统拦截
-func ServeHTTP(ctx context.Context) {
+func ServeHTTP(ctx iris.Context) {
 	path := ctx.Path()
 
 	// 静态资源、login接口、首页等...不需要验证
@@ -44,7 +43,7 @@ func ServeHTTP(ctx context.Context) {
 }
 
 // api路由拦截器
-func ServeAPIS(ctx context.Context) {
+func ServeAPIS(ctx iris.Context) {
 	path := ctx.Path()
 
 	// 静态资源、login接口、首页等...不需要验证
@@ -92,9 +91,9 @@ func ServeAPIS(ctx context.Context) {
 需要注意的是因为对全局map做操作，故而要在读写之前做安全锁：
 var tokenBuckets map[string]*ratelimit.Bucket
 */
-func RateLimit(fillInterval time.Duration, cap int64) func(ctx context.Context) {
+func RateLimit(fillInterval time.Duration, cap int64) func(ctx iris.Context) {
 	bucket := ratelimit.NewBucket(fillInterval, cap)
-	return func(ctx context.Context) {
+	return func(ctx iris.Context) {
 		// 如果取不到令牌就中断本次请求返回 rate limit...
 		if bucket.TakeAvailable(1) < 1 {
 			response.Error(ctx, iris.StatusBadRequest, response.RateLimiterFailur, nil)

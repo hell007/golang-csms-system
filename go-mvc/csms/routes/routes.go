@@ -2,7 +2,6 @@ package routes
 
 import (
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/hero"
 	"github.com/kataras/iris/v12/mvc"
 	"go-mvc/csms/controllers"
 	"go-mvc/framework/bootstrap"
@@ -23,13 +22,13 @@ func Configure(b *bootstrap.Bootstrapper) {
 	home.Get("/", func(ctx iris.Context) {
 		ctx.View("index.html")
 	})
-	home.Get("/test", hero.Handler(controllers.HomeIndex()))
+	//home.Get("/test", hero.Handler(controllers.HomeIndex()))
 
 	// test resfull api
-	test := main.Party("/test")
-	{
-		test.Get("/getLog", hero.Handler(controllers.TestLog))
-	}
+	//test := main.Party("/test")
+	//{
+	//	test.Get("/getLog", hero.Handler(controllers.TestLog))
+	//}
 
 	//-------mvc 路由模式------
 	// 系统模块

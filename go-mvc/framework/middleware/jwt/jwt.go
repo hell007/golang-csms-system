@@ -11,7 +11,6 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/kataras/golog"
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/context"
 
 	"go-mvc/framework/conf"
 	models "go-mvc/framework/models/system"
@@ -19,8 +18,8 @@ import (
 )
 
 type (
-	errorHandler   func(context.Context, string)
-	TokenExtractor func(context.Context) (string, error)
+	errorHandler   func(iris.Context, string)
+	TokenExtractor func(iris.Context) (string, error)
 	Jwts           struct {
 		Config Config
 	}
@@ -32,7 +31,7 @@ var (
 )
 
 // Serve the middleware's action
-func Serve(ctx context.Context) bool {
+func Serve(ctx iris.Context) bool {
 	// 设置jwt
 	ConfigJWT()
 
@@ -49,7 +48,7 @@ func Serve(ctx context.Context) bool {
 }
 
 // 返回此客户端/请求的用户（&token）信息
-func (m *Jwts) Get(ctx context.Context) *jwt.Token {
+func (m *Jwts) Get(ctx iris.Context) *jwt.Token {
 	return ctx.Values().Get(m.Config.ContextKey).(*jwt.Token)
 }
 
@@ -86,7 +85,7 @@ func ConfigJWT() {
 		//加密的方式
 		SigningMethod: jwt.SigningMethodHS256,
 		//验证未通过错误处理方式
-		ErrorHandler: func(ctx context.Context, errMsg string) {
+		ErrorHandler: func(ctx iris.Context, errMsg string) {
 			response.Error(ctx, iris.StatusUnauthorized, errMsg, nil)
 		},
 		// 指定func用于提取请求中的token
@@ -102,7 +101,7 @@ func ConfigJWT() {
 }
 
 // 检查token的主要方法
-func (m *Jwts) CheckJWT(ctx context.Context) error {
+func (m *Jwts) CheckJWT(ctx iris.Context) error {
 	if !m.Config.EnableAuthOnOptions {
 		if ctx.Method() == iris.MethodOptions {
 			return nil
@@ -243,7 +242,7 @@ func RefreshToken(signedToken string) (string, error) {
 }
 
 // 解析token的信息为当前用户
-func ParseToken(ctx context.Context) (*models.UserToken, bool) {
+func ParseToken(ctx iris.Context) (*models.UserToken, bool) {
 	mapClaims := (jwts.Get(ctx).Claims).(jwt.MapClaims)
 
 	id, ok1 := mapClaims["id"].(float64)
@@ -251,7 +250,8 @@ func ParseToken(ctx context.Context) (*models.UserToken, bool) {
 	rolename, ok3 := mapClaims["rolename"].(string)
 
 	if !ok1 || !ok2 || !ok3 {
-		response.Error(ctx, iris.StatusInternalServerError, response.TokenParseFailur, nil)
+		//response.Error(ctx, iris.StatusInternalServerError, response.TokenParseFailur, nil)
+
 		return nil, false
 	}
 
@@ -267,7 +267,7 @@ func ParseToken(ctx context.Context) (*models.UserToken, bool) {
 // 以下的方法都是从url获取token
 
 // 来自授权头的JWT令牌
-func FromAuthHeader(ctx context.Context) (string, error) {
+func FromAuthHeader(ctx iris.Context) (string, error) {
 	authHeader := ctx.GetHeader("Authorization")
 
 	if authHeader == "" {
@@ -284,14 +284,14 @@ func FromAuthHeader(ctx context.Context) (string, error) {
 
 // 从指定的查询字符串参数中提取标记
 func FromParameter(param string) TokenExtractor {
-	return func(ctx context.Context) (string, error) {
+	return func(ctx iris.Context) (string, error) {
 		return ctx.URLParam(param), nil
 	}
 }
 
 // 运行多个令牌提取程序并获取它找到的第一个令牌
 func FromFirst(extractors ...TokenExtractor) TokenExtractor {
-	return func(ctx context.Context) (string, error) {
+	return func(ctx iris.Context) (string, error) {
 		for _, ex := range extractors {
 			token, err := ex(ctx)
 			if err != nil {

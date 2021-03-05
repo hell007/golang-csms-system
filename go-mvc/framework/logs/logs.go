@@ -157,7 +157,7 @@ func New(option *Option) (*Logger, error) {
 			return nil, fmt.Errorf("rotatelogs.New error: %s", err)
 		}
 		writer, err = rotatelogs.New(
-			fmt.Sprintf("%sjie--%s.log", absPath, option.FileNameDateFormat),
+			fmt.Sprintf("%s/jie-%s.log", absPath, option.FileNameDateFormat),
 			rotatelogs.WithMaxAge(option.MaxAge),
 			rotatelogs.WithRotationTime(option.RotationTime),
 			rotatelogs.WithLinkName(absPath),
