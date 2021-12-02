@@ -132,7 +132,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="rolenote"
+          prop="remark"
           label="描述"
           align="left">
         </el-table-column>
