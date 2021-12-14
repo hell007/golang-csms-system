@@ -5,8 +5,8 @@ import App from './App'
 import router from './router'
 import store from './store'
 import * as filters from './filters' // 全局filter
-import './auth' // 权限
-// import './mock' // 该项目所有请求使用mockjs模拟
+//import './auth' // 权限
+ import './mock' // 该项目所有请求使用mockjs模拟
 
 //加载模块
 Vue.use(Element)

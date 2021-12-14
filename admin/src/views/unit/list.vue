@@ -101,6 +101,7 @@
       <el-table
         class="p-table"
         ref="listTable"
+        id="dragSort"
         :key="tableKey"
         :data="list"
         :default-sort="{prop:'createdTime',order:'descending'}"
@@ -119,12 +120,6 @@
           fixed
           prop="name"
           label="姓名"
-          width="100"
-          align="center">
-        </el-table-column>
-        <el-table-column
-          prop="Role.roleName"
-          label="角色"
           width="100"
           align="center">
         </el-table-column>
@@ -235,6 +230,7 @@ updated（更新后）,
 beforeDestroy（销毁前）,
 destroyed（销毁后）
  */
+import Sortable from "sortablejs";
 import waves from '@/directive/waves/index' // 水波纹指令
 import auth from '@/directive/auth/index' 
 import Pagination from '../components/pagination'
@@ -263,9 +259,9 @@ export default {
   data() {
     return {
       p:'permission:list', //测试无意义
-      list: null,
+      list: [],
       total: null,
-      loading: true,
+      loading: false,
       tip: false,
       listQuery: {
         pageNumber: 1,
@@ -293,24 +289,40 @@ export default {
     ...mapActions(['getUserList', 'deleteUser', 'closeUser', 'batchDeleteUser']),
     //获取list数据，传入筛选对象
     getList() {
-      const self = this
+      let self = this
       self.loading = true
-      self.getUserList(self.listQuery).then(response => {
-        logger('info', response)
-        const status = response.data.success
-        const res = response.data.data
-        if (status) {
-          self.list = res.rows
-          self.total = res.count
-        } else {
-          self.$notify({
-            title: '失败',
-            message: response.data.message,
-            type: 'error'
-          })
-        } 
-        self.loading = false
-      })
+      // self.getUserList(self.listQuery).then(response => {
+      //   logger('info', response)
+      //   const status = response.data.success
+      //   const res = response.data.data
+      //   if (status) {
+      //     self.list = res.rows
+      //     self.total = res.count
+      //   } else {
+      //     self.$notify({
+      //       title: '失败',
+      //       message: response.data.message,
+      //       type: 'error'
+      //     })
+      //   } 
+      //   self.loading = false
+      // })
+
+      setTimeout(() => {
+        for (let i = 0; i <= 10; i++) {
+          let item = {
+            id: i + 1,
+            name: "张三00"+i,
+            roleName: "管理员",
+            mobile: "13888888888"+i,
+            status: 1,
+            email: "1048@qq.com",
+            sort: i+1,
+          };
+          self.list.push(item);
+        }
+        self.loading = false;
+      }, 2000);
     },
     //查询
     handleFilter() {
@@ -427,14 +439,45 @@ export default {
       //   //导出export_json_to_excel('头格式','数据','文件命名')
       //   export_json_to_excel(tHeader, data, '用户数据')
       // })
-    }
+    },
+    //行拖拽排序
+    handleDragSort() {
+      let self = this;
+      let tbody = document.querySelector("#dragSort tbody");
+      if (tbody) {
+        Sortable.create(tbody, {
+          disabled: false,
+          animation: 200,
+          group: "table",
+          sort: true,
+          draggable: ".el-table__row",
+          direction: "vertical",
+          onEnd: (e) => {
+            let list = self.list;
+            let item = list.splice(e.oldIndex, 1)[0];
+            list.splice(e.newIndex, 0, item);
+            //选择字段排序处理
+            list.forEach((el, index) => {
+              el.sort = index + 1;
+            });
+            this.$nextTick(() => {
+              self.list = list;
+            });
+          },
+        });
+      }
+    },
   },
   beforeCreate: noop,
   created() {
-    //this.getList()
+    this.getList()
   },
   beforeMount: noop,
-  mounted: noop,
+  mounted(){
+    this.$nextTick(()=>{
+      this.handleDragSort();
+    })
+  },
   beforeDestory: noop,
   destoryed: noop
 }

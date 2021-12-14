@@ -4,8 +4,9 @@
  * @Author: zenghua.wang
  * @Date: 2019-08-04 16:14:40
  * @LastEditors: zenghua.wang
- * @LastEditTime: 2021-07-22 10:34:12
+ * @LastEditTime: 2021-07-21 18:03:31
  */
+
 import fs from 'file-saver'
 import XLSX from 'xlsx'
 
@@ -43,6 +44,8 @@ export function json2Excel(fields, json, fileName = "测试数据") {
     }
   })
 
+
+
   let sheetName = "sheet1";
   //工作簿对象包含一SheetNames数组，以及一个表对象映射表名称到表对象。XLSX.utils.book_new实用函数创建一个新的工作簿对象。
   let wb = XLSX.utils.book_new();
@@ -64,21 +67,24 @@ export function json2Excel(fields, json, fileName = "测试数据") {
   //   // 横向合并，范围是第1行的列30到列35
   //   { s: { r: 0, c: 29 }, e: { r: 0, c: 34 } }
   // ];
-  // ws['!ref'] = `A1:AI${data.length + 1}`;
-  // var merge = [{
-  //   s: { r: 1, c: 0 },
-  //   e: { r: 3, c: 0 }
-  // }];
-  // ws['!merges'] = merge;
+  ws['!ref'] = `A1:AI${data.length + 1}`;
+  var merge = [{
+    s: { r: 1, c: 0 },
+    e: { r: 3, c: 0 }
+  }];
+  ws['!merges'] = merge;
 
   //设置每列的最大宽度
   if (autoWidth) {
     const colWidth = Object.values(json[0]).map((val, index) => {
+      //先判断是否为null/undefined
       if (!val) {
         return {
           'wch': 10
         };
-      } else if (val.toString().charCodeAt(0) > 255) {
+      }
+      //再判断是否为中文
+      else if (val.toString().charCodeAt(0) > 255) {
         return {
           'wch': val.toString().length * 3
         };
@@ -92,6 +98,10 @@ export function json2Excel(fields, json, fileName = "测试数据") {
     ws['!cols'] = colWidth;
   }
 
+  //将sheet添加到工作簿
+  wb.SheetNames.push(sheetName);
+  wb.Sheets[sheetName] = ws;
+
   //设置表格的样式
   const sheetStyle = {
     font: { name: "宋体", sz: 14, color: "#333", bold: true },
@@ -102,10 +112,7 @@ export function json2Excel(fields, json, fileName = "测试数据") {
     fill: { fgColor: { rgb: "green" } }
   };
 
-  //将sheet添加到工作簿
-  wb.SheetNames.push(sheetName);
-  wb.Sheets[sheetName] = ws;
-
+  //写入的样式
   let wopts = { bookType: 'xlsx', bookSST: false, type: 'binary', cellStyles: true, defaultCellStyle: sheetStyle, showGridLines: false };
   let wbout = XLSX.write(wb, wopts);
   let blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });

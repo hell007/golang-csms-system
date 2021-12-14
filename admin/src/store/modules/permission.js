@@ -1,7 +1,6 @@
 import {
   asyncRouterMap,
   constantRouterMap,
-  myimport
 } from '@/router'
 
 import {
@@ -103,7 +102,7 @@ const permission = {
               a.path = `/${a.path}`
               break;
             case 3:
-              a.component = myimport(a.redirect)
+              a.component = () => import(a.redirect)
               a.hidden = true
               delete a.redirect
               break;

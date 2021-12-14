@@ -86,6 +86,7 @@
 
           <template v-for="menu, index in permission_routers">
             <el-submenu
+              :key="index"
               v-if="!menu.hidden && menu.noDropdown"
               :index="`menu-${index}`">
               <template slot="title">
@@ -94,6 +95,7 @@
               </template>
               <el-menu-item
                 v-for="subMenu, subIndex in menu.children"
+                :key="subIndex"
                 :index="`submenu-${subIndex}`">
                 <router-link
                   class="xa-sidebar__link"
@@ -106,6 +108,7 @@
             
             <!-- 首页 -->
             <el-menu-item v-if="!menu.noDropdown && !menu.hidden" 
+              :key="index"
               :index="`menu-${index}`">
               <router-link
                 class="xa-sidebar__link"

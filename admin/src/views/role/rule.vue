@@ -40,12 +40,12 @@
               :label="item.value">{{item.label}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="描述" prop="remark">
+        <el-form-item label="描述" prop="rolenote">
           <el-input 
             class="p-form__input" 
             type="textarea" 
             placeholder="请输入"
-            v-model="form.remark" ></el-input>
+            v-model="form.rolenote" ></el-input>
         </el-form-item>
       </div>
       <el-form-item>
@@ -115,7 +115,7 @@ export default {
         rolename: '',
         pid: 2,
         status: 1,// int  注意不是字符串
-        remark:''
+        rolenote:''
       },
       casbin: {
         pType: 'p',
