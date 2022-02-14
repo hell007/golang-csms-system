@@ -1,7 +1,10 @@
 <template>
   <page-header :title="title">
     <template v-slot:right>
-      <div class="header-right" @click="navOption">
+      <div
+        class="header-right"
+        @click="navOption"
+      >
         <span class="header-right-text">
           操作
         </span>
@@ -13,7 +16,12 @@
     <div class="page-scroller">
       <ul class="demo">
         <li class="demo-item">{{ user.userId }} {{ user.userName }}</li>
-        <li class="demo-item" v-for="item in list" :key="item.name" @click="goto(item.url)">
+        <li
+          class="demo-item"
+          v-for="item in list"
+          :key="item.name"
+          @click="goto(item.url)"
+        >
           {{ item.name }}
         </li>
       </ul>
@@ -23,8 +31,15 @@
   <page-footer>
     <template v-slot:btn>
       <div class="footer-bar">
-        <van-button round block>取消</van-button>
-        <van-button round block :color="primary">确定</van-button>
+        <van-button
+          round
+          block
+        >取消</van-button>
+        <van-button
+          round
+          block
+          :color="primary"
+        >确定</van-button>
       </div>
     </template>
   </page-footer>
@@ -34,9 +49,9 @@ import { defineComponent, reactive, toRefs, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { theme } from '@/theme';
-import { fetchPost } from '@/utils/api';
 import { Unit } from '@/entities/unit';
 import * as storage from '@/utils/storage';
+import { getApp } from '@/hooks';
 
 export default defineComponent({
   name: 'unit-index',
@@ -44,6 +59,7 @@ export default defineComponent({
   setup(props, ctx) {
     const router = useRouter();
     const store = useStore();
+    const app = getApp();
 
     const primary = theme.primary;
     const title = '模板';
@@ -96,12 +112,13 @@ export default defineComponent({
         loginId: '11187245996',
         verifyCode: '708090'
       };
-      fetchPost('/flep/app/api/sys/login', user)
-        .then(function(res) {
+      app.$http
+        .post('/data-report/model/query', user)
+        .then(function (res: any) {
           let data = res.data.body;
           storage.set('token', data.token);
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log(err);
         });
     };
@@ -121,7 +138,7 @@ export default defineComponent({
       }
     };
 
-    //調用封裝方法
+    //调用封裝方法
     const login3 = async () => {
       const user = {
         loginId: '11187245996',

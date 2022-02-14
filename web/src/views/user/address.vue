@@ -4,7 +4,11 @@
   <div class="page-main">
     <div class="page-scroller">
       <section class="address-list">
-        <div class="address-item" v-for="(item, index) in list" :key="index">
+        <div
+          class="address-item"
+          v-for="(item, index) in list"
+          :key="index"
+        >
           <div class="address-item-bd">
             <div class="address-item-name">
               <span>{{ item.consignee }}</span>
@@ -28,24 +32,40 @@
             </div>
             <div class="address-item-opt">
               <span @click="onEdit(item)">
-                <van-icon name="edit" size="14" />
+                <van-icon
+                  name="edit"
+                  size="14"
+                />
                 编辑
               </span>
               <span @click="onDel(item)">
-                <van-icon name="delete-o" size="14" />
+                <van-icon
+                  name="delete-o"
+                  size="14"
+                />
                 删除
               </span>
             </div>
           </div>
         </div>
       </section>
-      <div class="no-entry" v-if="list.length == 0">暂时没有收货地址</div>
+      <div
+        class="no-entry"
+        v-if="list.length == 0"
+      >暂时没有收货地址</div>
     </div>
   </div>
 
   <div class="page-footer">
-    <div class="address-bar" @click="onAdd">
-      <van-button block round :color="primary">新增收货地址</van-button>
+    <div
+      class="address-bar"
+      @click="onAdd"
+    >
+      <van-button
+        block
+        round
+        :color="primary"
+      >新增收货地址</van-button>
     </div>
   </div>
 </template>
@@ -55,8 +75,7 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { getApp } from '@/hooks';
 import { theme } from '@/theme';
-import { getToken } from '@/utils/storage';
-import { fetchGet } from '@/utils/api';
+//import { getToken } from '@/utils/storage';
 import { URIS } from '@/config';
 import { formatPhone } from '@/utils/index';
 
@@ -116,8 +135,9 @@ export default defineComponent({
     };
 
     const onDel = (row: any) => {
-      fetchGet(URIS.user.delAddress, { uid: row.id })
-        .then(function(res) {
+      app.$http
+        .get(URIS.user.delAddress, { params: { uid: row.id } })
+        .then(function (res: any) {
           const ok = res.data.state;
           const message = res.data.msg;
           if (ok) {
@@ -126,7 +146,7 @@ export default defineComponent({
             app.$toast(message, 'error');
           }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log(err);
         });
     };

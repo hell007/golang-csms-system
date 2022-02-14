@@ -1,6 +1,13 @@
+/*
+ * @Descripttion: 
+ * @Author: zenghua.wang
+ * @Date: 2021-02-23 21:12:37
+ * @LastEditors: zenghua.wang
+ * @LastEditTime: 2022-02-14 10:01:14
+ */
 /* eslint-disable @typescript-eslint/explicit-member-accessibility */
 import Mock from 'mockjs';
-import { fetchPost } from '@/utils/api';
+import axios from '@/utils/axios';
 
 export interface UnitModel {
   id?: number;
@@ -49,7 +56,7 @@ export class Unit {
 
   getUnit = (q: any) => {
     return new Promise((resolve, reject) => {
-      fetchPost('/flep/app/api/sys/login', q)
+      axios.post('/flep/app/api/sys/login', q)
         .then((response) => {
           resolve(response);
         })

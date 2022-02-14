@@ -1,5 +1,5 @@
 import { MutationTree, ActionTree } from 'vuex';
-import { fetchGet } from '@/utils/api';
+import axios from '@/utils/axios';
 import { URIS } from '@/config';
 
 interface UserState {
@@ -32,7 +32,7 @@ const actions: ActionTree<UserState, {}> = {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          let response = await fetchGet(URIS.user.address, query);
+          let response = await axios.get(URIS.user.address, {params:query});
           const ok = response.data;
           const list = response.data.data;
           if (ok) {
@@ -64,7 +64,7 @@ const actions: ActionTree<UserState, {}> = {
     return new Promise((resolve, reject) => {
       (async () => {
         try {
-          let response = await fetchGet(URIS.user.city, query);
+          let response = await axios.get(URIS.user.city, {params:query});
           resolve(response);
         } catch (ex) {
           reject(ex);

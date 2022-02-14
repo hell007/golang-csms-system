@@ -90,7 +90,6 @@ import { defineComponent, reactive, toRefs, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getApp } from '@/hooks';
 import { theme } from '@/theme';
-import { fetchPost } from '@/utils/api';
 import * as utils from '@/utils/index';
 import { set } from '@/utils/storage';
 import { CSMSKEY, URIS } from '@/config';
@@ -153,7 +152,7 @@ export default defineComponent({
         return app.$toast('请正确输入必填信息！');
       }
 
-      fetchPost(URIS.user.login, state.form).then((res) => {
+      app.$http.post(URIS.user.login, state.form).then((res:any) => {
         const data = res.data.data;
         const ok = res.data.state;
         const message = res.data.msg;

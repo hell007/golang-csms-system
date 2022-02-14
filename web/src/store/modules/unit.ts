@@ -1,5 +1,5 @@
 import { MutationTree, ActionTree } from 'vuex';
-import { fetchPost } from '@/utils/api';
+import axios from '@/utils/axios';
 
 interface UnitState {
   token: string;
@@ -23,7 +23,7 @@ const mutations: MutationTree<UnitState> = {
 const actions: ActionTree<UnitState, {}> = {
   login({ commit }, form) {
     return new Promise((resolve, reject) => {
-      fetchPost('/flep/app/api/sys/login', form)
+      axios.post('/flep/app/api/sys/login', form)
         .then((response) => {
           if (200 == response.data.status) {
             const user = response.data.body;

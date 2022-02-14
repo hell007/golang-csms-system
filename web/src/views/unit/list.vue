@@ -34,7 +34,6 @@
 import { defineComponent, onMounted, reactive, toRefs } from 'vue';
 import { Unit, UnitModel } from '@/entities/unit';
 import { theme } from '@/theme';
-//import { fetchGet } from '@/utils/api';
 import { Toast } from 'vant';
 
 export default defineComponent({

@@ -1,14 +1,21 @@
+/*
+ * @Descripttion: 
+ * @Author: zenghua.wang
+ * @Date: 2021-02-23 21:12:37
+ * @LastEditors: zenghua.wang
+ * @LastEditTime: 2022-02-11 17:53:40
+ */
 import axios from 'axios';
 import { hasToken, getToken } from './storage';
 
 // 创建axios实例
-const service = axios.create({
+const publicAxios = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // api的base_url
   timeout: 10000
 });
 
 // request拦截器
-service.interceptors.request.use(
+publicAxios.interceptors.request.use(
   function(config) {
     if (hasToken()) {
       // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
@@ -25,7 +32,7 @@ service.interceptors.request.use(
 );
 
 // respone拦截器
-// service.interceptors.response.use(
+// publicAxios.interceptors.response.use(
 //   (response) => response,
 //   (error) => {
 //     console.log('error.response=', error.response);
@@ -44,4 +51,4 @@ service.interceptors.request.use(
 //   }
 // );
 
-export default service;
+export default publicAxios;

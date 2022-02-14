@@ -42,15 +42,33 @@
           placeholder="街道、楼牌号等"
         />
 
-        <van-field v-model="form.tag" label="标签" input-align="right">
+        <van-field
+          v-model="form.tag"
+          label="标签"
+          input-align="right"
+        >
           <template #input>
-            <van-tag round size="large" :color="primary">家</van-tag>
-            <van-tag round size="large">学校</van-tag>
-            <van-tag round size="large">公司</van-tag>
+            <van-tag
+              round
+              size="large"
+              :color="primary"
+            >家</van-tag>
+            <van-tag
+              round
+              size="large"
+            >学校</van-tag>
+            <van-tag
+              round
+              size="large"
+            >公司</van-tag>
           </template>
         </van-field>
 
-        <van-field v-model="form.state" label="默认地址" input-align="right">
+        <van-field
+          v-model="form.state"
+          label="默认地址"
+          input-align="right"
+        >
           <template #input>
             <van-switch
               v-model="form.checked"
@@ -68,7 +86,11 @@
   </div>
 
   <!-- 城市 -->
-  <van-popup v-model:show="pop.show" round position="bottom">
+  <van-popup
+    v-model:show="pop.show"
+    round
+    position="bottom"
+  >
     <van-cascader
       v-model="pop.val"
       title="请选择所在地区"
@@ -82,7 +104,11 @@
 
   <div class="page-footer">
     <div class="address-bar">
-      <van-button block round :color="primary">
+      <van-button
+        block
+        round
+        :color="primary"
+      >
         保存
       </van-button>
     </div>
@@ -94,7 +120,6 @@ import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { theme } from '@/theme';
 import { getApp } from '@/hooks';
-import { fetchPost } from '@/utils/api';
 import { URIS } from '@/config';
 import { isEmpty } from '@/utils/index';
 
@@ -217,8 +242,9 @@ export default defineComponent({
     const onSave = () => {
       let form = {};
 
-      fetchPost(URIS.user.saveAddress, form)
-        .then((res) => {
+      app.$http
+        .post(URIS.user.saveAddress, form)
+        .then((res: any) => {
           const ok = res.data.state;
           const message = res.data.msg;
           if (ok) {
@@ -230,7 +256,7 @@ export default defineComponent({
             app.$toast.fail(message);
           }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log(err);
           app.$toast.fail(err);
         });

@@ -34,7 +34,10 @@
               @click="onSend"
               class="register-confirm"
             >
-              <span v-if="modal.msgVisible" class="register-count">
+              <span
+                v-if="modal.msgVisible"
+                class="register-count"
+              >
                 <van-count-down
                   millisecond
                   :time="30000"
@@ -58,11 +61,25 @@
           placeholder="请输入真实姓名"
         />
 
-        <van-field label="性别：" input-align="left" placeholder="请输入真实姓名">
+        <van-field
+          label="性别："
+          input-align="left"
+          placeholder="请输入真实姓名"
+        >
           <template #input>
-            <van-radio-group v-model="form.gender" direction="horizontal" class="register-radio">
-              <van-radio name="1" :checked-color="primary">男</van-radio>
-              <van-radio name="2" :checked-color="primary">女</van-radio>
+            <van-radio-group
+              v-model="form.gender"
+              direction="horizontal"
+              class="register-radio"
+            >
+              <van-radio
+                name="1"
+                :checked-color="primary"
+              >男</van-radio>
+              <van-radio
+                name="2"
+                :checked-color="primary"
+              >女</van-radio>
             </van-radio-group>
           </template>
         </van-field>
@@ -99,19 +116,34 @@
         >
           注册即视为同意
         </van-checkbox>
-        <span class="agree" @click="onAgree">《和小店注册协议》</span>
+        <span
+          class="agree"
+          @click="onAgree"
+        >《和小店注册协议》</span>
       </div>
 
       <div class="register-bar">
-        <van-button round block :color="primary" @click="onSubmit">注册</van-button>
+        <van-button
+          round
+          block
+          :color="primary"
+          @click="onSubmit"
+        >注册</van-button>
       </div>
 
-      <div class="register-login" @click="onLogin">已注册，去登录！</div>
+      <div
+        class="register-login"
+        @click="onLogin"
+      >已注册，去登录！</div>
     </div>
   </div>
 
   <!-- dialog -->
-  <page-dialog type="dialog" v-model:show="modal.show" :lock="true">
+  <page-dialog
+    type="dialog"
+    v-model:show="modal.show"
+    :lock="true"
+  >
     <template #body>
       <section class="agree-card">
         <h6>一、购买流程</h6>
@@ -128,7 +160,10 @@
         @click="onConfirm"
         class="register-confirm"
       >
-        <span v-if="modal.agreeVisible" class="register-count">
+        <span
+          v-if="modal.agreeVisible"
+          class="register-count"
+        >
           <van-count-down
             millisecond
             :time="10000"
@@ -148,7 +183,6 @@ import { defineComponent, reactive, toRefs, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getApp } from '@/hooks';
 import { theme } from '@/theme';
-import { fetchPost } from '@/utils/api';
 import * as utils from '@/utils/index';
 import { URIS } from '@/config';
 
@@ -220,12 +254,12 @@ export default defineComponent({
         return app.$toast('请勾选协议！');
       }
 
-      fetchPost(URIS.user.register, state.form).then((res) => {
+      app.$http.post(URIS.user.register, state.form).then((res: any) => {
         const ok = res.data.state;
         const message = res.data.msg;
         if (ok) {
           app.$toast(message);
-          setTimeout(function() {
+          setTimeout(function () {
             router.push('/user/login');
           }, 3000);
         } else {

@@ -20,9 +20,15 @@
       <section class="profile-order">
         <div class="profile-order-hd">
           <h6 class="profile-order-title">我的订单</h6>
-          <span class="profile-order-all" @click="getOrder">
+          <span
+            class="profile-order-all"
+            @click="getOrder"
+          >
             <span>全部订单</span>
-            <van-icon name="arrow" size="12" />
+            <van-icon
+              name="arrow"
+              size="12"
+            />
           </span>
         </div>
         <ul class="profile-order-bd">
@@ -32,7 +38,12 @@
             :key="index"
             @click="getOrder(item)"
           >
-            <van-icon class-prefix="xa-icon" :name="item.icon" size="28" :color="primary" />
+            <van-icon
+              class-prefix="xa-icon"
+              :name="item.icon"
+              size="28"
+              :color="primary"
+            />
             <span>{{ item.name }}</span>
             <!-- <em>2</em> -->
           </li>
@@ -50,12 +61,19 @@
           @click="goPage(item)"
         >
           <template #icon>
-            <van-icon class-prefix="xa-icon" :name="item.icon" size="20" />
+            <van-icon
+              class-prefix="xa-icon"
+              :name="item.icon"
+              size="20"
+            />
           </template>
         </van-cell>
       </section>
 
-      <div class="profile-out" @click="logout">退出登录</div>
+      <div
+        class="profile-out"
+        @click="logout"
+      >退出登录</div>
     </div>
   </div>
 </template>
@@ -64,7 +82,6 @@ import { defineComponent, reactive, toRefs, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { theme } from '@/theme';
 import { getApp } from '@/hooks';
-import { fetchGet } from '@/utils/api';
 import { getToken, clear } from '@/utils/storage';
 import { URIS } from '@/config';
 
@@ -123,9 +140,9 @@ export default defineComponent({
     const state = reactive(stateObj);
 
     const getUser = async () => {
-
-      fetchGet(URIS.user.profile, {})
-        .then(function(res) {
+      app.$http
+        .get(URIS.user.profile)
+        .then(function (res: any) {
           let data = res.data.data;
           const ok = res.data.state;
           const message = res.data.msg;
@@ -135,7 +152,7 @@ export default defineComponent({
             app.$toast(message);
           }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log(err);
         });
     };
@@ -159,8 +176,9 @@ export default defineComponent({
     //退出
     const logout = () => {
       let query = { token: getToken() };
-      fetchGet(URIS.user.profile, query)
-        .then(function(res) {
+      app.$http
+        .get(URIS.user.profile, { params: query })
+        .then(function (res: any) {
           const ok = res.data.state;
           const message = res.data.msg;
           if (ok) {
@@ -170,7 +188,7 @@ export default defineComponent({
             app.$toast.fail(message);
           }
         })
-        .catch((err) => {
+        .catch((err: any) => {
           console.log(err);
           app.$toast.fail(err);
         });
