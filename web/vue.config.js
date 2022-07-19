@@ -41,7 +41,7 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: "http://ynyd.ynicity.cn:9080",
+        target: "http://www.kunyujie.com",
         changeOrigin: true,
         ws: true,
         pathRewrite: {
